@@ -50,13 +50,12 @@ do->
     (fullpath,pagecellpath,data)->
 
       if hist[0] isnt fullpath
-        transition = (hist.length is 0) and 'fade' or 'slide'
-        isReverse = not hist.addOrRewind fullpath
+        options =
+          transition: hist.length and 'slide' or 'fade'
+          reverse: not hist.addOrRewind fullpath
 
         if (pagecell = pageCellRegistry[pagecellpath])?
-          $.mobile.changePage pagecell.$el,
-            transition: transition
-            reverse: isReverse
+          $.mobile.changePage pagecell.$el, options
           deactiveJQMBtnClass()
 
         else
@@ -64,9 +63,7 @@ do->
             pagecell = pageCellRegistry[pagecellpath] = new pagecell(data)
             ($el = pagecell.$el).attr 'data-cell-page', pagecellpath
             $body.prepend $el
-            $.mobile.changePage $el,
-              transition: transition
-              reverse: isReverse
+            $.mobile.changePage $el, options
             deactiveJQMBtnClass()
 
       return
@@ -76,8 +73,8 @@ do->
     $(window).bind 'hashchange', syncPageToHash = ->
       [cellpath,jsondata] = (fullpath = location.hash.slice(3)).split '?'
       data = {}
-      if jsondata and kvs = jsondata.split '&'
-        for kv in kvs
+      if jsondata
+        for kv in jsondata.split '&'
           [k,v] = kv.split '='
           data[k] = v
       loadAndChangePage fullpath, cellpath or 'App', data

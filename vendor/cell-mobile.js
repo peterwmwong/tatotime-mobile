@@ -59,15 +59,14 @@ var __slice = Array.prototype.slice;
         3) Tell jquery-mobile page loading is done
         */
     return function(fullpath, pagecellpath, data) {
-      var isReverse, pagecell, transition;
+      var options, pagecell;
       if (hist[0] !== fullpath) {
-        transition = (hist.length === 0) && 'fade' || 'slide';
-        isReverse = !hist.addOrRewind(fullpath);
+        options = {
+          transition: hist.length && 'slide' || 'fade',
+          reverse: !hist.addOrRewind(fullpath)
+        };
         if ((pagecell = pageCellRegistry[pagecellpath]) != null) {
-          $.mobile.changePage(pagecell.$el, {
-            transition: transition,
-            reverse: isReverse
-          });
+          $.mobile.changePage(pagecell.$el, options);
           deactiveJQMBtnClass();
         } else {
           require({
@@ -77,10 +76,7 @@ var __slice = Array.prototype.slice;
             pagecell = pageCellRegistry[pagecellpath] = new pagecell(data);
             ($el = pagecell.$el).attr('data-cell-page', pagecellpath);
             $body.prepend($el);
-            $.mobile.changePage($el, {
-              transition: transition,
-              reverse: isReverse
-            });
+            $.mobile.changePage($el, options);
             return deactiveJQMBtnClass();
           });
         }
@@ -91,13 +87,14 @@ var __slice = Array.prototype.slice;
     var syncPageToHash;
     $body = $('body');
     $(window).bind('hashchange', syncPageToHash = function() {
-      var cellpath, data, fullpath, jsondata, k, kv, kvs, v, _i, _len, _ref, _ref2;
+      var cellpath, data, fullpath, jsondata, k, kv, v, _i, _len, _ref, _ref2, _ref3;
       _ref = (fullpath = location.hash.slice(3)).split('?'), cellpath = _ref[0], jsondata = _ref[1];
       data = {};
-      if (jsondata && (kvs = jsondata.split('&'))) {
-        for (_i = 0, _len = kvs.length; _i < _len; _i++) {
-          kv = kvs[_i];
-          _ref2 = kv.split('='), k = _ref2[0], v = _ref2[1];
+      if (jsondata) {
+        _ref2 = jsondata.split('&');
+        for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+          kv = _ref2[_i];
+          _ref3 = kv.split('='), k = _ref3[0], v = _ref3[1];
           data[k] = v;
         }
       }
