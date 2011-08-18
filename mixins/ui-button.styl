@@ -1,0 +1,29 @@
+@import 'mixins/pos'
+@import 'mixins/badge'
+@import 'mixins/box'
+@import 'mixins/border'
+@import 'mixins/colors'
+@import 'mixins/transition'
+
+button()
+  color text-disabled-color
+  cursor pointer
+  border-radius 3px
+  background-color #222
+  box-shadow 0px 1px 4px rgba(#000,.4)
+  font-weight bold
+  font-size 13px
+  gradient rgba(#888,.3), rgba(#888,.15)
+  height 24px
+  letter-spacing 1px
+  margin 0px 0px 0 0px
+  overflow hidden
+  text-align center
+  text-shadow 0px -1px 0px #222
+  vertical-align top
+
+  &:hover
+    color darken(text-color-dark,10%)
+    gradient rgba(#888,.4), rgba(#888,.2)
+    > .plus
+      color darken(text-color-dark,10%)
