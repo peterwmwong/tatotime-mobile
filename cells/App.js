@@ -18,7 +18,10 @@ define(['Services', 'cell!shared/ListView'], function(S, ListView) {
   };
   return {
     "extends": 'shared/Page',
-    renderPage: function(_) {
+    renderHeader: function(_) {
+      return [_('.title', createDisplayableDate(today))];
+    },
+    renderContent: function(_) {
       return [
         _(ListView, {
           getList: function(A) {

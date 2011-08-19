@@ -3,7 +3,7 @@ var __slice = Array.prototype.slice;
   /*
     Helpers
     */
-  var $body, L, baseurl, deactiveJQMBtnClass, loadAndChangePage;
+  var $body, L, baseurl, loadAndChangePage;
   L = function() {
     var args;
     args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
@@ -13,18 +13,7 @@ var __slice = Array.prototype.slice;
     Effectively, deactivate jquery-mobile navigation model.
     */
   $body = null;
-  $(document).bind("mobileinit", function() {
-    $.extend($.mobile, {
-      hashListeningEnabled: false,
-      ajaxEnabled: false
-    });
-  });
   baseurl = "cells/";
-  deactiveJQMBtnClass = function() {
-    return setTimeout((function() {
-      return $("." + $.mobile.activeBtnClass).removeClass($.mobile.activeBtnClass);
-    }), 500);
-  };
   /*
     Loads and renders the specified Page Cell if not already loaded.
     If already previously loaded, just $.mobile.changePage to that node.
@@ -65,19 +54,14 @@ var __slice = Array.prototype.slice;
           transition: hist.length && 'slide' || 'fade',
           reverse: !hist.addOrRewind(fullpath)
         };
-        if ((pagecell = pageCellRegistry[pagecellpath]) != null) {
-          $.mobile.changePage(pagecell.$el, options);
-          deactiveJQMBtnClass();
-        } else {
+        if ((pagecell = pageCellRegistry[pagecellpath]) != null) {} else {
           require({
             baseUrl: baseurl
           }, ["cell!" + pagecellpath], function(pagecell) {
             var $el;
             pagecell = pageCellRegistry[pagecellpath] = new pagecell(data);
             ($el = pagecell.$el).attr('data-cell-page', pagecellpath);
-            $body.prepend($el);
-            $.mobile.changePage($el, options);
-            return deactiveJQMBtnClass();
+            return $body.prepend($el);
           });
         }
       }

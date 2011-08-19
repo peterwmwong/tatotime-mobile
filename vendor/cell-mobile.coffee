@@ -8,20 +8,7 @@ do->
   Effectively, deactivate jquery-mobile navigation model.
   ###
   $body = null;
-
-  $(document).bind "mobileinit", ->
-    $.extend $.mobile,
-      hashListeningEnabled: false
-      ajaxEnabled: false
-    return
-
   baseurl = "cells/"
-
-  deactiveJQMBtnClass = ->
-    setTimeout (->
-      $(".#{$.mobile.activeBtnClass}").removeClass $.mobile.activeBtnClass
-    ), 500
-
 
   ###
   Loads and renders the specified Page Cell if not already loaded.
@@ -55,16 +42,14 @@ do->
           reverse: not hist.addOrRewind fullpath
 
         if (pagecell = pageCellRegistry[pagecellpath])?
-          $.mobile.changePage pagecell.$el, options
-          deactiveJQMBtnClass()
+          #TODO $.mobile.changePage pagecell.$el, options
 
         else
           require baseUrl: baseurl, ["cell!#{pagecellpath}"], (pagecell)->
             pagecell = pageCellRegistry[pagecellpath] = new pagecell(data)
             ($el = pagecell.$el).attr 'data-cell-page', pagecellpath
             $body.prepend $el
-            $.mobile.changePage $el, options
-            deactiveJQMBtnClass()
+            #TODO $.mobile.changePage $el, options
 
       return
     

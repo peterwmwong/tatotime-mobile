@@ -1,25 +1,37 @@
 define
-  'render <div data-role="page">': (_,A)->
+  render: (_,A)->
     [
-      _ '<div data-role="header">',
-          _ '<h2>', "sldkfj"
-      _ '<div data-role="content">'
-      _ '<div data-role="footer" data-position="fixed" data-id="footer">', 
-          _ '<div data-role="navbar" data-position="fixed">',
-            _ '<ul>',
-              _ '<li>', _ '<a>', 'Date'
-              _ '<li>', _ '<a>', 'Show'
+      _ '.header',
+        _ '.title'
+      _ '.content'
+      _ '.footer', 
+          _ '.navbar',
+            _ 'ul',
+              _ 'li', _ '<a>', 'Watched'
+              _ 'li', _ '<a>', 'Schedule'
+              _ 'li', _ '<a>', 'Search'
     ]
 
-  renderContent: (r)->
-    if r and not @content
-      @content = r
-      $content = @$ '[data-role="content"]'
-      for n in r
+  _renderHeader: (nodes)->
+    if nodes and not @header
+      @header = nodes
+      $header = @$ '.header'
+      $header.html ''
+      for n in nodes
+        $header.append n
+
+  _renderContent: (nodes)->
+    if nodes and not @content
+      @content = nodes
+      $content = @$ '.content'
+      for n in nodes
         $content.append n
     return
 
   bind:
     afterRender: ->
-      @renderContent @renderPage cell.renderHelper, (r2)=> @renderContent r2
+      if @renderHeader
+        @_renderHeader @renderHeader cell.renderHelper, (r2)=> @_renderHeader r2
+      if @renderContent
+        @_renderContent @renderContent cell.renderHelper, (r2)=> @_renderContent r2
       return false

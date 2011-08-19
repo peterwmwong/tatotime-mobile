@@ -12,7 +12,10 @@ define [
       o.toLocaleDateString()
 
   extends: 'shared/Page'
-  renderPage: (_)-> [
+  renderHeader: (_)-> [
+    _ '.title', createDisplayableDate today
+  ]
+  renderContent: (_)-> [
     _ ListView, getList: (A)->
       S.user.getShows (shows)->
         A do-> for s in shows then do->

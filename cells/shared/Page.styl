@@ -1,2 +1,38 @@
+@import 'mixins/gradient';
+@import 'mixins/pos';
+
 .Page
-  opacity 1.0
+  > .header
+    gradient #333 #111
+
+    > .title
+      color #FFF
+      font-size 16px
+      font-weight bold
+      padding-top 17px
+      padding-bottom 17px
+      text-align center
+
+  > .footer   
+    abspos false 0px 0px 0px
+    
+    > .navbar > ul
+      margin 0
+      padding 0
+
+      > li
+        border-top 3px solid #666
+        border-right 1px solid #444
+        color #FFF
+        display inline-block
+        gradient #333 #111
+        min-height 50px
+        //padding 17px 0 17px 0
+        text-align center
+        width 33.296%
+        vertical-align bottom
+
+        &:last-child
+          border-right none
+        a
+          vertical-align bottom
