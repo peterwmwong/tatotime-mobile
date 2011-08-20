@@ -7,7 +7,7 @@ define(function() {
   jsonpID = 0;
   jsonp = function(options) {
     var jsonpString, s, _ref;
-    jsonpString = '__jsonp' + ++jsonpID;
+    jsonpString = "__jsonp" + (++jsonpID);
     window[jsonpString] = function(j) {
       options.success(j);
       window[jsonpString] = void 0;
@@ -27,7 +27,7 @@ define(function() {
     mock = _arg.mock;
     return setTimeout((function() {
       return require([mock], done);
-    }), 100);
+    }), 50);
   } : function(_arg, done) {
     var real;
     real = _arg.real;

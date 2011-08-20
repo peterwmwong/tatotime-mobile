@@ -1,2 +1,29 @@
-.ListView
-  opacity 1.0
+@import 'mixins/gradient';
+
+ul.ListView
+  padding 0
+  margin 0
+  list-style none
+
+  > li
+    border-top 1px solid #DEDEDE
+    gradient #FAFAFA #EEE
+    height 42px
+    width 100%
+
+    &.active
+      cursor pointer
+      gradient #85BAE4 #5393C5
+      border-top 1px solid #155678
+      border-bottom 1px solid #155678
+      outline none
+      
+      > a
+        color #FFF
+
+    > a
+      color #2F3E46
+      display block
+      font-weight bold
+      padding 13px
+      text-decoration none

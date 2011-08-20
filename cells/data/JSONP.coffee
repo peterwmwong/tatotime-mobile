@@ -2,7 +2,7 @@ define ->
   idFunc = (o)->o
   jsonpID = 0
   jsonp = (options)->
-    jsonpString = '__jsonp' + ++jsonpID
+    jsonpString = "__jsonp#{++jsonpID}"
     window[jsonpString] = (j)->
       options.success j
       window[jsonpString] = undefined
@@ -17,7 +17,7 @@ define ->
 
   get =
     if window.location.search.indexOf('mock-service=true') > -1
-      ({mock},done)-> setTimeout (-> require [mock], done), 100
+      ({mock},done)-> setTimeout (-> require [mock], done), 50
     else
       ({real},done)->
         jsonp

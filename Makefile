@@ -50,10 +50,9 @@ cells/bootstrap.js: $(uglifyjs) cells/cell.js cells/cell-pluginBuilder.js
 		out=cells/bootstrap-tmp.js \
 		baseUrl=cells includeRequire=true
 	cat vendor/jquery.js \
-			vendor/cell-mobile.js \
-			vendor/jquery.mobile.js \
+			vendor/iscroll-lite.js \
 			cells/bootstrap-tmp.js | $(uglifyjs) -nc > cells/bootstrap.js
-	cat vendor/jquery.mobile.css \
+	cat cells/global.css \
 			cells/bootstrap-tmp.css > cells/bootstrap.css
 	rm cells/bootstrap-tmp.*
 
@@ -61,7 +60,7 @@ cells/bootstrap.js: $(uglifyjs) cells/cell.js cells/cell-pluginBuilder.js
 # DEV 
 #------------------------------------------------------------------- 
 dev-server: $(serve)
-	$(serve) -D -L -I
+	$(serve) -D -L -I `pwd`
 
 dev-stylus: $(stylus)
 	find ./cells ./mixins -name '*.styl' -type f | xargs $(stylus) --watch --compress

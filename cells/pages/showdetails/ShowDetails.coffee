@@ -3,11 +3,7 @@ define [
   'cell!shared/ListView'
 ], (S,ListView)->
 
-  extends: 'shared/Page'
-  renderContent: (_,A)-> S.show.getDetails @options.id, ({title,description})=>
-    @_renderHeader [
-      _ 'h2', title
-    ]
-    A [
-      _ 'p', description
-    ]
+  render: (_,A)-> S.show.getDetails @options.id, ({title,description})=> A [
+    _ 'h2', title
+    _ 'p', description 
+  ]

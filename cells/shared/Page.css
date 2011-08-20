@@ -1,7 +1,0 @@
-.Page > .header{background:#232323;background:-moz-linear-gradient(top,#333 0%,#111 100%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#333),color-stop(100%,#111));filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#333', endColorstr='#111',GradientType=0 );}
-.Page > .header > .title{color:#fff;font-size:16px;font-weight:bold;padding-top:17px;padding-bottom:17px;text-align:center}
-.Page > .footer{position:absolute;right:0;bottom:0;left:0;}
-.Page > .footer > .navbar > ul{margin:0;padding:0;}
-.Page > .footer > .navbar > ul > li{border-top:3px solid #666;border-right:1px solid #444;color:#fff;display:inline-block;background:#232323;background:-moz-linear-gradient(top,#333 0%,#111 100%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#333),color-stop(100%,#111));filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#333', endColorstr='#111',GradientType=0 );min-height:50px;text-align:center;width:33.296%;vertical-align:bottom;}
-.Page > .footer > .navbar > ul > li:last-child{border-right:none}
-.Page > .footer > .navbar > ul > li a{vertical-align:bottom}

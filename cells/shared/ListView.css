@@ -1,1 +1,5 @@
-.ListView{opacity:1}
+ul.ListView{padding:0;margin:0;list-style:none;}
+ul.ListView > li{border-top:1px solid #dedede;background:#f4f4f4;background:-moz-linear-gradient(top,#fafafa 0%,#eee 100%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#fafafa),color-stop(100%,#eee));filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#fafafa', endColorstr='#eee',GradientType=0 );height:42px;width:100%;}
+ul.ListView > li.active{cursor:pointer;background:#6da7d5;background:-moz-linear-gradient(top,#85bae4 0%,#5393c5 100%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#85bae4),color-stop(100%,#5393c5));filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#85bae4', endColorstr='#5393c5',GradientType=0 );border-top:1px solid #155678;border-bottom:1px solid #155678;outline:none;}
+ul.ListView > li.active > a{color:#fff}
+ul.ListView > li > a{color:#2f3e46;display:block;font-weight:bold;padding:13px;text-decoration:none}

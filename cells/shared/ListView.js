@@ -1,9 +1,9 @@
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 define(function() {
-  var renderList;
+  var renderList, _;
+  _ = cell.renderHelper;
   renderList = function(list) {
-    var link, text, _, _i, _len, _ref, _results;
-    _ = cell.renderHelper;
+    var link, text, _i, _len, _ref, _results;
     _results = [];
     for (_i = 0, _len = list.length; _i < _len; _i++) {
       _ref = list[_i], text = _ref.text, link = _ref.link;
@@ -14,7 +14,7 @@ define(function() {
     return _results;
   };
   return {
-    'render <ul data-role="listview">': function(_, A) {
+    'render <ul>': function(_, A) {
       var getList, list, _ref;
       _ref = this.options, list = _ref.list, getList = _ref.getList;
       if (list) {
@@ -26,11 +26,9 @@ define(function() {
       }
     },
     bind: {
-      afterRender: function() {
-        try {
-          this.$el.listview('refresh');
-        } catch (_e) {}
-        return false;
+      'click a': function(e) {
+        $('li.active').removeClass('active');
+        return $(e.target).closest('li').addClass('active');
       }
     }
   };
