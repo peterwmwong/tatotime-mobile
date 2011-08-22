@@ -1,6 +1,6 @@
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 define(['require', 'Services', 'cell!pages/watch/Watch'], function(require, S) {
-  var $curPageCell, hideAddressBar, hist, pageCellRegistry;
+  var changePage, curScroller, hideIOSAddressBar, hist, makeScroller, pageCellRegistry;
   hist = [];
   hist.addOrRewind = function(fullpath) {
     var i;
@@ -23,49 +23,46 @@ define(['require', 'Services', 'cell!pages/watch/Watch'], function(require, S) {
     return -1;
   };
   pageCellRegistry = {};
-  $curPageCell = null;
-  hideAddressBar = function() {
+  curScroller = null;
+  hideIOSAddressBar = function() {
     window.scrollTo(0, 1);
     if (window.pageYOffset <= 0) {
-      return setTimeout(hideAddressBar, 10);
+      return setTimeout(hideIOSAddressBar, 10);
     }
   };
+  makeScroller = function(pagecell, pagecellpath) {
+    var s, scroller;
+    s = document.createElement('div');
+    s.appendChild(pagecell.el);
+    scroller = new iScroll(s);
+    scroller.pagecell = pagecell;
+    s.className = 'scroller';
+    (scroller.$node = $(s)).attr('data-cell-page', pagecellpath);
+    return scroller;
+  };
+  changePage = function(scroller, data) {
+    curScroller && curScroller.$node.css('display', 'none');
+    (curScroller = scroller).$node.css('display', 'block');
+    return setTimeout((function() {
+      return scroller.refresh();
+    }), 250);
+  };
   return {
-    init: function() {
-      this.myscroll = {
-        refresh: function() {}
-      };
-      if (window.navigator.standalone) {
-        return this.$el.addClass('appleHomeScreenApp');
-      }
-    },
-    changePage: function($page) {
-      $page.toggle(true).trigger('change');
-      if ($curPageCell != null) {
-        $curPageCell.toggle(false);
-      }
-      $curPageCell = $page;
-      return setTimeout((__bind(function() {
-        return this.myscroll.refresh();
-      }, this)), 100);
-    },
     /*
       Loads and renders the specified Page Cell if not already loaded.
       If already previously loaded, just $.mobile.changePage to that node.
       */
     loadAndChangePage: function(fullpath, pagecellpath, data) {
-      var $pagecell, options;
+      var scroller;
       if (hist[0] !== fullpath) {
-        options = {
-          transition: hist.length && 'slide' || 'fade',
-          reverse: !hist.addOrRewind(fullpath)
-        };
-        if (($pagecell = pageCellRegistry[pagecellpath]) != null) {
-          this.changePage($pagecell);
+        hist.addOrRewind(fullpath);
+        if ((scroller = pageCellRegistry[pagecellpath]) != null) {
+          changePage(scroller, data);
         } else {
           require(["cell!" + pagecellpath], __bind(function(pagecell) {
-            ($pagecell = pageCellRegistry[pagecellpath] = new pagecell(data).$el).prependTo(this.$content).attr('data-cell-page', pagecellpath);
-            return this.changePage($pagecell);
+            scroller = pageCellRegistry[pagecellpath] = makeScroller(new pagecell(data), pagecellpath);
+            scroller.$node.appendTo(this.$content);
+            return changePage(scroller, data);
           }, this));
         }
       }
@@ -85,19 +82,21 @@ define(['require', 'Services', 'cell!pages/watch/Watch'], function(require, S) {
       this.loadAndChangePage(fullpath, cellpath || 'pages/watch/Watch', data);
       return false;
     },
-    render: function(_) {
-      return [_('#header', _('.title', 'TITLE')), _('#content', _('div')), _('#footer', _('ul', _('li', _('a', 'Watch')), _('li', _('a', 'Schedule')), _('li', _('a', 'Search'))))];
-    },
-    bind: {
-      afterRender: function() {
-        hideAddressBar();
-        this.$content = this.$('#content');
-        this.myscroll = new iScroll(this.$content[0]);
-        $(window).bind('hashchange', __bind(function() {
-          return this.syncPageToHash();
-        }, this));
-        return this.syncPageToHash();
+    init: function() {
+      if (window.navigator.standalone) {
+        return this.options["class"] = 'appleHomeScreenApp';
       }
+    },
+    render: function(_) {
+      return [_('#header', _('.title', 'TITLE')), _('#content'), _('#footer', _('ul', _('<li><a>', 'Watch'), _('<li><a>', 'Schedule'), _('<li><a>', 'Search')))];
+    },
+    afterRender: function() {
+      S.isIOS && hideIOSAddressBar();
+      this.$content = this.$('#content');
+      $(window).bind('hashchange', __bind(function() {
+        return this.syncPageToHash();
+      }, this));
+      return this.syncPageToHash();
     }
   };
 });

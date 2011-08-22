@@ -17,26 +17,26 @@ define [
       return i
     return -1
   pageCellRegistry = {}
-  $curPageCell = null
+  curScroller = null
 
-  hideAddressBar = ->
+  hideIOSAddressBar = ->
     window.scrollTo 0,1
     if window.pageYOffset <= 0
-      setTimeout hideAddressBar, 10
+      setTimeout hideIOSAddressBar, 10
 
+  makeScroller = (pagecell, pagecellpath)->
+    s = document.createElement 'div'
+    s.appendChild pagecell.el
+    scroller = new iScroll s
+    scroller.pagecell = pagecell
+    s.className = 'scroller'
+    (scroller.$node = $(s)).attr 'data-cell-page', pagecellpath
+    scroller
 
-  init: ->
-    @myscroll = refresh: ->
-    if window.navigator.standalone
-      @$el.addClass 'appleHomeScreenApp'
-
-  changePage: ($page)->
-    $page
-      .toggle(true)
-      .trigger('change')
-    $curPageCell?.toggle false
-    $curPageCell = $page
-    setTimeout (=> @myscroll.refresh()), 100
+  changePage = (scroller, data)->
+    curScroller and curScroller.$node.css 'display','none'
+    (curScroller = scroller).$node.css 'display','block'
+    setTimeout (-> scroller.refresh()), 250
 
   ###
   Loads and renders the specified Page Cell if not already loaded.
@@ -44,20 +44,18 @@ define [
   ###
   loadAndChangePage: (fullpath,pagecellpath,data)->
     if hist[0] isnt fullpath
-      options =
-        transition: hist.length and 'slide' or 'fade'
-        reverse: not hist.addOrRewind fullpath
+      hist.addOrRewind fullpath
 
-
-      if ($pagecell = pageCellRegistry[pagecellpath])?
-        @changePage $pagecell
+      if (scroller = pageCellRegistry[pagecellpath])?
+        #scroller.pagecell.options = data
+        #scroller.pagecell.update()
+        changePage scroller, data
 
       else
         require ["cell!#{pagecellpath}"], (pagecell)=>
-          ($pagecell = pageCellRegistry[pagecellpath] = (new pagecell(data).$el))
-            .prependTo(@$content)
-            .attr 'data-cell-page', pagecellpath
-          @changePage $pagecell
+          scroller = pageCellRegistry[pagecellpath] = makeScroller(new pagecell(data), pagecellpath)
+          scroller.$node.appendTo @$content
+          changePage scroller, data
 
     return
 
@@ -71,20 +69,22 @@ define [
     @loadAndChangePage fullpath, cellpath or 'pages/watch/Watch', data
     return false
   
+  init: -> 
+    if window.navigator.standalone
+      @options.class = 'appleHomeScreenApp'
+
   render: (_)-> [
     _ '#header', _ '.title', 'TITLE'
-    _ '#content', _ 'div'
+    _ '#content'
     _ '#footer',
       _ 'ul',
-        _ 'li', _ 'a', 'Watch'
-        _ 'li', _ 'a', 'Schedule'
-        _ 'li', _ 'a', 'Search'
+        _ '<li><a>', 'Watch'
+        _ '<li><a>', 'Schedule'
+        _ '<li><a>', 'Search'
   ]
 
-  bind:
-    afterRender: ->
-      hideAddressBar()
-      @$content = @$ '#content'
-      @myscroll = new iScroll @$content[0]
-      $(window).bind 'hashchange', => @syncPageToHash()
-      @syncPageToHash()
+  afterRender: ->
+    S.isIOS and hideIOSAddressBar()
+    @$content = @$ '#content'
+    $(window).bind 'hashchange', => @syncPageToHash()
+    @syncPageToHash()

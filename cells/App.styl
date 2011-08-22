@@ -1,15 +1,14 @@
+@import 'mixins/box';
 @import 'mixins/gradient';
 @import 'mixins/pos';
 
 .App
-  height 401px
+  height 418px
   position relative
+  box vertical
 
   &.appleHomeScreenApp
-    > #footer
-      bottom -59px
-    > #content
-      height 371px
+    height 460px
 
   > #header
     gradient #3C3C3C #111
@@ -22,11 +21,13 @@
       text-align center
   
   > #content
-    height 328px
+    box-flex 1
+    position relative
 
-  > #footer   
-    abspos false 0px -16px 0px
-    
+    > .scroller
+      abspos 0px 0px 0px 0px
+
+  > #footer
     > ul
       margin 0
       padding 0
@@ -37,13 +38,12 @@
         color #FFF
         display inline-block
         gradient #333 #111
-        min-height 46px
+        min-height 40px
         text-align center
         width 33.296%
 
         &:last-child
           border-right none
-
         a
           display inline-block
-          padding 14px 0 10px 0
+          padding 20px 0 6px 0

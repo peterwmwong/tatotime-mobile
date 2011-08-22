@@ -1,19 +1,21 @@
 define ->
-  _ = cell.renderHelper
-
+  _ = cell::$R
   renderList = (list)->
     for {text,link} in list
-      _ 'li',
-        _ 'a', href: link, text
+      _ "<li data-dest='#{link}'>", text
 
-  'render <ul>': (_,A)->
+  tag: '<ul>'
+  render: (_,A)->
     {list,getList} = @options
     if list then renderList list
     else if getList
       getList (list)=> A renderList list
     return
   
-  bind:
-    'click a': (e)->
+  on:
+    'click li': (e)->
       $('li.active').removeClass 'active'
-      $(e.target).closest('li').addClass 'active'
+      window.location.hash =
+        $(e.target)
+          .addClass('active')
+          .data('dest')
