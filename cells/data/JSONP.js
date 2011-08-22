@@ -23,10 +23,18 @@ define(function() {
     return $('head').append(s);
   };
   get = window.location.search.indexOf('mock-service=true') > -1 ? function(_arg, done) {
-    var mock;
-    mock = _arg.mock;
+    var mock, real;
+    mock = _arg.mock, real = _arg.real;
     return setTimeout((function() {
-      return require([mock], done);
+      return require([mock], function(mock) {
+        return done((function() {
+          if (typeof mock === 'function') {
+            return mock(real);
+          } else {
+            return mock;
+          }
+        })());
+      });
     }), 50);
   } : function(_arg, done) {
     var real;

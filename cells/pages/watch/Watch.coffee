@@ -11,10 +11,12 @@ define [
     else
       o.toLocaleDateString()
 
-  render: (_)-> [
-    _ ListView, getList: (A)->
-      S.user.getShows (shows)->
-        A do-> for s in shows then do->
-          link: "#!/pages/showdetails/ShowDetails?id=#{s.id}"
-          text: s.text
-  ]
+  init: ->
+    @options.pageService.setTitle 'Watch'
+
+  render: (_, A)->
+    S.user.getShows (shows)-> A [
+      _ ListView, list: for s in shows then do->
+        link: "#!/pages/showdetails/ShowDetails?id=#{s.id}"
+        text: s.title
+    ]

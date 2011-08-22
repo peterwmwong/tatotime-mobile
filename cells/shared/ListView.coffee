@@ -1,16 +1,10 @@
-define ->
-  _ = cell::$R
-  renderList = (list)->
-    for {text,link} in list
-      _ "<li data-dest='#{link}'>", text
-
+define
   tag: '<ul>'
+
   render: (_,A)->
-    {list,getList} = @options
-    if list then renderList list
-    else if getList
-      getList (list)=> A renderList list
-    return
+    if list = @options.list
+      for {text,link} in list
+        _ "<li data-dest='#{link}'>", text
   
   on:
     'click li': (e)->

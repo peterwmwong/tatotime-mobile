@@ -17,29 +17,31 @@ define(['Services', 'cell!shared/ListView'], function(S, ListView) {
     }
   };
   return {
-    render: function(_) {
-      return [
-        _(ListView, {
-          getList: function(A) {
-            return S.user.getShows(function(shows) {
-              return A((function() {
-                var s, _i, _len, _results;
-                _results = [];
-                for (_i = 0, _len = shows.length; _i < _len; _i++) {
-                  s = shows[_i];
-                  _results.push((function() {
-                    return {
-                      link: "#!/pages/showdetails/ShowDetails?id=" + s.id,
-                      text: s.text
-                    };
-                  })());
-                }
-                return _results;
-              })());
-            });
-          }
-        })
-      ];
+    init: function() {
+      return this.options.pageService.setTitle('Watch');
+    },
+    render: function(_, A) {
+      return S.user.getShows(function(shows) {
+        var s;
+        return A([
+          _(ListView, {
+            list: (function() {
+              var _i, _len, _results;
+              _results = [];
+              for (_i = 0, _len = shows.length; _i < _len; _i++) {
+                s = shows[_i];
+                _results.push((function() {
+                  return {
+                    link: "#!/pages/showdetails/ShowDetails?id=" + s.id,
+                    text: s.title
+                  };
+                })());
+              }
+              return _results;
+            })()
+          })
+        ]);
+      });
     }
   };
 });

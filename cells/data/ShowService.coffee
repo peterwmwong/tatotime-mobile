@@ -2,7 +2,7 @@ define [
   'data/JSONP'
 ],({JSONPService})->
 	
-  new JSONPService 'show',
-    baseURL: 'api/show/'
+  new JSONPService 'shows',
+    baseURL: 'api/shows/'
     methods:
-      getDetails: (sid)-> "#{sid}/shows"
+      getDetails: (sid)-> "#{sid}"

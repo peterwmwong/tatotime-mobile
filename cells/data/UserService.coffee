@@ -2,7 +2,7 @@ define [
   'data/JSONP'
 ],({JSONPService})->
   
-  new JSONPService 'user',
+  new JSONPService 'users',
     baseURL: 'api/users/'
     methods:
       getShows: ->
