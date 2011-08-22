@@ -19,10 +19,12 @@ define [
   pageCellRegistry = {}
   curScroller = null
 
+  iterCount = 0
   hideIOSAddressBar = ->
+    $('#header .title').html iterCount++
     window.scrollTo 0,1
     if window.pageYOffset <= 0
-      setTimeout hideIOSAddressBar, 10
+      setTimeout hideIOSAddressBar, 50
 
   makeScroller = (pagecell, pagecellpath)->
     s = document.createElement 'div'
@@ -36,7 +38,7 @@ define [
   changePage = (scroller, data)->
     curScroller and curScroller.$node.css 'display','none'
     (curScroller = scroller).$node.css 'display','block'
-    setTimeout (-> scroller.refresh()), 250
+    setTimeout (-> scroller.refresh()), 500
 
   ###
   Loads and renders the specified Page Cell if not already loaded.
@@ -70,21 +72,25 @@ define [
     return false
   
   init: -> 
-    if window.navigator.standalone
-      @options.class = 'appleHomeScreenApp'
+    if S.isIOSFullScreen
+      @options.class = 'IOSFullScreenApp'
 
   render: (_)-> [
     _ '#header', _ '.title', 'TITLE'
     _ '#content'
     _ '#footer',
       _ 'ul',
-        _ '<li><a>', 'Watch'
-        _ '<li><a>', 'Schedule'
-        _ '<li><a>', 'Search'
+        _ 'li', 'Watch'
+        _ 'li', 'Schedule'
+        _ 'li', 'Search'
   ]
 
-  afterRender: ->
-    S.isIOS and hideIOSAddressBar()
-    @$content = @$ '#content'
-    $(window).bind 'hashchange', => @syncPageToHash()
-    @syncPageToHash()
+  afterRender: do->
+    toggle = true
+    ->
+      if S.isIOS and not S.isIOSFullScreen
+        setTimeout hideIOSAddressBar, 50
+        $(window).bind 'resize', hideIOSAddressBar
+      @$content = @$ '#content'
+      $(window).bind 'hashchange', => @syncPageToHash()
+      @syncPageToHash()

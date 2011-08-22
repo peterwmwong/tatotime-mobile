@@ -1,6 +1,6 @@
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 define(['require', 'Services', 'cell!pages/watch/Watch'], function(require, S) {
-  var changePage, curScroller, hideIOSAddressBar, hist, makeScroller, pageCellRegistry;
+  var changePage, curScroller, hideIOSAddressBar, hist, iterCount, makeScroller, pageCellRegistry;
   hist = [];
   hist.addOrRewind = function(fullpath) {
     var i;
@@ -24,10 +24,12 @@ define(['require', 'Services', 'cell!pages/watch/Watch'], function(require, S) {
   };
   pageCellRegistry = {};
   curScroller = null;
+  iterCount = 0;
   hideIOSAddressBar = function() {
+    $('#header .title').html(iterCount++);
     window.scrollTo(0, 1);
     if (window.pageYOffset <= 0) {
-      return setTimeout(hideIOSAddressBar, 10);
+      return setTimeout(hideIOSAddressBar, 50);
     }
   };
   makeScroller = function(pagecell, pagecellpath) {
@@ -45,7 +47,7 @@ define(['require', 'Services', 'cell!pages/watch/Watch'], function(require, S) {
     (curScroller = scroller).$node.css('display', 'block');
     return setTimeout((function() {
       return scroller.refresh();
-    }), 250);
+    }), 500);
   };
   return {
     /*
@@ -83,20 +85,27 @@ define(['require', 'Services', 'cell!pages/watch/Watch'], function(require, S) {
       return false;
     },
     init: function() {
-      if (window.navigator.standalone) {
-        return this.options["class"] = 'appleHomeScreenApp';
+      if (S.isIOSFullScreen) {
+        return this.options["class"] = 'IOSFullScreenApp';
       }
     },
     render: function(_) {
-      return [_('#header', _('.title', 'TITLE')), _('#content'), _('#footer', _('ul', _('<li><a>', 'Watch'), _('<li><a>', 'Schedule'), _('<li><a>', 'Search')))];
+      return [_('#header', _('.title', 'TITLE')), _('#content'), _('#footer', _('ul', _('li', 'Watch'), _('li', 'Schedule'), _('li', 'Search')))];
     },
-    afterRender: function() {
-      S.isIOS && hideIOSAddressBar();
-      this.$content = this.$('#content');
-      $(window).bind('hashchange', __bind(function() {
+    afterRender: (function() {
+      var toggle;
+      toggle = true;
+      return function() {
+        if (S.isIOS && !S.isIOSFullScreen) {
+          setTimeout(hideIOSAddressBar, 50);
+          $(window).bind('resize', hideIOSAddressBar);
+        }
+        this.$content = this.$('#content');
+        $(window).bind('hashchange', __bind(function() {
+          return this.syncPageToHash();
+        }, this));
         return this.syncPageToHash();
-      }, this));
-      return this.syncPageToHash();
-    }
+      };
+    })()
   };
 });
