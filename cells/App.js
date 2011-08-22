@@ -1,6 +1,6 @@
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 define(['require', 'Services', 'cell!pages/watch/Watch'], function(require, S) {
-  var changePage, curScroller, hideIOSAddressBar, hist, iterCount, makeScroller, pageCellRegistry;
+  var DEBUG_ONLY_iterCount, changePage, curScroller, hideIOSAddressBar, hist, makeScroller, pageCellRegistry;
   hist = [];
   hist.addOrRewind = function(fullpath) {
     var i;
@@ -24,9 +24,9 @@ define(['require', 'Services', 'cell!pages/watch/Watch'], function(require, S) {
   };
   pageCellRegistry = {};
   curScroller = null;
-  iterCount = 0;
+  DEBUG_ONLY_iterCount = 0;
   hideIOSAddressBar = function() {
-    $('#header .title').html(iterCount++);
+    $('#header .title').html(DEBUG_ONLY_iterCount++);
     window.scrollTo(0, 1);
     if (window.pageYOffset <= 0) {
       return setTimeout(hideIOSAddressBar, 50);
@@ -42,9 +42,13 @@ define(['require', 'Services', 'cell!pages/watch/Watch'], function(require, S) {
     (scroller.$node = $(s)).attr('data-cell-page', pagecellpath);
     return scroller;
   };
-  changePage = function(scroller, data) {
-    curScroller && curScroller.$node.css('display', 'none');
-    (curScroller = scroller).$node.css('display', 'block');
+  changePage = function(scroller, data, isReverse) {
+    if (curScroller) {
+      curScroller.$node.attr('class', 'scroller headingOut' + (isReverse && '-reverse' || ''));
+      (curScroller = scroller).$node.attr('class', 'scroller headingIn' + (isReverse && '-reverse' || ''));
+    } else {
+      (curScroller = scroller).$node.attr('class', 'scroller fadeIn');
+    }
     return setTimeout((function() {
       return scroller.refresh();
     }), 500);
@@ -52,14 +56,14 @@ define(['require', 'Services', 'cell!pages/watch/Watch'], function(require, S) {
   return {
     /*
       Loads and renders the specified Page Cell if not already loaded.
-      If already previously loaded, just $.mobile.changePage to that node.
+      If already previously loaded, just change to it.
       */
     loadAndChangePage: function(fullpath, pagecellpath, data) {
-      var scroller;
+      var isReverse, scroller;
       if (hist[0] !== fullpath) {
-        hist.addOrRewind(fullpath);
+        isReverse = !(hist.addOrRewind(fullpath));
         if ((scroller = pageCellRegistry[pagecellpath]) != null) {
-          changePage(scroller, data);
+          changePage(scroller, data, isReverse);
         } else {
           require(["cell!" + pagecellpath], __bind(function(pagecell) {
             scroller = pageCellRegistry[pagecellpath] = makeScroller(new pagecell(data), pagecellpath);
@@ -69,6 +73,12 @@ define(['require', 'Services', 'cell!pages/watch/Watch'], function(require, S) {
         }
       }
     },
+    /*
+      Location hash change handler
+      The hash determines:
+        1) which page we're on
+        2) data passed to the page
+      */
     syncPageToHash: function() {
       var cellpath, data, fullpath, jsondata, k, kv, v, _i, _len, _ref, _ref2, _ref3;
       _ref = (fullpath = location.hash.slice(3)).split('?'), cellpath = _ref[0], jsondata = _ref[1];
@@ -92,20 +102,16 @@ define(['require', 'Services', 'cell!pages/watch/Watch'], function(require, S) {
     render: function(_) {
       return [_('#header', _('.title', 'TITLE')), _('#content'), _('#footer', _('ul', _('li', 'Watch'), _('li', 'Schedule'), _('li', 'Search')))];
     },
-    afterRender: (function() {
-      var toggle;
-      toggle = true;
-      return function() {
-        if (S.isIOS && !S.isIOSFullScreen) {
-          setTimeout(hideIOSAddressBar, 50);
-          $(window).bind('resize', hideIOSAddressBar);
-        }
-        this.$content = this.$('#content');
-        $(window).bind('hashchange', __bind(function() {
-          return this.syncPageToHash();
-        }, this));
+    afterRender: function() {
+      if (S.isIOS && !S.isIOSFullScreen) {
+        setTimeout(hideIOSAddressBar, 50);
+        $(window).bind('resize', hideIOSAddressBar);
+      }
+      this.$content = this.$('#content');
+      $(window).bind('hashchange', __bind(function() {
         return this.syncPageToHash();
-      };
-    })()
+      }, this));
+      return this.syncPageToHash();
+    }
   };
 });

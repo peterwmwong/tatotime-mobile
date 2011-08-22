@@ -20,6 +20,41 @@
   .App
     height 480px
 
+@-webkit-keyframes slideOutLeft
+  from
+    -webkit-transform translate3d(0,0,0)
+    opacity 1.0
+  to
+    -webkit-transform translate3d(-100%,0,0)
+    opacity 0.0
+
+@-webkit-keyframes slideInLeft
+  from
+    -webkit-transform translate3d(100%,0,0)
+  to
+    -webkit-transform translate3d(0,0,0)
+
+
+@-webkit-keyframes slideOutRight
+  from
+    -webkit-transform translate3d(0,0,0)
+    opacity 1.0
+  to
+    -webkit-transform translate3d(100%,0,0)
+    opacity 0.0
+
+@-webkit-keyframes slideInRight
+  from
+    -webkit-transform translate3d(-100%,0,0)
+  to
+    -webkit-transform translate3d(0,0,0)
+
+@-webkit-keyframes fadeIn
+  from
+    opacity 0
+  to
+    opacity 1.0
+
 .App
   position relative
   box vertical
@@ -46,6 +81,26 @@
 
     > .scroller
       abspos 0px 0px 0px 0px
+
+      animateMe(name, duration=500ms)
+        -webkit-animation-name name
+        -webkit-animation-duration duration
+        -webkit-animation-fill-mode forwards
+
+      &.headingOut
+        animateMe slideOutLeft
+
+      &.headingIn
+        animateMe slideInLeft
+
+      &.headingOut-reverse
+        animateMe slideOutRight
+
+      &.headingIn-reverse
+        animateMe slideInRight
+
+      &.fadeIn
+        animateMe fadeIn 1s
 
   > #footer
     z-index 2

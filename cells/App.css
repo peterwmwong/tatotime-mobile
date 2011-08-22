@@ -3,11 +3,26 @@
 }@media screen and (min-width: 321px) and (max-width: 480px){.App{height:269px;}
 .App.IOSFullScreenApp{height:300px}
 }@media screen and (min-width: 481px){.App{height:480px}
+}@-webkit-keyframes slideOutLeft{0%{-webkit-transform:translate3d(0,0,0);opacity:1}
+100%{-webkit-transform:translate3d(-100%,0,0);opacity:0}
+}@-webkit-keyframes slideInLeft{0%{-webkit-transform:translate3d(100%,0,0)}
+100%{-webkit-transform:translate3d(0,0,0)}
+}@-webkit-keyframes slideOutRight{0%{-webkit-transform:translate3d(0,0,0);opacity:1}
+100%{-webkit-transform:translate3d(100%,0,0);opacity:0}
+}@-webkit-keyframes slideInRight{0%{-webkit-transform:translate3d(-100%,0,0)}
+100%{-webkit-transform:translate3d(0,0,0)}
+}@-webkit-keyframes fadeIn{0%{opacity:0}
+100%{opacity:1}
 }.App{position:relative;display:box;display:-webkit-box;display:-moz-box;-webkit-box-orient:vertical;-moz-box-orient:vertical;z-index:1;}
 .App > #header{position:absolute;top:0;right:0;left:0;background:#272727;background:-moz-linear-gradient(top,#3c3c3c 0%,#111 100%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#3c3c3c),color-stop(100%,#111));filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#3c3c3c', endColorstr='#111',GradientType=0 );-webkit-box-shadow:0 1px 5px #333;-moz-box-shadow:0 1px 5px #333;box-shadow:0 1px 5px #333;z-index:3;}
 .App > #header > .title{color:#fff;font-size:16px;font-weight:bold;padding:12px 0 11px 0;text-align:center}
 .App > #content{margin-top:43px;box-flex:1;-webkit-box-flex:1;-moz-box-flex:1;position:relative;z-index:1;}
-.App > #content > .scroller{position:absolute;top:0;right:0;bottom:0;left:0}
+.App > #content > .scroller{position:absolute;top:0;right:0;bottom:0;left:0;}
+.App > #content > .scroller.headingOut{-webkit-animation-name:slideOutLeft;-webkit-animation-duration:500ms;-webkit-animation-fill-mode:forwards}
+.App > #content > .scroller.headingIn{-webkit-animation-name:slideInLeft;-webkit-animation-duration:500ms;-webkit-animation-fill-mode:forwards}
+.App > #content > .scroller.headingOut-reverse{-webkit-animation-name:slideOutRight;-webkit-animation-duration:500ms;-webkit-animation-fill-mode:forwards}
+.App > #content > .scroller.headingIn-reverse{-webkit-animation-name:slideInRight;-webkit-animation-duration:500ms;-webkit-animation-fill-mode:forwards}
+.App > #content > .scroller.fadeIn{-webkit-animation-name:fadeIn;-webkit-animation-duration:1s;-webkit-animation-fill-mode:forwards}
 .App > #footer{z-index:2;}
 .App > #footer > ul{margin:0;padding:0;list-style-type:none;display:box;display:-webkit-box;display:-moz-box;-webkit-box-orient:horizontal;-moz-box-orient:horizontal;}
 .App > #footer > ul > li{border-top:2px solid #666;border-right:1px solid #444;color:#fff;background:#232323;background:-moz-linear-gradient(top,#333 0%,#111 100%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#333),color-stop(100%,#111));filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#333', endColorstr='#111',GradientType=0 );text-align:center;box-flex:1;-webkit-box-flex:1;-moz-box-flex:1;padding:10px 0 10px 0;}
