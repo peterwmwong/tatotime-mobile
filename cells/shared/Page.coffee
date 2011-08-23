@@ -9,4 +9,7 @@ define
     refreshScroller = ->
       setTimeout (-> scroller.refresh()), 500
     refreshScroller()
+    
     @model.bind 'change:data', refreshScroller
+    @model.bind 'activate', (isBackNav)->
+      if not isBackNav then scroller.scrollTo 0,0,0

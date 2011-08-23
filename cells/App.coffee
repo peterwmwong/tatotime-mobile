@@ -12,6 +12,7 @@ define [
 
   # Current page
   curPage = null
+  lastChangePageWasReverse = false
 
   # Hides iOS mobile safari address bar (scroll hack)
   hideIOSAddressBar = ->
@@ -19,8 +20,23 @@ define [
     if window.pageYOffset <= 0
       setTimeout hideIOSAddressBar, 50
 
+  changeTitle: (newTitle)->
+    rev = lastChangePageWasReverse and '-reverse' or ''
+    if title = @$title.html()
+      @$prevtitle
+        .html(@$title.html())
+        .attr('class', 'headingOut'+rev)
+
+    if newTitle
+      @$title
+        .html(newTitle)
+        .attr('class', 'headingIn'+rev)
+    else
+      @$title.html ''
+
   # Animates and changes currently visible page
   changePage: (page, isReverse)->
+    lastChangePageWasReverse = isReverse
     pageInClass =
       if curPage
         rev = isReverse and '-reverse' or ''
@@ -31,9 +47,9 @@ define [
         'Page fadeIn'
 
     (curPage = page).$el.attr 'class', pageInClass
-    curPage.model.trigger 'activate'
-      
-    @$title.html curPage.model.title or "&nbsp;"
+    curPage.model.trigger 'activate', isReverse
+    
+    @changeTitle curPage.model.title
 
   ###
   Loads and renders the specified Page Cell if not already loaded.
@@ -57,7 +73,7 @@ define [
           page.$el.appendTo @$content
           page.model.bind 'change:title', (title)=>
             if curPage.model.pagePath is pagepath
-              @$title.html title
+              @changeTitle curPage.model.title
           @changePage page
 
     return
@@ -83,7 +99,9 @@ define [
       @options.class = 'IOSFullScreenApp'
 
   render: (_)-> [
-    _ '#header', _ '.title', ' '
+    _ '#header',
+      _ '#title', ' '
+      _ '#prevtitle', ' '
     _ '#content'
     _ '#footer',
       _ 'ul',
@@ -101,7 +119,10 @@ define [
 
     # Cache content jQuery object, for appending pages to
     @$content = @$ '#content'
-    @$title = @$ '#header > .title'
+    @$title = @$ '#title'
+    @$title.bind 'webkitAnimationEnd', => @$title.attr 'class', ''
+    @$prevtitle = @$ '#prevtitle'
+    @$prevtitle.bind 'webkitAnimationEnd', => @$prevtitle.attr 'class', ''
 
     # Load up the proper page on start and whenever we
     # navigate somewhere

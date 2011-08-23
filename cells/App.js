@@ -1,8 +1,9 @@
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 define(['require', 'Services', 'shared/History', 'shared/Model', 'cell!shared/Page', 'cell!pages/watch/Watch'], function(require, S, History, Model, Page) {
-  var curPage, hideIOSAddressBar, pageCache;
+  var curPage, hideIOSAddressBar, lastChangePageWasReverse, pageCache;
   pageCache = {};
   curPage = null;
+  lastChangePageWasReverse = false;
   hideIOSAddressBar = function() {
     window.scrollTo(0, 1);
     if (window.pageYOffset <= 0) {
@@ -10,12 +11,25 @@ define(['require', 'Services', 'shared/History', 'shared/Model', 'cell!shared/Pa
     }
   };
   return {
+    changeTitle: function(newTitle) {
+      var rev, title;
+      rev = lastChangePageWasReverse && '-reverse' || '';
+      if (title = this.$title.html()) {
+        this.$prevtitle.html(this.$title.html()).attr('class', 'headingOut' + rev);
+      }
+      if (newTitle) {
+        return this.$title.html(newTitle).attr('class', 'headingIn' + rev);
+      } else {
+        return this.$title.html('');
+      }
+    },
     changePage: function(page, isReverse) {
       var pageInClass, rev;
+      lastChangePageWasReverse = isReverse;
       pageInClass = curPage ? (rev = isReverse && '-reverse' || '', curPage.$el.attr('class', 'Page headingOut' + rev), curPage.model.trigger('deactivate'), 'Page headingIn' + rev) : 'Page fadeIn';
       (curPage = page).$el.attr('class', pageInClass);
-      curPage.model.trigger('activate');
-      return this.$title.html(curPage.model.title || "&nbsp;");
+      curPage.model.trigger('activate', isReverse);
+      return this.changeTitle(curPage.model.title);
     },
     /*
       Loads and renders the specified Page Cell if not already loaded.
@@ -40,7 +54,7 @@ define(['require', 'Services', 'shared/History', 'shared/Model', 'cell!shared/Pa
             page.$el.appendTo(this.$content);
             page.model.bind('change:title', __bind(function(title) {
               if (curPage.model.pagePath === pagepath) {
-                return this.$title.html(title);
+                return this.changeTitle(curPage.model.title);
               }
             }, this));
             return this.changePage(page);
@@ -75,7 +89,7 @@ define(['require', 'Services', 'shared/History', 'shared/Model', 'cell!shared/Pa
       }
     },
     render: function(_) {
-      return [_('#header', _('.title', ' ')), _('#content'), _('#footer', _('ul', _('li', 'Watch'), _('li', 'Schedule'), _('li', 'Search')))];
+      return [_('#header', _('#title', ' '), _('#prevtitle', ' ')), _('#content'), _('#footer', _('ul', _('li', 'Watch'), _('li', 'Schedule'), _('li', 'Search')))];
     },
     afterRender: function() {
       if (S.isIOS && !S.isIOSFullScreen) {
@@ -83,7 +97,14 @@ define(['require', 'Services', 'shared/History', 'shared/Model', 'cell!shared/Pa
         $(window).bind('resize', hideIOSAddressBar);
       }
       this.$content = this.$('#content');
-      this.$title = this.$('#header > .title');
+      this.$title = this.$('#title');
+      this.$title.bind('webkitAnimationEnd', __bind(function() {
+        return this.$title.attr('class', '');
+      }, this));
+      this.$prevtitle = this.$('#prevtitle');
+      this.$prevtitle.bind('webkitAnimationEnd', __bind(function() {
+        return this.$prevtitle.attr('class', '');
+      }, this));
       $(window).bind('hashchange', __bind(function() {
         return this.syncPageToHash();
       }, this));

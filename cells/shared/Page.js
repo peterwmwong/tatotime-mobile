@@ -18,6 +18,11 @@ define({
       }), 500);
     };
     refreshScroller();
-    return this.model.bind('change:data', refreshScroller);
+    this.model.bind('change:data', refreshScroller);
+    return this.model.bind('activate', function(isBackNav) {
+      if (!isBackNav) {
+        return scroller.scrollTo(0, 0, 0);
+      }
+    });
   }
 });
