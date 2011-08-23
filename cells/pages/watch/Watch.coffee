@@ -1,18 +1,11 @@
 define [
   'Services'
+  'shared/DateHelper'
   'cell!shared/ListView'
-], (S,ListView)->
-
-  today = new Date()
-  offsetDayMap = ['Today','Yesterday'].concat (for i in [2...7] then "#{i} days ago"), "a week ago"
-  createDisplayableDate = (o)->
-    if today.getYear() is o.getYear() and today.getMonth() is o.getMonth()
-      offsetDayMap[ today.getDate() - o.getDate() ]
-    else
-      o.toLocaleDateString()
+], (S,DateHelper,ListView)->
 
   init: ->
-    @model.set 'title', createDisplayableDate new Date()
+    @model.set 'title', DateHelper.getDisplayable new Date()
     @model.bind 'activate', =>
       @$('.ListView li.active').removeClass('active')
 

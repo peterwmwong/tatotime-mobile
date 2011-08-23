@@ -1,25 +1,8 @@
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-define(['Services', 'cell!shared/ListView'], function(S, ListView) {
-  var createDisplayableDate, i, offsetDayMap, today;
-  today = new Date();
-  offsetDayMap = ['Today', 'Yesterday'].concat((function() {
-    var _results;
-    _results = [];
-    for (i = 2; i < 7; i++) {
-      _results.push("" + i + " days ago");
-    }
-    return _results;
-  })(), "a week ago");
-  createDisplayableDate = function(o) {
-    if (today.getYear() === o.getYear() && today.getMonth() === o.getMonth()) {
-      return offsetDayMap[today.getDate() - o.getDate()];
-    } else {
-      return o.toLocaleDateString();
-    }
-  };
+define(['Services', 'shared/DateHelper', 'cell!shared/ListView'], function(S, DateHelper, ListView) {
   return {
     init: function() {
-      this.model.set('title', createDisplayableDate(new Date()));
+      this.model.set('title', DateHelper.getDisplayable(new Date()));
       return this.model.bind('activate', __bind(function() {
         return this.$('.ListView li.active').removeClass('active');
       }, this));

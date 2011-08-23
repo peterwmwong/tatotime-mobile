@@ -1,6 +1,15 @@
 define ->
   _ = (o)->o
 
+  networks = [
+    'AMC'
+    'ABC'
+    'FOX'
+    'NBC'
+    'FX'
+    'CBS'
+  ]
+
   shows = [
     'Mad Men'
     'Falling Skies'
@@ -43,9 +52,11 @@ define ->
     result[i] =
       id: i
       title: show
+      year: (2007+i%4)
+      network: networks[i%networks.length]
       description:
         """
-        [#{i}] #{show} - Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+        [#{i}] #{show} - Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever \nsince the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but \nalso the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing \nLorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n
         """
       cast: actors
   result

@@ -2,7 +2,7 @@
 .App.IOSFullScreenApp{height:460px}
 }@media screen and (min-width: 321px) and (max-width: 480px){.App{height:269px;}
 .App.IOSFullScreenApp{height:300px}
-}@media screen and (min-width: 481px){.App{height:480px}
+}@media screen and (min-width: 481px){.App{height:418px}
 }@-webkit-keyframes slideOutLeft{0%{-webkit-transform:translate3d(0,0,0);opacity:1}
 100%{-webkit-transform:translate3d(-100%,0,0);opacity:0}
 }@-webkit-keyframes slideInLeft{0%{-webkit-transform:translate3d(100%,0,0);opacity:0}

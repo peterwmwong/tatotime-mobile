@@ -123,6 +123,8 @@ define [
 
     # Cache content jQuery object, for appending pages to
     @$content = @$ '#content'
+
+    # Cache Title and Previous Title (for title "slide out" animation)
     @$title = @$ '#title'
     @$title.bind 'webkitAnimationEnd', => @$title.attr 'class', ''
     @$prevtitle = @$ '#prevtitle'
