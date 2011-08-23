@@ -1,4 +1,4 @@
-define ['shared/PageService'], (PageService)->
+define
   tag: -> "<div data-pagepath='#{@model.pagePath}'>"
   render: (_)-> [
     _ @options.cell, model: @model
