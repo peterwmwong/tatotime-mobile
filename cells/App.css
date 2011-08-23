@@ -13,7 +13,7 @@
 100%{-webkit-transform:translate3d(0,0,0);opacity:1}
 }@-webkit-keyframes fadeIn{0%{opacity:0}
 100%{opacity:1}
-}.App{position:relative;display:box;display:-webkit-box;display:-moz-box;-webkit-box-orient:vertical;-moz-box-orient:vertical;z-index:1;}
+}.App{position:relative;display:box;display:-webkit-box;display:-moz-box;-webkit-box-orient:vertical;-moz-box-orient:vertical;-webkit-tap-highlight-color:rgba(0,0,0,0.00);z-index:1;}
 .App .headingOut{-webkit-animation-name:slideOutLeft;-webkit-animation-duration:500ms;-webkit-animation-fill-mode:forwards}
 .App .headingIn{-webkit-animation-name:slideInLeft;-webkit-animation-duration:500ms;-webkit-animation-fill-mode:forwards}
 .App .headingOut-reverse{-webkit-animation-name:slideOutRight;-webkit-animation-duration:500ms;-webkit-animation-fill-mode:forwards}
