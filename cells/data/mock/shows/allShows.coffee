@@ -9,6 +9,21 @@ define ->
     'Heroes'
     '24'
     'Awakening'
+    'Breaking Bad'
+    'Wilfred'
+    'The Wire'
+    'The Big Bang Theory'
+    'Lost'
+    'Camelot'
+    'The Borgias'
+    'The Walking Dead'
+    'Vampire Diaries'
+    'MI6'
+    'Boardwalk Empire'
+    'FRONTLINE'
+    'American Experience'
+    'Modern Marvels'
+    'Mythbusters'
   ]
 
   actors = [
@@ -24,14 +39,13 @@ define ->
   ]
 
   result = {}
-  
   for show,i in shows
     result[i] =
       id: i
       title: show
       description:
         """
-        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+        [#{i}] #{show} - Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
         """
       cast: actors
   result

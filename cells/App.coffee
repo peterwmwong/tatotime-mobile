@@ -2,75 +2,63 @@ define [
   'require'
   'Services'
   'shared/History'
-  'shared/PageService'
-  'cell!pages/watch/Watch'
-], (require,S,History,PageService)->
+  'shared/Model'
+  'cell!shared/Page'
+  'cell!pages/watch/Watch' # Preload front page
+], (require,S,History,Model,Page)->
 
   # Cache of all previously loaded pages
-  pageCellRegistry = {}
+  pageCache = {}
 
-  # Scroller (iScroll) for current page
-  curScroller = null
+  # Current page
+  curPage = null
 
   # Hides iOS mobile safari address bar (scroll hack)
-  DEBUG_ONLY_iterCount = 0
   hideIOSAddressBar = ->
-    $('#header .title').html DEBUG_ONLY_iterCount++
     window.scrollTo 0,1
     if window.pageYOffset <= 0
       setTimeout hideIOSAddressBar, 50
 
-  # Create iScroll for a new page
-  makeScroller = (pagecell, pageService)->
-    s = document.createElement 'div'
-    s.appendChild pagecell.el
-    scroller = new iScroll s
-    scroller.pagecell = pagecell
-    scroller.pageService = pageService
-    s.className = 'scroller'
-    (scroller.$node = $(s)).attr 'data-cell-page', pageService.pagecellpath
-    scroller
+  # Animates and changes currently visible page
+  changePage: (page, isReverse)->
+    pageInClass =
+      if curPage
+        rev = isReverse and '-reverse' or ''
+        curPage.$el.attr 'class', 'Page headingOut' + rev
+        curPage.model.trigger 'deactivate'
+        'Page headingIn' + rev
+      else
+        'Page fadeIn'
 
-
-  changePage: (scroller, data, isReverse)->
-    if curScroller
-      curScroller.$node.attr 'class', 'scroller headingOut' + (isReverse and '-reverse' or '')
-      (curScroller = scroller).$node.attr 'class', 'scroller headingIn' + (isReverse and '-reverse' or '')
-    else
-      (curScroller = scroller).$node.attr 'class', 'scroller fadeIn'
-
-    @$title.html curScroller.pageService.getTitle() or "&nbsp;"
-
-    setTimeout (-> scroller.refresh()), 500
-
-
-  makePageService: (pagecellpath)->
-    ps = new PageService pagecellpath
-    ps.bind 'titleChange', ({title})=>
-      if curScroller?.pageService.pagecellpath is pagecellpath
-        @$title.html title
-    ps
+    (curPage = page).$el.attr 'class', pageInClass
+    curPage.model.trigger 'activate'
+      
+    @$title.html curPage.model.title or "&nbsp;"
 
   ###
   Loads and renders the specified Page Cell if not already loaded.
   If already previously loaded, just change to it.
   ###
-  loadAndChangePage: (fullpath,pagecellpath,data)->
+  loadAndChangePage: (fullpath,pagepath,data)->
     if History[0] isnt fullpath
       isReverse = not (History.addOrRewind fullpath)
 
-      if (scroller = pageCellRegistry[pagecellpath])?
-        data.pageService = scroller.pageService
-        scroller.pagecell.update? data
-        @changePage scroller, data, isReverse
+      if (page = pageCache[pagepath])?
+        page.model.set 'data', data
+        @changePage page, isReverse
 
       # Load new page cell
       else
-        require ["cell!#{pagecellpath}"], (pagecell)=>
-          data.pageService = @makePageService pagecellpath
-          scroller = pageCellRegistry[pagecellpath] = makeScroller new pagecell(data), data.pageService
-          scroller.$node.appendTo @$content
-          @changePage scroller, data
+        require ["cell!#{pagepath}"], (pagecell)=>
+          page = pageCache[pagepath] =
+            new Page
+              cell: pagecell
+              model: new Model(pagePath: pagepath, data: data)
+          page.$el.appendTo @$content
+          page.model.bind 'change:title', (title)=>
+            if curPage.model.pagePath is pagepath
+              @$title.html title
+          @changePage page
 
     return
 
@@ -87,7 +75,7 @@ define [
       for kv in jsondata.split '&'
         [k,v] = kv.split '='
         data[k] = v
-    @loadAndChangePage fullpath, cellpath or 'pages/watch/Watch', data
+    @loadAndChangePage fullpath, (cellpath or 'pages/watch/Watch'), data
     return false
   
   init: -> 
@@ -95,7 +83,7 @@ define [
       @options.class = 'IOSFullScreenApp'
 
   render: (_)-> [
-    _ '#header', _ '.title', '&nbsp;'
+    _ '#header', _ '.title', ' '
     _ '#content'
     _ '#footer',
       _ 'ul',

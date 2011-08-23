@@ -1,3 +1,4 @@
+@import 'mixins/animation';
 @import 'mixins/box';
 @import 'mixins/gradient';
 @import 'mixins/pos';
@@ -79,28 +80,23 @@
     position relative
     z-index 1
 
-    > .scroller
+    > .Page
       abspos 0px 0px 0px 0px
 
-      animateMe(name, duration=500ms)
-        -webkit-animation-name name
-        -webkit-animation-duration duration
-        -webkit-animation-fill-mode forwards
-
       &.headingOut
-        animateMe slideOutLeft
+        animate slideOutLeft
 
       &.headingIn
-        animateMe slideInLeft
+        animate slideInLeft
 
       &.headingOut-reverse
-        animateMe slideOutRight
+        animate slideOutRight
 
       &.headingIn-reverse
-        animateMe slideInRight
+        animate slideInRight
 
       &.fadeIn
-        animateMe fadeIn 1s
+        animate fadeIn 1s
 
   > #footer
     z-index 2

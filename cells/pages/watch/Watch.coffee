@@ -12,7 +12,9 @@ define [
       o.toLocaleDateString()
 
   init: ->
-    @options.pageService.setTitle 'Watch'
+    @model.set 'title', createDisplayableDate new Date()
+    @model.bind 'activate', =>
+      @$('.ListView li.active').removeClass('active')
 
   render: (_, A)->
     S.user.getShows (shows)-> A [

@@ -1,3 +1,4 @@
+var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 define(['Services', 'cell!shared/ListView'], function(S, ListView) {
   var createDisplayableDate, i, offsetDayMap, today;
   today = new Date();
@@ -18,7 +19,10 @@ define(['Services', 'cell!shared/ListView'], function(S, ListView) {
   };
   return {
     init: function() {
-      return this.options.pageService.setTitle('Watch');
+      this.model.set('title', createDisplayableDate(new Date()));
+      return this.model.bind('activate', __bind(function() {
+        return this.$('.ListView li.active').removeClass('active');
+      }, this));
     },
     render: function(_, A) {
       return S.user.getShows(function(shows) {

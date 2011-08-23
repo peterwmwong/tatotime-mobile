@@ -2,23 +2,24 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
 define(['Services', 'cell!shared/ListView'], function(S, ListView) {
   return {
     render: function(_, A) {
-      return S.show.getDetails(this.options.id, __bind(function(_arg) {
-        var description, title;
-        title = _arg.title, description = _arg.description;
-        this.options.pageService.setTitle(title);
-        return A([_('h2.title', title), _('p.description', description)]);
-      }, this));
+      return [_('h2.title'), _('p.description')];
     },
     afterRender: function() {
       this.$title = this.$('h2.title');
-      return this.$description = this.$('h2.description');
+      this.$description = this.$('p.description');
+      this.model.bind('change:data', __bind(function(data) {
+        return this.update(data);
+      }, this));
+      return this.update(this.model.data);
     },
-    update: function(options) {
-      return S.show.getDetails(options.id, __bind(function(_arg) {
+    update: function(_arg) {
+      var id;
+      id = _arg.id;
+      this.model.set('title', void 0);
+      return S.show.getDetails(id, __bind(function(_arg2) {
         var description, title;
-        title = _arg.title, description = _arg.description;
-        console.log('blarg');
-        this.options.pageService.setTitle(title);
+        title = _arg2.title, description = _arg2.description;
+        this.model.set('title', title);
         this.$title.html(title);
         return this.$description.html(description);
       }, this));
