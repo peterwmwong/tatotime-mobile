@@ -1,6 +1,9 @@
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 define(['require', 'Services', 'shared/History', 'shared/Model', 'cell!shared/Page', 'cell!pages/watch/Watch'], function(require, S, History, Model, Page) {
   var curPage, hideIOSAddressBar, lastChangePageWasReverse, pageCache;
+  document.body.addEventListener('touchmove', function(e) {
+    return e.preventDefault();
+  });
   pageCache = {};
   curPage = null;
   lastChangePageWasReverse = false;
@@ -39,6 +42,7 @@ define(['require', 'Services', 'shared/History', 'shared/Model', 'cell!shared/Pa
       var isReverse, page;
       if (History[0] !== fullpath) {
         isReverse = !(History.addOrRewind(fullpath));
+        this.$('#backbutton').css('visibility', (History.length > 1) && 'visible' || 'hidden');
         if ((page = pageCache[pagepath]) != null) {
           page.model.set('data', data);
           this.changePage(page, isReverse);
@@ -89,7 +93,7 @@ define(['require', 'Services', 'shared/History', 'shared/Model', 'cell!shared/Pa
       }
     },
     render: function(_) {
-      return [_('#header', _('#title', ' '), _('#prevtitle', ' ')), _('#content'), _('#footer', _('ul', _('li', 'Watch'), _('li', 'Schedule'), _('li', 'Search')))];
+      return [_('#header', _('#backbutton', _('span', 'Back')), _('#title', ' '), _('#prevtitle', ' '), _('#forwardbutton', _('span', 'Do It'))), _('#content'), _('#footer', _('ul', _('li', 'Watch'), _('li', 'Schedule'), _('li', 'Search')))];
     },
     afterRender: function() {
       if (S.isIOS && !S.isIOSFullScreen) {
@@ -109,6 +113,13 @@ define(['require', 'Services', 'shared/History', 'shared/Model', 'cell!shared/Pa
         return this.syncPageToHash();
       }, this));
       return this.syncPageToHash();
+    },
+    on: {
+      'click #backbutton': function() {
+        if (History.length > 1) {
+          return window.location.hash = History[1];
+        }
+      }
     }
   };
 });

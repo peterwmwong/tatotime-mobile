@@ -6,6 +6,7 @@ define [
   'cell!shared/Page'
   'cell!pages/watch/Watch' # Preload front page
 ], (require,S,History,Model,Page)->
+  document.body.addEventListener 'touchmove', (e)-> e.preventDefault()
 
   # Cache of all previously loaded pages
   pageCache = {}
@@ -58,6 +59,7 @@ define [
   loadAndChangePage: (fullpath,pagepath,data)->
     if History[0] isnt fullpath
       isReverse = not (History.addOrRewind fullpath)
+      @$('#backbutton').css 'visibility', (History.length > 1) and 'visible' or 'hidden'
 
       if (page = pageCache[pagepath])?
         page.model.set 'data', data
@@ -100,8 +102,10 @@ define [
 
   render: (_)-> [
     _ '#header',
+      _ '#backbutton', _ 'span', 'Back'
       _ '#title', ' '
       _ '#prevtitle', ' '
+      _ '#forwardbutton', _ 'span', 'Do It'
     _ '#content'
     _ '#footer',
       _ 'ul',
@@ -128,3 +132,8 @@ define [
     # navigate somewhere
     $(window).bind 'hashchange', => @syncPageToHash()
     @syncPageToHash()
+
+  on:
+    'click #backbutton': ->
+      if History.length > 1
+        window.location.hash = History[1]
