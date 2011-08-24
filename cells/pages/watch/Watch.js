@@ -8,9 +8,9 @@ define(['Services', 'shared/DateHelper', 'cell!shared/ListView'], function(S, Da
       }, this));
     },
     render: function(_, A) {
-      return S.user.getShows(function(shows) {
+      return S.user.getShows(__bind(function(shows) {
         var s;
-        return A([
+        A([
           _(ListView, {
             list: (function() {
               var _i, _len, _results;
@@ -28,7 +28,8 @@ define(['Services', 'shared/DateHelper', 'cell!shared/ListView'], function(S, Da
             })()
           })
         ]);
-      });
+        return this.model.trigger('refreshScroller');
+      }, this));
     }
   };
 });

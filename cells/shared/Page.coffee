@@ -6,10 +6,7 @@ define
 
   afterRender: ->
     scroller = new iScroll @el
-    refreshScroller = ->
-      setTimeout (-> scroller.refresh()), 500
+    @model.bind 'refreshScroller', (refreshScroller = -> scroller.refresh())
     refreshScroller()
-    
-    @model.bind 'change:data', refreshScroller
     @model.bind 'activate', (isBackNav)->
       if not isBackNav then scroller.scrollTo 0,0,0

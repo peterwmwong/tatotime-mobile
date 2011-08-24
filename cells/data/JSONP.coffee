@@ -18,12 +18,13 @@ define ->
   get =
     if window.location.search.indexOf('mock-service=true') > -1
       ({mock,real},done)->
-        setTimeout (-> require [mock], (mock)->
-          done do->
-            if typeof mock is 'function'
-              mock(real)
-            else
-              mock
+        setTimeout (->
+          require [mock], (mock)->
+            done do->
+              if typeof mock is 'function'
+                mock(real)
+              else
+                mock
         ), 50
     else
       ({real},done)->

@@ -18,13 +18,11 @@
     abspos 20px 15px 0px 125px
 
     > .title
-      font-size 16px
-      text-overflow-ellipsis()
+      //font-size 18px
 
     > .network
       color #555
       padding-top 10px
-    
 
   > .description
     // TODO: need a better multi-line text-overflow
@@ -33,3 +31,15 @@
     height 90px
 
   > .castGroup
+    margin-top 20px
+
+    > .castHeader
+      margin 10px 0 10px 5px
+      
+    > .castList > .ListView
+      > li:first-child
+        border-radius 8px 8px 0 0
+
+      > li:last-child
+        border-radius 0 0 8px 8px
+      

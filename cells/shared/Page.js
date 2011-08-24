@@ -12,13 +12,10 @@ define({
   afterRender: function() {
     var refreshScroller, scroller;
     scroller = new iScroll(this.el);
-    refreshScroller = function() {
-      return setTimeout((function() {
-        return scroller.refresh();
-      }), 500);
-    };
+    this.model.bind('refreshScroller', (refreshScroller = function() {
+      return scroller.refresh();
+    }));
     refreshScroller();
-    this.model.bind('change:data', refreshScroller);
     return this.model.bind('activate', function(isBackNav) {
       if (!isBackNav) {
         return scroller.scrollTo(0, 0, 0);
