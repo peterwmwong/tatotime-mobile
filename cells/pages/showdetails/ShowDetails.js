@@ -1,7 +1,5 @@
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 define(['Services', 'cell!shared/ListView'], function(S, ListView) {
-  var _;
-  _ = cell.prototype.$R;
   return {
     render: function(_, A) {
       return [_('img'), _('.titleGroup', _('h2.title'), _('h4.year'), _('h4.network')), _('p.description'), _('.castGroup', _('h4.castHeader', 'Cast'), _('.castList', ''))];
@@ -22,10 +20,16 @@ define(['Services', 'cell!shared/ListView'], function(S, ListView) {
         this.model.set('title', title);
         this.$('.title').html(title);
         this.$('.year').html(year);
-        this.$('.description').html(description);
+        this.$('.description').html((function() {
+          if (description.length > 125) {
+            return description.slice(0, 125) + " ...";
+          } else {
+            return description;
+          }
+        })());
         this.$('.network').html(network);
         this.$('.castGroup > .castList > .ListView').remove();
-        this.$('.castGroup > .castList').append(_(ListView, {
+        this.$('.castGroup > .castList').append(cell.prototype.$R(ListView, {
           list: (function() {
             var name, _i, _len, _ref, _results;
             _results = [];
@@ -33,8 +37,8 @@ define(['Services', 'cell!shared/ListView'], function(S, ListView) {
               _ref = cast[_i], id = _ref.id, name = _ref.name;
               _results.push((function() {
                 return {
-                  text: name,
-                  link: 'blarg'
+                  link: "#!/pages/profiledetails/ProfileDetails?id=" + id,
+                  text: name
                 };
               })());
             }

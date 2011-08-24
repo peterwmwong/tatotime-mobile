@@ -1,40 +1,10 @@
-define(function() {
-  var actors, i, networks, result, show, shows, _, _len;
+define(['data/mock/actors/allActors'], function(actors) {
+  var i, networks, result, show, shows, _, _len;
   _ = function(o) {
     return o;
   };
   networks = ['AMC', 'ABC', 'FOX', 'NBC', 'FX', 'CBS'];
   shows = ['Mad Men', 'Falling Skies', 'Game of Thrones', 'Sherlock', 'Heroes', '24', 'Awakening', 'Breaking Bad', 'Wilfred', 'The Wire', 'The Big Bang Theory', 'Lost', 'Camelot', 'The Borgias', 'The Walking Dead', 'Vampire Diaries', 'MI6', 'Boardwalk Empire', 'FRONTLINE', 'American Experience', 'Modern Marvels', 'Mythbusters'];
-  actors = [
-    _({
-      id: 0,
-      name: 'Jon Hamm'
-    }), _({
-      id: 1,
-      name: 'Noah Wiley'
-    }), _({
-      id: 2,
-      name: 'Elisabeth Moss'
-    }), _({
-      id: 3,
-      name: 'Vincent Kartheiser'
-    }), _({
-      id: 4,
-      name: 'January Jones'
-    }), _({
-      id: 5,
-      name: 'Christina Hendricks'
-    }), _({
-      id: 6,
-      name: 'Aaron Staton'
-    }), _({
-      id: 7,
-      name: 'Rich Sommer'
-    }), _({
-      id: 8,
-      name: 'John Slattery'
-    })
-  ];
   result = {};
   for (i = 0, _len = shows.length; i < _len; i++) {
     show = shows[i];

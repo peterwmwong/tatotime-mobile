@@ -1,25 +1,20 @@
 define(function() {
-  var hist;
+  var hist, wasLastBack;
   hist = [];
-  hist.addOrRewind = function(fullpath) {
-    var i;
-    if ((i = this.indexOf(fullpath)) === -1) {
-      this.unshift(fullpath);
-      return true;
-    } else {
-      this.splice(0, i);
-      return false;
+  wasLastBack = false;
+  hist.back = function() {
+    if (hist.length > 1) {
+      wasLastBack = true;
+      window.location.hash = "#!/" + (hist.splice(0, 2)[1]);
+      return console.log(hist);
     }
   };
-  hist.indexOf = function(path) {
-    var i, p, _len;
-    for (i = 0, _len = this.length; i < _len; i++) {
-      p = this[i];
-      if (p === path) {
-        return i;
-      }
-    }
-    return -1;
+  hist.forward = function(path) {
+    wasLastBack = false;
+    return hist.unshift(path);
+  };
+  hist.wasLastBack = function() {
+    return wasLastBack;
   };
   return hist;
 });

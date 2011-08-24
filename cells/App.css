@@ -3,14 +3,14 @@
 }@media screen and (min-width: 321px) and (max-width: 480px){.App{height:269px;}
 .App.IOSFullScreenApp{height:300px}
 }@media screen and (min-width: 481px){.App{height:418px}
-}@-webkit-keyframes slideOutLeft{0%{-webkit-transform:translate3d(0,0,0);opacity:1}
-100%{-webkit-transform:translate3d(-100%,0,0);opacity:0}
-}@-webkit-keyframes slideInLeft{0%{-webkit-transform:translate3d(100%,0,0);opacity:0}
-100%{-webkit-transform:translate3d(0,0,0);opacity:1}
-}@-webkit-keyframes slideOutRight{0%{-webkit-transform:translate3d(0,0,0);opacity:1}
-100%{-webkit-transform:translate3d(100%,0,0);opacity:0}
-}@-webkit-keyframes slideInRight{0%{-webkit-transform:translate3d(-100%,0,0);opacity:0}
-100%{-webkit-transform:translate3d(0,0,0);opacity:1}
+}@-webkit-keyframes slideOutLeft{0%{-webkit-transform:translateX(0);opacity:1}
+100%{-webkit-transform:translateX(-100%);opacity:0}
+}@-webkit-keyframes slideInLeft{0%{-webkit-transform:translateX(100%);opacity:0}
+100%{-webkit-transform:translateX(0);opacity:1}
+}@-webkit-keyframes slideOutRight{0%{-webkit-transform:translateX(0);opacity:1}
+100%{-webkit-transform:translateX(100%);opacity:0}
+}@-webkit-keyframes slideInRight{0%{-webkit-transform:translateX(-100%);opacity:0}
+100%{-webkit-transform:translateX(0);opacity:1}
 }@-webkit-keyframes fadeIn{0%{opacity:0}
 100%{opacity:1}
 }.App{position:relative;display:box;display:-webkit-box;display:-moz-box;-webkit-box-orient:vertical;-moz-box-orient:vertical;-webkit-tap-highlight-color:rgba(0,0,0,0.00);z-index:1;}

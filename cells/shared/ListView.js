@@ -13,6 +13,7 @@ define({
   },
   on: {
     'click li': function(e) {
+      console.log('list click');
       $('li.active').removeClass('active');
       return window.location.hash = $(e.target).addClass('active').data('dest');
     }

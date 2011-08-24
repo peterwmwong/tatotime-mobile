@@ -13,7 +13,6 @@ define [
 
   # Current page
   curPage = null
-  lastChangePageWasReverse = false
 
   # Hides iOS mobile safari address bar (scroll hack)
   hideIOSAddressBar = ->
@@ -22,7 +21,7 @@ define [
       setTimeout hideIOSAddressBar, 50
 
   changeTitle: (newTitle)->
-    rev = lastChangePageWasReverse and '-reverse' or ''
+    rev = History.wasLastBack() and '-reverse' or ''
     if title = @$title.html()
       @$prevtitle
         .html(@$title.html())
@@ -36,11 +35,10 @@ define [
       @$title.html ''
 
   # Animates and changes currently visible page
-  changePage: (page, isReverse)->
-    lastChangePageWasReverse = isReverse
+  changePage: (page)->
     pageInClass =
       if curPage
-        rev = isReverse and '-reverse' or ''
+        rev = History.wasLastBack() and '-reverse' or ''
         curPage.$el.attr 'class', 'Page headingOut' + rev
         curPage.model.trigger 'deactivate'
         'Page headingIn' + rev
@@ -48,7 +46,7 @@ define [
         'Page fadeIn'
 
     (curPage = page).$el.attr 'class', pageInClass
-    curPage.model.trigger 'activate', isReverse
+    curPage.model.trigger 'activate', History.wasLastBack()
     
     @changeTitle curPage.model.title
 
@@ -58,12 +56,12 @@ define [
   ###
   loadAndChangePage: (fullpath,pagepath,data)->
     if History[0] isnt fullpath
-      isReverse = not (History.addOrRewind fullpath)
+      History.forward fullpath
       @$('#backbutton').css 'visibility', (History.length > 1) and 'visible' or 'hidden'
 
       if (page = pageCache[pagepath])?
         page.model.set 'data', data
-        @changePage page, isReverse
+        @changePage page
 
       # Load new page cell
       else
@@ -137,5 +135,4 @@ define [
 
   on:
     'click #backbutton': ->
-      if History.length > 1
-        window.location.hash = History[1]
+      History.back()

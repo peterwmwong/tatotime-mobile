@@ -1,4 +1,4 @@
-define ->
+define ['data/mock/actors/allActors'], (actors)->
   _ = (o)->o
 
   networks = [
@@ -33,18 +33,6 @@ define ->
     'American Experience'
     'Modern Marvels'
     'Mythbusters'
-  ]
-
-  actors = [
-    _ id: 0, name: 'Jon Hamm'
-    _ id: 1, name: 'Noah Wiley'
-    _ id: 2, name: 'Elisabeth Moss'
-    _ id: 3, name: 'Vincent Kartheiser'
-    _ id: 4, name: 'January Jones'
-    _ id: 5, name: 'Christina Hendricks'
-    _ id: 6, name: 'Aaron Staton'
-    _ id: 7, name: 'Rich Sommer'
-    _ id: 8, name: 'John Slattery'
   ]
 
   result = {}

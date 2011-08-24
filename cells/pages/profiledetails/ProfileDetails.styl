@@ -4,7 +4,7 @@
 @import 'mixins/pos';
 @import 'mixins/text';
 
-.ShowDetails
+.ProfileDetails
   padding 20px
   position relative
 
@@ -14,24 +14,16 @@
     height 150px
     gradient #6A6A6A #AAA
 
-  > .titleGroup
+  > .nameGroup
     abspos 20px 15px 0px 125px
 
-    > .network
-      color #555
-      padding-top 10px
-
-  > .description
-    // TODO: need a better multi-line text-overflow
+  > .knownForGroup
     margin-top 160px
 
-  > .castGroup
-    margin-top 20px
-
-    > .castHeader
+    > .knownForHeader
       margin 10px 0 10px 5px
       
-    > .castList > .ListView
+    > .knownForList > .ListView
       > li:first-child
         border-radius 8px 8px 0 0
 

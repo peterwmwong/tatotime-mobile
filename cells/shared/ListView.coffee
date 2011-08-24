@@ -8,6 +8,7 @@ define
   
   on:
     'click li': (e)->
+      console.log 'list click'
       $('li.active').removeClass 'active'
       window.location.hash =
         $(e.target)

@@ -1,20 +1,18 @@
 define ->
   # Keeps track of page history
   hist = []
+  wasLastBack = false
 
-  # Adds to the history or rewinds if "going back" is detected
-  hist.addOrRewind = (fullpath)->
-    if (i = @indexOf fullpath) is -1
-      @unshift fullpath
-      true
-    else
-      @splice 0, i
-      false
-
-  # Finds index of page in history, -1 if not history
-  hist.indexOf = (path)->
-    for p,i in this when p is path
-      return i
-    return -1
+  hist.back = ->
+    if hist.length > 1
+      wasLastBack = true
+      window.location.hash = "#!/#{hist.splice(0,2)[1]}"
+      console.log hist
+      
+  hist.forward = (path)->
+    wasLastBack = false
+    hist.unshift path
+    
+  hist.wasLastBack = -> wasLastBack
 
   hist

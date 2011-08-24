@@ -1,12 +1,11 @@
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 define(['require', 'Services', 'shared/History', 'shared/Model', 'cell!shared/Page', 'cell!pages/watch/Watch'], function(require, S, History, Model, Page) {
-  var curPage, hideIOSAddressBar, lastChangePageWasReverse, pageCache;
+  var curPage, hideIOSAddressBar, pageCache;
   document.body.addEventListener('touchmove', function(e) {
     return e.preventDefault();
   });
   pageCache = {};
   curPage = null;
-  lastChangePageWasReverse = false;
   hideIOSAddressBar = function() {
     window.scrollTo(0, 1);
     if (window.pageYOffset <= 0) {
@@ -16,7 +15,7 @@ define(['require', 'Services', 'shared/History', 'shared/Model', 'cell!shared/Pa
   return {
     changeTitle: function(newTitle) {
       var rev, title;
-      rev = lastChangePageWasReverse && '-reverse' || '';
+      rev = History.wasLastBack() && '-reverse' || '';
       if (title = this.$title.html()) {
         this.$prevtitle.html(this.$title.html()).attr('class', 'headingOut' + rev);
       }
@@ -26,12 +25,11 @@ define(['require', 'Services', 'shared/History', 'shared/Model', 'cell!shared/Pa
         return this.$title.html('');
       }
     },
-    changePage: function(page, isReverse) {
+    changePage: function(page) {
       var pageInClass, rev;
-      lastChangePageWasReverse = isReverse;
-      pageInClass = curPage ? (rev = isReverse && '-reverse' || '', curPage.$el.attr('class', 'Page headingOut' + rev), curPage.model.trigger('deactivate'), 'Page headingIn' + rev) : 'Page fadeIn';
+      pageInClass = curPage ? (rev = History.wasLastBack() && '-reverse' || '', curPage.$el.attr('class', 'Page headingOut' + rev), curPage.model.trigger('deactivate'), 'Page headingIn' + rev) : 'Page fadeIn';
       (curPage = page).$el.attr('class', pageInClass);
-      curPage.model.trigger('activate', isReverse);
+      curPage.model.trigger('activate', History.wasLastBack());
       return this.changeTitle(curPage.model.title);
     },
     /*
@@ -39,13 +37,13 @@ define(['require', 'Services', 'shared/History', 'shared/Model', 'cell!shared/Pa
       If already previously loaded, just change to it.
       */
     loadAndChangePage: function(fullpath, pagepath, data) {
-      var isReverse, page;
+      var page;
       if (History[0] !== fullpath) {
-        isReverse = !(History.addOrRewind(fullpath));
+        History.forward(fullpath);
         this.$('#backbutton').css('visibility', (History.length > 1) && 'visible' || 'hidden');
         if ((page = pageCache[pagepath]) != null) {
           page.model.set('data', data);
-          this.changePage(page, isReverse);
+          this.changePage(page);
         } else {
           require(["cell!" + pagepath], __bind(function(pagecell) {
             page = pageCache[pagepath] = new Page({
@@ -116,9 +114,7 @@ define(['require', 'Services', 'shared/History', 'shared/Model', 'cell!shared/Pa
     },
     on: {
       'click #backbutton': function() {
-        if (History.length > 1) {
-          return window.location.hash = History[1];
-        }
+        return History.back();
       }
     }
   };

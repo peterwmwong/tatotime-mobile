@@ -3,8 +3,6 @@ define [
   'cell!shared/ListView'
 ], (S,ListView)->
 
-  _ = cell::$R
-
   render: (_,A)-> [
     _ 'img'
     _ '.titleGroup',
@@ -27,15 +25,19 @@ define [
       @model.set 'title', title
       @$('.title').html title
       @$('.year').html year
-      @$('.description').html description
+      @$('.description').html do->
+        # Truncate
+        if description.length > 125
+          description.slice(0, 125)+" ..."
+        else
+          description
+
       @$('.network').html network
       @$('.castGroup > .castList > .ListView').remove()
       @$('.castGroup > .castList')
-        .append _ ListView, list: do->
+        .append cell::$R ListView, list: do->
           for {id,name} in cast then do->
+            link: "#!/pages/profiledetails/ProfileDetails?id=#{id}"
             text: name
-            link: 'blarg'
 
       @model.trigger 'refreshScroller'
-
-    
