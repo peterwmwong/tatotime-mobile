@@ -71,7 +71,7 @@ define [
             model: new Model(pagepath: cellpath, data: data)
         page.$el.appendTo @$content
         page.model.bind 'change:title', (title)=>
-          if curPage.model.cellpath is cellpath
+          if curPage.model.cellpath is History.cellpath
             @changeTitle curPage.model.title
         @changePage page
 

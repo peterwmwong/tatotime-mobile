@@ -54,7 +54,7 @@ define(['require', 'Services', 'shared/History', 'shared/Model', 'cell!shared/Pa
           });
           page.$el.appendTo(this.$content);
           page.model.bind('change:title', __bind(function(title) {
-            if (curPage.model.cellpath === cellpath) {
+            if (curPage.model.cellpath === History.cellpath) {
               return this.changeTitle(curPage.model.title);
             }
           }, this));
