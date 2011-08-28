@@ -15,7 +15,7 @@ define(['require', 'Services', 'shared/History', 'shared/Model', 'cell!shared/Pa
   return {
     changeTitle: function(newTitle) {
       var rev, title;
-      rev = History.wasLastBack() && '-reverse' || '';
+      rev = History.wasLastBack && '-reverse' || '';
       if (title = this.$title.html()) {
         this.$prevtitle.html(this.$title.html()).attr('class', 'headingOut' + rev);
       }
@@ -27,63 +27,40 @@ define(['require', 'Services', 'shared/History', 'shared/Model', 'cell!shared/Pa
     },
     changePage: function(page) {
       var pageInClass, rev;
-      pageInClass = curPage ? (rev = History.wasLastBack() && '-reverse' || '', curPage.$el.attr('class', 'Page headingOut' + rev), curPage.model.trigger('deactivate'), 'Page headingIn' + rev) : 'Page fadeIn';
+      pageInClass = curPage ? (rev = History.wasLastBack && '-reverse' || '', curPage.$el.attr('class', 'Page headingOut' + rev), curPage.model.trigger('deactivate'), 'Page headingIn' + rev) : 'Page fadeIn';
       (curPage = page).$el.attr('class', pageInClass);
-      curPage.model.trigger('activate', History.wasLastBack());
+      curPage.model.trigger('activate', History.wasLastBack);
       return this.changeTitle(curPage.model.title);
     },
     /*
       Loads and renders the specified Page Cell if not already loaded.
       If already previously loaded, just change to it.
       */
-    loadAndChangePage: function(fullpath, pagepath, data) {
-      var page;
-      if (History[0] !== fullpath) {
-        History.forward(fullpath);
-        this.$('#backbutton').css('visibility', (History.length > 1) && 'visible' || 'hidden');
-        if ((page = pageCache[pagepath]) != null) {
-          page.model.set('data', data);
-          this.changePage(page);
-        } else {
-          require(["cell!" + pagepath], __bind(function(pagecell) {
-            page = pageCache[pagepath] = new Page({
-              cell: pagecell,
-              model: new Model({
-                pagePath: pagepath,
-                data: data
-              })
-            });
-            page.$el.appendTo(this.$content);
-            page.model.bind('change:title', __bind(function(title) {
-              if (curPage.model.pagePath === pagepath) {
-                return this.changeTitle(curPage.model.title);
-              }
-            }, this));
-            return this.changePage(page);
+    loadAndChangePage: function() {
+      var cellpath, data, fullpath, page, _ref;
+      _ref = History.current, fullpath = _ref.fullpath, cellpath = _ref.cellpath, data = _ref.data;
+      this.$('#backbutton').css('visibility', (History.length() > 1) && 'visible' || 'hidden');
+      if ((page = pageCache[cellpath]) != null) {
+        page.model.set('data', data);
+        this.changePage(page);
+      } else {
+        require(["cell!" + cellpath], __bind(function(pagecell) {
+          page = pageCache[cellpath] = new Page({
+            cell: pagecell,
+            model: new Model({
+              pagepath: cellpath,
+              data: data
+            })
+          });
+          page.$el.appendTo(this.$content);
+          page.model.bind('change:title', __bind(function(title) {
+            if (curPage.model.cellpath === cellpath) {
+              return this.changeTitle(curPage.model.title);
+            }
           }, this));
-        }
+          return this.changePage(page);
+        }, this));
       }
-    },
-    /*
-      Location hash change handler
-      The hash determines:
-        1) which page we're on
-        2) data passed to the page
-      */
-    syncPageToHash: function() {
-      var cellpath, data, fullpath, jsondata, k, kv, v, _i, _len, _ref, _ref2, _ref3;
-      _ref = (fullpath = location.hash.slice(3)).split('?'), cellpath = _ref[0], jsondata = _ref[1];
-      data = {};
-      if (jsondata) {
-        _ref2 = jsondata.split('&');
-        for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-          kv = _ref2[_i];
-          _ref3 = kv.split('='), k = _ref3[0], v = _ref3[1];
-          data[k] = v;
-        }
-      }
-      this.loadAndChangePage(fullpath, cellpath || 'pages/watch/Watch', data);
-      return false;
     },
     init: function() {
       if (S.isIOSFullScreen) {
@@ -107,14 +84,14 @@ define(['require', 'Services', 'shared/History', 'shared/Model', 'cell!shared/Pa
       this.$prevtitle.bind('webkitAnimationEnd', __bind(function() {
         return this.$prevtitle.attr('class', '');
       }, this));
-      $(window).bind('hashchange', __bind(function() {
-        return this.syncPageToHash();
+      History.bind('change:current', __bind(function(cur) {
+        return this.loadAndChangePage();
       }, this));
-      return this.syncPageToHash();
+      return this.loadAndChangePage();
     },
     on: {
       'click #backbutton': function() {
-        return History.back();
+        return History.goBack();
       }
     }
   };

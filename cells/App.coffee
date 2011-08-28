@@ -21,7 +21,7 @@ define [
       setTimeout hideIOSAddressBar, 50
 
   changeTitle: (newTitle)->
-    rev = History.wasLastBack() and '-reverse' or ''
+    rev = History.wasLastBack and '-reverse' or ''
     if title = @$title.html()
       @$prevtitle
         .html(@$title.html())
@@ -38,7 +38,7 @@ define [
   changePage: (page)->
     pageInClass =
       if curPage
-        rev = History.wasLastBack() and '-reverse' or ''
+        rev = History.wasLastBack and '-reverse' or ''
         curPage.$el.attr 'class', 'Page headingOut' + rev
         curPage.model.trigger 'deactivate'
         'Page headingIn' + rev
@@ -46,7 +46,7 @@ define [
         'Page fadeIn'
 
     (curPage = page).$el.attr 'class', pageInClass
-    curPage.model.trigger 'activate', History.wasLastBack()
+    curPage.model.trigger 'activate', History.wasLastBack
     
     @changeTitle curPage.model.title
 
@@ -54,45 +54,29 @@ define [
   Loads and renders the specified Page Cell if not already loaded.
   If already previously loaded, just change to it.
   ###
-  loadAndChangePage: (fullpath,pagepath,data)->
-    if History[0] isnt fullpath
-      History.forward fullpath
-      @$('#backbutton').css 'visibility', (History.length > 1) and 'visible' or 'hidden'
+  loadAndChangePage: ->
+    {fullpath,cellpath,data} = History.current
+    @$('#backbutton').css 'visibility', (History.length() > 1) and 'visible' or 'hidden'
 
-      if (page = pageCache[pagepath])?
-        page.model.set 'data', data
+    if (page = pageCache[cellpath])?
+      page.model.set 'data', data
+      @changePage page
+
+    # Load new page cell
+    else
+      require ["cell!#{cellpath}"], (pagecell)=>
+        page = pageCache[cellpath] =
+          new Page
+            cell: pagecell
+            model: new Model(pagepath: cellpath, data: data)
+        page.$el.appendTo @$content
+        page.model.bind 'change:title', (title)=>
+          if curPage.model.cellpath is cellpath
+            @changeTitle curPage.model.title
         @changePage page
-
-      # Load new page cell
-      else
-        require ["cell!#{pagepath}"], (pagecell)=>
-          page = pageCache[pagepath] =
-            new Page
-              cell: pagecell
-              model: new Model(pagePath: pagepath, data: data)
-          page.$el.appendTo @$content
-          page.model.bind 'change:title', (title)=>
-            if curPage.model.pagePath is pagepath
-              @changeTitle curPage.model.title
-          @changePage page
 
     return
 
-  ###
-  Location hash change handler
-  The hash determines:
-    1) which page we're on
-    2) data passed to the page
-  ###
-  syncPageToHash: ->
-    [cellpath,jsondata] = (fullpath = location.hash.slice(3)).split '?'
-    data = {}
-    if jsondata
-      for kv in jsondata.split '&'
-        [k,v] = kv.split '='
-        data[k] = v
-    @loadAndChangePage fullpath, (cellpath or 'pages/watch/Watch'), data
-    return false
   
   init: -> 
     if S.isIOSFullScreen
@@ -130,9 +114,9 @@ define [
 
     # Load up the proper page on start and whenever we
     # navigate somewhere
-    $(window).bind 'hashchange', => @syncPageToHash()
-    @syncPageToHash()
+    History.bind 'change:current', (cur)=> @loadAndChangePage()
+    @loadAndChangePage()
 
   on:
     'click #backbutton': ->
-      History.back()
+      History.goBack()
