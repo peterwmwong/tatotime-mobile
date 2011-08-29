@@ -1,16 +1,5 @@
-define(['data/mock/shows/allShows'], function(allShows) {
-  var count, _;
-  _ = function(o) {
-    return o;
-  };
-  count = 0;
+define(['data/mock/shows/allShows', 'data/mock/getPathComponent'], function(shows, getPathComponent) {
   return function(path) {
-    var id;
-    id = (function() {
-      var s;
-      s = path.split('/');
-      return s[s.length - 1];
-    })();
-    return allShows[id];
+    return shows[getPathComponent(path)];
   };
 });

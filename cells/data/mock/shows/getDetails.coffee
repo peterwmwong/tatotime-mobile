@@ -1,8 +1,5 @@
-define ['data/mock/shows/allShows'], (allShows)->
-  _ = (o)->o
-  count = 0
-  (path)->
-    id = do->
-      s = path.split '/'
-      s[s.length-1]
-    allShows[id]
+define [
+  'data/mock/shows/allShows'
+  'data/mock/getPathComponent'
+], (shows,getPathComponent)->
+  (path)-> shows[getPathComponent path]

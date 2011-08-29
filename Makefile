@@ -46,7 +46,7 @@ cells/bootstrap.js: $(uglifyjs) cells/cell.js cells/cell-pluginBuilder.js
 		-o \
 		paths.requireLib=../vendor/requirejs/require \
 		include=requireLib \
-		name=cell!App \
+		name=cell!framework/App \
 		out=cells/bootstrap-tmp.js \
 		baseUrl=cells includeRequire=true
 	cat vendor/jquery.js \

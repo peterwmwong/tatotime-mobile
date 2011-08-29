@@ -12,9 +12,11 @@ define({
     }
   },
   on: {
-    'click li': function(e) {
+    'click li': function(_arg) {
+      var target;
+      target = _arg.target;
       $('li.active').removeClass('active');
-      return window.location.hash = $(e.target).addClass('active').data('dest');
+      return window.location.hash = $(target).addClass('active').data('dest');
     }
   }
 });

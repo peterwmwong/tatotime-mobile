@@ -7,9 +7,9 @@ define
         _ "<li data-dest='#{link}'>", text
   
   on:
-    'click li': (e)->
+    'click li': ({target})->
       $('li.active').removeClass 'active'
       window.location.hash =
-        $(e.target)
+        $(target)
           .addClass('active')
           .data('dest')
