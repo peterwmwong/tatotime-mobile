@@ -5,7 +5,6 @@ define [
   'cell!./Tab'
   'cell!./TabNavBar'
   'cell!./TitleBar'
-  'cell!pages/watch/Watch' # TODO - Remove, find a better way to preload front page
 ], (AppDelegate,S,Model,Tab,TabNavBar,TitleBar)->
 
   # Prevent app from being dragged byonds it's limits on iOS

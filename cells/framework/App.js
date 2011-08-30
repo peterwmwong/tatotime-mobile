@@ -1,5 +1,5 @@
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-define(['AppDelegate', 'Services', './Model', 'cell!./Tab', 'cell!./TabNavBar', 'cell!./TitleBar', 'cell!pages/watch/Watch'], function(AppDelegate, S, Model, Tab, TabNavBar, TitleBar) {
+define(['AppDelegate', 'Services', './Model', 'cell!./Tab', 'cell!./TabNavBar', 'cell!./TitleBar'], function(AppDelegate, S, Model, Tab, TabNavBar, TitleBar) {
   var AppModel, curTab, tabCache;
   if (S.isIOS) {
     document.body.addEventListener('touchmove', function(e) {

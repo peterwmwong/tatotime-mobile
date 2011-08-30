@@ -1,4 +1,6 @@
-define
+define [
+  'cell!pages/watch/Watch' # Preload front pages
+], ->
   init: ->
     @model.tabs = 
       Schedule:
