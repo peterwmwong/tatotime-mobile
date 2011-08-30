@@ -1,9 +1,9 @@
-define
-  tag: '<ul>'
-
-  rendertabs = (_,A)->
+define ->
+  rendertabs = (_,tabs)->
     for tabid,{text} of tabs
-      _ "<li data-tabid='#{tabid}'>", text
+      _ "<li data-tabid='#{tabid}'>", text or tabid
+
+  tag: '<ul>'
 
   render: (_,A)->
     if tabs = @model.tabs

@@ -8,9 +8,11 @@ define [
   'cell!pages/watch/Watch' # TODO - Remove, find a better way to preload front page
 ], (require,S,History,Model,Tab,TabNavBar)->
 
-  AppModel = new Model currentTab: undefined
+  # Prevent app from being dragged byonds it's limits on iOS
+  if S.isIOS
+    document.body.addEventListener 'touchmove', (e)-> e.preventDefault()
 
-  document.body.addEventListener 'touchmove', (e)-> e.preventDefault()
+  AppModel = new Model currentTab: undefined
 
   # Cache of all previously loaded pages
   tabCache = {}
@@ -18,14 +20,8 @@ define [
   # Current page
   curTab = null
 
-  # Hides iOS mobile safari address bar (scroll hack)
-  hideIOSAddressBar = ->
-    window.scrollTo 0,1
-    if window.pageYOffset <= 0
-      setTimeout hideIOSAddressBar, 50
-
-  changeTitle: (newTitle)->
-    rev = History.wasLastBack and '-reverse' or ''
+  changeTitle: (newTitle,wasLastBack)->
+    rev = wasLastBack and '-reverse' or ''
     if title = @$title.html()
       @$prevtitle
         .html(@$title.html())
@@ -47,8 +43,11 @@ define [
         model: new Model
           id: tabid
           title: 'Loading...'
-      tab.model.bind 'change:title', (newTitle)=> @changeTitle newTitle
+      tab.model.bind 'change:title', (newTitle)=>
+        @changeTitle newTitle, tab.history.wasLastBack
+      @changeTitle tab.model.title
       @$content.append tab.$el
+
     AppModel.set 'currentTab', tabid
     @$('#content > .activeTab').removeClass 'activeTab'
     tab.$el.toggleClass 'activeTab', true
@@ -76,7 +75,13 @@ define [
     # Hide that pesky iOS address bar on start and whenever
     # the orientation changes
     if S.isIOS and not S.isIOSFullScreen
-      setTimeout hideIOSAddressBar, 50
+
+      # Hides iOS mobile safari address bar (scroll hack)
+      setTimeout (hideIOSAddressBar = ->
+        window.scrollTo 0,1
+        if window.pageYOffset <= 0
+          setTimeout hideIOSAddressBar, 50
+      ), 100
       $(window).bind 'resize', hideIOSAddressBar
 
     # Cache content jQuery object, for appending pages to
@@ -92,5 +97,4 @@ define [
     @changeTab AppModel.defaultTab
 
   on:
-    'click #backbutton': ->
-      tabCache[AppModel.currentTab]?.history.goBack()
+    'click #backbutton': -> tabCache[AppModel.currentTab]?.history.goBack()

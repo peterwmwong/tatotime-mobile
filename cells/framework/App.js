@@ -1,24 +1,20 @@
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 define(['require', 'Services', './History', './Model', 'cell!./Tab', 'cell!./TabNavBar', 'cell!pages/watch/Watch'], function(require, S, History, Model, Tab, TabNavBar) {
-  var AppModel, curTab, hideIOSAddressBar, tabCache;
+  var AppModel, curTab, tabCache;
+  if (S.isIOS) {
+    document.body.addEventListener('touchmove', function(e) {
+      return e.preventDefault();
+    });
+  }
   AppModel = new Model({
     currentTab: void 0
   });
-  document.body.addEventListener('touchmove', function(e) {
-    return e.preventDefault();
-  });
   tabCache = {};
   curTab = null;
-  hideIOSAddressBar = function() {
-    window.scrollTo(0, 1);
-    if (window.pageYOffset <= 0) {
-      return setTimeout(hideIOSAddressBar, 50);
-    }
-  };
   return {
-    changeTitle: function(newTitle) {
+    changeTitle: function(newTitle, wasLastBack) {
       var rev, title;
-      rev = History.wasLastBack && '-reverse' || '';
+      rev = wasLastBack && '-reverse' || '';
       if (title = this.$title.html()) {
         this.$prevtitle.html(this.$title.html()).attr('class', 'headingOut' + rev);
       }
@@ -40,8 +36,9 @@ define(['require', 'Services', './History', './Model', 'cell!./Tab', 'cell!./Tab
           })
         });
         tab.model.bind('change:title', __bind(function(newTitle) {
-          return this.changeTitle(newTitle);
+          return this.changeTitle(newTitle, tab.history.wasLastBack);
         }, this));
+        this.changeTitle(tab.model.title);
         this.$content.append(tab.$el);
       }
       AppModel.set('currentTab', tabid);
@@ -69,8 +66,14 @@ define(['require', 'Services', './History', './Model', 'cell!./Tab', 'cell!./Tab
       }, this));
     },
     afterRender: function() {
+      var hideIOSAddressBar;
       if (S.isIOS && !S.isIOSFullScreen) {
-        setTimeout(hideIOSAddressBar, 50);
+        setTimeout((hideIOSAddressBar = function() {
+          window.scrollTo(0, 1);
+          if (window.pageYOffset <= 0) {
+            return setTimeout(hideIOSAddressBar, 50);
+          }
+        }), 100);
         $(window).bind('resize', hideIOSAddressBar);
       }
       this.$content = this.$('#content');

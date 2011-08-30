@@ -1,2 +1,11 @@
+@import 'mixins/pos';
+
 .Tab
-  //
+  abspos 0px 0px 0px 0px
+  overflow hidden
+  
+  > .Page
+    abspos 0px 0px 0px 0px
+
+    &.fadeIn
+      animate fadeIn 1s

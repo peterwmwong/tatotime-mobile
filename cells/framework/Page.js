@@ -1,7 +1,7 @@
 define(['./Model'], function(Model) {
   return {
     tag: function() {
-      return "<div data-pagepath='" + this.model.pagePath + "'>";
+      return "<div data-pagepath='" + this.options.pagepath + "'>";
     },
     init: function() {
       return this.model = new Model({
