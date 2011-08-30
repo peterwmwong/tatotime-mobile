@@ -1,9 +1,8 @@
 define [
   'require'
   './History'
-  './Model'
   'cell!./Page'
-], (require,History,Model,Page)->
+], (require,History,Page)->
 
   init: ->
     # Cache of all previously loaded pages
@@ -13,9 +12,6 @@ define [
     @curPage = null
 
     @history = new History defaultCellPath: @options.defaultCellPath
-
-  changeTitle: (newTitle)->
-    @model.set 'title', newTitle
 
   # Animates and changes currently visible page
   changePage: (page)->
@@ -31,7 +27,7 @@ define [
     (@curPage = page).$el.attr 'class', pageInClass
     @curPage.model.trigger 'activate', @history.wasLastBack
     
-    @changeTitle @curPage.model.title
+    @model.set 'title', @curPage.model.title
 
   ###
   Loads and renders the specified Page Cell if not already loaded.
@@ -43,6 +39,7 @@ define [
 
     if (page = @pageCache[cellpath])?
       page.model.set 'data', data
+      page.model.set 'fullpath', fullpath
       @changePage page
 
     # Load new page cell
@@ -50,13 +47,14 @@ define [
       require ["cell!#{cellpath}"], (pagecell)=>
         page = @pageCache[cellpath] =
           new Page
+            fullpath: fullpath
             cell: pagecell
-            pagepath: cellpath
+            cellpath: cellpath
             data: data
         page.$el.appendTo @$el
         page.model.bind 'change:title', (title)=>
-          if @curPage.model.cellpath is @history.cellpath
-            @changeTitle @curPage.model.title
+          if @curPage.model.fullpath is @history.current.fullpath
+            @model.set 'title', @curPage.model.title
         @changePage page
 
     return

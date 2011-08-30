@@ -1,5 +1,5 @@
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-define(['require', 'Services', './History', './Model', 'cell!./Tab', 'cell!./TabNavBar', 'cell!pages/watch/Watch'], function(require, S, History, Model, Tab, TabNavBar) {
+define(['AppDelegate', 'Services', './Model', 'cell!./Tab', 'cell!./TabNavBar', 'cell!./TitleBar', 'cell!pages/watch/Watch'], function(AppDelegate, S, Model, Tab, TabNavBar, TitleBar) {
   var AppModel, curTab, tabCache;
   if (S.isIOS) {
     document.body.addEventListener('touchmove', function(e) {
@@ -7,23 +7,13 @@ define(['require', 'Services', './History', './Model', 'cell!./Tab', 'cell!./Tab
     });
   }
   AppModel = new Model({
+    currentTitle: void 0,
+    currentHistory: void 0,
     currentTab: void 0
   });
   tabCache = {};
   curTab = null;
   return {
-    changeTitle: function(newTitle, wasLastBack) {
-      var rev, title;
-      rev = wasLastBack && '-reverse' || '';
-      if (title = this.$title.html()) {
-        this.$prevtitle.html(this.$title.html()).attr('class', 'headingOut' + rev);
-      }
-      if (newTitle) {
-        return this.$title.html(newTitle).attr('class', 'headingIn' + rev);
-      } else {
-        return this.$title.html('');
-      }
-    },
     changeTab: function(tabid) {
       var tab;
       tab = tabCache[tabid];
@@ -36,34 +26,31 @@ define(['require', 'Services', './History', './Model', 'cell!./Tab', 'cell!./Tab
           })
         });
         tab.model.bind('change:title', __bind(function(newTitle) {
-          return this.changeTitle(newTitle, tab.history.wasLastBack);
+          return AppModel.set('currentTitle', newTitle);
         }, this));
-        this.changeTitle(tab.model.title);
+        AppModel.set('currentTitle', tab.model.title);
         this.$content.append(tab.$el);
       }
       AppModel.set('currentTab', tabid);
+      AppModel.set('currentHistory', tab.history);
       this.$('#content > .activeTab').removeClass('activeTab');
       return tab.$el.toggleClass('activeTab', true);
     },
     init: function() {
       if (S.isIOSFullScreen) {
-        return this.options["class"] = 'IOSFullScreenApp';
+        this.options["class"] = 'IOSFullScreenApp';
       }
+      AppDelegate.model = AppModel;
+      return typeof AppDelegate.init === "function" ? AppDelegate.init() : void 0;
     },
     render: function(_, A) {
-      return require(['AppDelegate'], __bind(function(appDelegate) {
-        var _base;
-        this.appDelegate = appDelegate;
-        this.appDelegate.model = AppModel;
-        if (typeof (_base = this.appDelegate).init === "function") {
-          _base.init();
-        }
-        return A([
-          _('#header', _('#backbutton', _('span', 'Back')), _('#title', ' '), _('#prevtitle', ' '), _('#forwardbutton', _('span', 'Do It'))), _('#content'), _('#footer', _(TabNavBar, {
-            model: AppModel
-          }))
-        ]);
-      }, this));
+      return [
+        _(TitleBar, {
+          model: AppModel
+        }), _('#content'), _(TabNavBar, {
+          model: AppModel
+        })
+      ];
     },
     afterRender: function() {
       var hideIOSAddressBar;
@@ -77,21 +64,15 @@ define(['require', 'Services', './History', './Model', 'cell!./Tab', 'cell!./Tab
         $(window).bind('resize', hideIOSAddressBar);
       }
       this.$content = this.$('#content');
-      this.$title = this.$('#title');
-      this.$title.bind('webkitAnimationEnd', __bind(function() {
-        return this.$title.attr('class', '');
-      }, this));
-      this.$prevtitle = this.$('#prevtitle');
-      this.$prevtitle.bind('webkitAnimationEnd', __bind(function() {
-        return this.$prevtitle.attr('class', '');
-      }, this));
-      return this.changeTab(AppModel.defaultTab);
-    },
-    on: {
-      'click #backbutton': function() {
+      this.changeTab(AppModel.defaultTab);
+      AppModel.bind('goback', function() {
         var _ref;
         return (_ref = tabCache[AppModel.currentTab]) != null ? _ref.history.goBack() : void 0;
-      }
+      });
+      return AppModel.bind('change:currentTab', function(tab) {
+        var _ref;
+        return AppModel.set('currentHistory', (_ref = tabCache[tab]) != null ? _ref.history : void 0);
+      });
     }
   };
 });

@@ -1,10 +1,12 @@
 define [
   './Model'
 ], (Model)->
-  tag: -> "<div data-pagepath='#{@options.pagepath}'>"
+
+  tag: -> "<div data-cellpath='#{@options.cellpath}'>"
+
   init: ->
     @model = new Model
-      pagepath: @options.cellpath
+      fullpath: @options.fullpath
       data: @options.data
 
   render: (_)-> [

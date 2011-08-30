@@ -73,8 +73,7 @@ define(['./Model'], function(Model) {
           this.set('wasLastBack', false);
         }
         window.location.hash = hash(entry.fullpath);
-        this.set('current', this._hist[0]);
-        return false;
+        return this.set('current', this._hist[0]);
       }
     };
     return History;

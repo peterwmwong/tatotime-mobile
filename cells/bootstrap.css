@@ -20,25 +20,26 @@ h1,h2,h3,h4,h5{margin:0;padding:0}
 .App .headingIn{-webkit-animation-name:slideInLeft;-webkit-animation-duration:500ms;-webkit-animation-fill-mode:forwards}
 .App .headingOut-reverse{-webkit-animation-name:slideOutRight;-webkit-animation-duration:500ms;-webkit-animation-fill-mode:forwards}
 .App .headingIn-reverse{-webkit-animation-name:slideInRight;-webkit-animation-duration:500ms;-webkit-animation-fill-mode:forwards}
-.App > #header{position:absolute;top:0;right:0;left:0;-webkit-box-shadow:0 1px 5px #333;-moz-box-shadow:0 1px 5px #333;box-shadow:0 1px 5px #333;background:#2b2b2b;background:-moz-linear-gradient(top,#444 0%,#111 100%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#444),color-stop(100%,#111));filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#444', endColorstr='#111',GradientType=0 );height:43px;z-index:3;}
-.App > #header > #backbutton,.App > #header > #forwardbutton{color:#aaa;display:inline-block;font-size:14px;text-align:center;position:absolute;top:7px;bottom:7px;background-color:#111;}
-.App > #header > #backbutton > span,.App > #header > #forwardbutton > span{top:6px;bottom:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-.App > #header > #backbutton{border-radius:0 5px 5px 0;width:15%;left:20px;}
-.App > #header > #backbutton:before{position:absolute;left:-28px;content:"";display:block;border-color:rgba(17,17,17,0.00) #111 rgba(17,17,17,0.00) rgba(17,17,17,0.00);border-style:solid;border-width:14px;height:0;width:0;z-index:2}
-.App > #header > #backbutton > span{position:absolute;right:8px;left:2px}
-.App > #header > #forwardbutton{border-radius:5px;right:7px;width:20%;}
-.App > #header > #forwardbutton > span{position:absolute;right:8px;left:8px}
-.App > #header > #title,.App > #header > #prevtitle{position:absolute;top:0;right:25%;bottom:0;left:25%;color:#fff;font-size:22px;font-weight:bold;padding:9px 0 0 0;text-align:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;z-index:2}
-.App > #header > #prevtitle{visibility:hidden;z-index:1;}
-.App > #header > #prevtitle.headingOut,.App > #header > #prevtitle.headingOut-reverse{visibility:visible}
+.App > .TitleBar{position:absolute;top:0;right:0;left:0;z-index:3}
 .App > #content{margin-top:43px;box-flex:1;-webkit-box-flex:1;-moz-box-flex:1;position:relative;z-index:1}
-.App > #footer{z-index:2}
+.App > .TabNavBar{z-index:2}
 .Tab{position:absolute;top:0;right:0;bottom:0;left:0;overflow:hidden;}
 .Tab > .Page{position:absolute;top:0;right:0;bottom:0;left:0;}
 .Tab > .Page.fadeIn{animate:fadeIn 1s}
 .TabNavBar{margin:0;padding:0;list-style-type:none;display:box;display:-webkit-box;display:-moz-box;-webkit-box-orient:horizontal;-moz-box-orient:horizontal;}
 .TabNavBar > li{border-top:2px solid #666;border-right:1px solid #444;color:#fff;background:#232323;background:-moz-linear-gradient(top,#333 0%,#111 100%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#333),color-stop(100%,#111));filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#333', endColorstr='#111',GradientType=0 );text-align:center;box-flex:1;-webkit-box-flex:1;-moz-box-flex:1;padding:10px 0 10px 0;}
 .TabNavBar > li:last-child{border-right:none}
+.TitleBar{box-shadow:0 1px 5px #333;background:#2b2b2b;background:-moz-linear-gradient(top,#444 0%,#111 100%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#444),color-stop(100%,#111));filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#444', endColorstr='#111',GradientType=0 );height:43px;}
+.TitleBar > #backbutton,.TitleBar > #forwardbutton{color:#aaa;display:inline-block;font-size:14px;text-align:center;position:absolute;top:7px;bottom:7px;background-color:#111;}
+.TitleBar > #backbutton > span,.TitleBar > #forwardbutton > span{top:6px;bottom:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.TitleBar > #backbutton{border-radius:0 5px 5px 0;width:15%;left:20px;}
+.TitleBar > #backbutton:before{position:absolute;left:-28px;content:"";display:block;border-color:rgba(17,17,17,0.00) #111 rgba(17,17,17,0.00) rgba(17,17,17,0.00);border-style:solid;border-width:14px;height:0;width:0;z-index:2}
+.TitleBar > #backbutton > span{position:absolute;right:8px;left:2px}
+.TitleBar > #forwardbutton{border-radius:5px;right:7px;width:20%;}
+.TitleBar > #forwardbutton > span{position:absolute;right:8px;left:8px}
+.TitleBar > #title,.TitleBar > #prevtitle{position:absolute;top:0;right:25%;bottom:0;left:25%;color:#fff;font-size:22px;font-weight:bold;padding:9px 0 0 0;text-align:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;z-index:2}
+.TitleBar > #prevtitle{visibility:hidden;z-index:1;}
+.TitleBar > #prevtitle.headingOut,.TitleBar > #prevtitle.headingOut-reverse{visibility:visible}
 ul.ListView{padding:0;margin:0;list-style:none;}
 ul.ListView > li{box-sizing:border-box;-webkit-box-sizing:border-box;border-top:1px solid #dedede;color:#2f3e46;font-weight:bold;background:#f4f4f4;background:-moz-linear-gradient(top,#fafafa 0%,#eee 100%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#fafafa),color-stop(100%,#eee));filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#fafafa', endColorstr='#eee',GradientType=0 );padding:12px 10px 10px 10px;text-decoration:none;width:100%;vertical-align:middle;}
 ul.ListView > li.active{color:#fff;cursor:pointer;background:#6da7d5;background:-moz-linear-gradient(top,#85bae4 0%,#5393c5 100%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#85bae4),color-stop(100%,#5393c5));filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#85bae4', endColorstr='#5393c5',GradientType=0 );border-top:1px solid #155678;border-bottom:1px solid #155678;outline:none}

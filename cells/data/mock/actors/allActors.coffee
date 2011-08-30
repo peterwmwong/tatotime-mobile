@@ -23,5 +23,5 @@ define ->
       knownFor: [
         _ id: 0, role: 'Actor', title: 'Mad Men'
         _ id: 1, role: 'Actor', title: 'Falling Skies'
-        _ id: 2, role: 'Actor', title: 'Camelot'
+        _ id: 2, role: 'Actor', title: 'Game of Thrones'
       ]

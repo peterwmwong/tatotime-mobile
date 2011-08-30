@@ -1,11 +1,11 @@
 define(['./Model'], function(Model) {
   return {
     tag: function() {
-      return "<div data-pagepath='" + this.options.pagepath + "'>";
+      return "<div data-cellpath='" + this.options.cellpath + "'>";
     },
     init: function() {
       return this.model = new Model({
-        pagepath: this.options.cellpath,
+        fullpath: this.options.fullpath,
         data: this.options.data
       });
     },

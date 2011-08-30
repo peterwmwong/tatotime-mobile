@@ -51,6 +51,4 @@ define [
         window.location.hash = hash entry.fullpath
         @set 'current', @_hist[0]
 
-        return false
-
   History

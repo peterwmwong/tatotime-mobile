@@ -26,7 +26,7 @@ define(function() {
         }), _({
           id: 2,
           role: 'Actor',
-          title: 'Camelot'
+          title: 'Game of Thrones'
         })
       ]
     }));
