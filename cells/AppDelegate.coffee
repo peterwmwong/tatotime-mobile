@@ -4,7 +4,7 @@ define [
   init: ->
     @model.tabs = 
       Schedule:
-        defaultPagePath: 'pages/watch/Watch'
+        defaultPagePath: 'pages/schedule/Schedule'
       Watch:
         defaultPagePath: 'pages/watch/Watch'
       Search:

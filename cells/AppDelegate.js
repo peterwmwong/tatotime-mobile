@@ -3,7 +3,7 @@ define(['cell!pages/watch/Watch'], function() {
     init: function() {
       this.model.tabs = {
         Schedule: {
-          defaultPagePath: 'pages/watch/Watch'
+          defaultPagePath: 'pages/schedule/Schedule'
         },
         Watch: {
           defaultPagePath: 'pages/watch/Watch'

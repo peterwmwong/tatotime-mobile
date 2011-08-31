@@ -8,7 +8,7 @@ define(['Services', 'shared/DateHelper', 'cell!shared/ListView'], function(S, Da
       }, this));
     },
     render: function(_, A) {
-      return S.user.getWatchShows(__bind(function(shows) {
+      return S.user.getShows(new Date(), __bind(function(shows) {
         var s;
         A([
           _(ListView, {

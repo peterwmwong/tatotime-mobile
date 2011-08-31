@@ -1,7 +1,13 @@
 define(function() {
   var getPathComponent;
-  return getPathComponent = function(path) {
+  return getPathComponent = function(path, i) {
     var s;
-    return (s = path.split('/'))[s.length - 1];
+    return (s = path.split('/'))[(function() {
+      if (i != null) {
+        return i;
+      } else {
+        return s.length - 1;
+      }
+    })()];
   };
 });

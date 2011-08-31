@@ -1,7 +1,7 @@
-define ['data/mock/shows/allShows'], (allShows)->
-  _ = (o)->o
-  for id,s of allShows
-    result = id: id
-    for k,v of s
-      result[k] = v
-    result
+define [
+  'data/mock/users/allUsers'
+  'data/mock/PathHelper'
+], (users,{getPathComponents})->
+  (path)->
+    [api,users,userid,schedule,date] = getPathComponents path
+    users[userid].shows

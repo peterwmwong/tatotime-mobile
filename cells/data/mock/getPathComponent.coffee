@@ -1,2 +1,5 @@
 define ->
-  getPathComponent = (path)-> (s = path.split '/')[s.length - 1]
+  getPathComponent = (path,i)-> (s = path.split '/')[ do->
+    if i? then i
+    else s.length - 1
+  ]
