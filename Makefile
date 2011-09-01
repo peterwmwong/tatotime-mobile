@@ -49,8 +49,7 @@ cells/bootstrap.js: $(uglifyjs) cells/cell.js cells/cell-pluginBuilder.js
 		name=cell!framework/App \
 		out=cells/bootstrap-tmp.js \
 		baseUrl=cells includeRequire=true
-	cat vendor/jquery.js \
-			vendor/iscroll-lite.js \
+	cat vendor/iscroll-lite.js \
 			cells/bootstrap-tmp.js | $(uglifyjs) -nc > cells/bootstrap.js
 	cat cells/global.css \
 			cells/bootstrap-tmp.css > cells/bootstrap.css
