@@ -1,12 +1,13 @@
 define({
   render: function(_, A) {
-    return [_('#backbutton', _('span', 'Back')), _('#title'), _('#prevtitle'), _('#forwardbutton', _('span', 'Do It'))];
+    return [_('#backbutton', _('span', 'Back')), _('#titles', _('#title'), _('#prevtitle')), _('#gobutton', _('span', 'Do It'))];
   },
   afterRender: function() {
-    var $backbutton, $prevtitle, $title, animating, handleCurrentChange, handleCurrentHistoryChange, handleTitleChange, model;
+    var $backbutton, $backbuttonText, $prevtitle, $title, animating, handleCurrentChange, handleCurrentHistoryChange, handleTitleChange, model;
     animating = false;
     model = this.model;
     $backbutton = this.$('#backbutton');
+    $backbuttonText = this.$('#backbutton > span');
     $title = this.$('#title');
     $prevtitle = this.$('#prevtitle');
     $title.bind('webkitAnimationEnd', function() {
@@ -18,7 +19,7 @@ define({
       return $title.html(title || '');
     };
     handleCurrentChange = function(cur) {
-      var curHist, hasHistory, prevTitle, rev;
+      var curHist, e, hasHistory, prevTitle, rev;
       prevTitle = $title.html();
       cur.bind('change:title', handleTitleChange);
       handleTitleChange(cur.title);
@@ -27,6 +28,10 @@ define({
         hasHistory = curHist.length() > 1;
         $backbutton.css('visibility', hasHistory && 'visible' || 'hidden');
         rev = curHist.wasLastBack && '-reverse' || '';
+        if (e = curHist._hist[1] != null) {
+          console.log(curHist);
+          $backbuttonText.html(e.title);
+        }
         if (prevTitle) {
           $prevtitle.html(prevTitle).attr('class', 'headingOut' + rev);
         }

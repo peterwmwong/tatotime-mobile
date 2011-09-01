@@ -1,9 +1,10 @@
 define
   render: (_,A)-> [
     _ '#backbutton', _ 'span', 'Back'
-    _ '#title'
-    _ '#prevtitle'
-    _ '#forwardbutton', _ 'span', 'Do It'
+    _ '#titles',
+      _ '#title'
+      _ '#prevtitle'
+    _ '#gobutton', _ 'span', 'Do It'
   ]
 
   afterRender: ->
@@ -11,6 +12,7 @@ define
     animating = false
     model = @model
     $backbutton = @$ '#backbutton'
+    $backbuttonText = @$ '#backbutton > span'
     $title = @$ '#title'
     $prevtitle = @$ '#prevtitle'
     
@@ -32,6 +34,10 @@ define
 
         $backbutton.css 'visibility', hasHistory and 'visible' or 'hidden'
         rev = curHist.wasLastBack and '-reverse' or ''
+
+        if e = curHist._hist[1]?
+          console.log curHist
+          $backbuttonText.html e.title
         if prevTitle
           $prevtitle
             .html(prevTitle)

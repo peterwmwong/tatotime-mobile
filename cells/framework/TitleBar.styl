@@ -1,8 +1,10 @@
+@import 'mixins/box';
 @import 'mixins/gradient';
 @import 'mixins/pos';
 @import 'mixins/triangle';
 
 .TitleBar
+  box horizontal
   box-shadow 0 1px 5px #333
   gradient #444 #111
   height 43px
@@ -11,13 +13,17 @@
   buttonRadius = 5px
 
   > #backbutton
-  > #forwardbutton
-    color #AAA
+  > #gobutton
+    color #CCC
     display inline-block
     font-size 14px
+    font-weight bold
     text-align center
-    abspos 7px false 7px false
     background-color buttonColor
+    position relative
+    width 200px
+    height 29px
+    margin 7px 0 0 0
 
     > span
       top 6px
@@ -28,7 +34,6 @@
 
   > #backbutton
     border-radius 0 buttonRadius buttonRadius 0
-    width 15%
     left 20px
 
     &:before
@@ -38,32 +43,37 @@
     > span
       abspos false 8px false 2px
 
-  > #forwardbutton
+  > #gobutton
     border-radius buttonRadius
     right 7px
-    width 20%
 
     > span
       abspos false 8px false 8px
 
-  > #title
-  > #prevtitle
-    abspos 0px 25% 0px 25%
-    color #FFF
-    font-size 22px
-    font-weight bold
-    padding 9px 0 0 0
-    text-align center
-    overflow hidden
-    white-space nowrap
-    text-overflow ellipsis
-    z-index 2
-
-  > #prevtitle
-    visibility hidden
+  > #titles
+    box-flex 1
+    position relative
     z-index 1
 
-    &.headingOut
-    &.headingOut-reverse
-      visibility visible
+    > #title
+    > #prevtitle
+      abspos 0px 0px false 0px
+      color #FFF
+      font-size 22px
+      font-weight bold
+      padding 9px 0 0 0
+      text-align center
+      overflow hidden
+      white-space nowrap
+      text-overflow ellipsis
+      height 35px
+      z-index 2
+
+    > #prevtitle
+      visibility hidden
+      z-index 1
+
+      &.headingOut
+      &.headingOut-reverse
+        visibility visible
     
