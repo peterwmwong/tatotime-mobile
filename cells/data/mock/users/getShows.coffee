@@ -1,7 +1,7 @@
 define [
   'data/mock/users/allUsers'
   'data/mock/PathHelper'
-], (users,{getPathComponents})->
+], (allUsers,{getPathComponents})->
   (path)->
-    [api,users,userid,schedule,date] = getPathComponents path
-    users[userid].shows
+    [api,user,userid,schedule,date] = getPathComponents path
+    allUsers[userid].shows

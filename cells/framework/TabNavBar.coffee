@@ -15,7 +15,7 @@ define ->
   on:
     'click li': ({target})->
       $('li.active').removeClass 'active'
-      @model.set 'currentTab',
+      @model.set currentTab:
         $(target)
           .addClass('active')
           .data('tabid')

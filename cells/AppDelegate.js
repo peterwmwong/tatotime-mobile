@@ -1,4 +1,4 @@
-define(['cell!pages/watch/Watch'], function() {
+define(['cell!pages/schedule/Schedule'], function() {
   return {
     init: function() {
       this.model.tabs = {

@@ -8,8 +8,20 @@ define(function() {
         this[k] = v;
       }
     }
-    _Class.prototype.set = function(attr, value) {
-      return this.trigger("change:" + attr, (this[attr] = value));
+    _Class.prototype.set = function(kvMap) {
+      var k, v, _results;
+      _results = [];
+      for (k in kvMap) {
+        v = kvMap[k];
+        if (this[k] !== v) {
+          _results.push((function() {
+            try {
+              return this.trigger("change:" + k, (this[k] = v));
+            } catch (_e) {}
+          }).call(this));
+        }
+      }
+      return _results;
     };
     _Class.prototype.trigger = function(type, data) {
       var l, ls, _i, _len, _results;
@@ -35,7 +47,7 @@ define(function() {
           return;
         }
       }
-      return ls.push(handler);
+      return ls.unshift(handler);
     };
     _Class.prototype.unbind = function(type, handler) {
       var i, l, ls, _len;

@@ -19,10 +19,10 @@ define [
     @model.bind 'change:data', (data)=> @update data
     @update @model.data
 
-  update: ({id})-> 
-    @model.set 'title', undefined
+  update: ({id,title})-> 
+    @model.set title: title or 'Loading...'
     S.show.getDetails id, ({title,description,network,year,cast})=>
-      @model.set 'title', title
+      @model.set title: title
       @$('.title').html title
       @$('.year').html year
       @$('.description').html do->
@@ -37,7 +37,7 @@ define [
       @$('.castGroup > .castList')
         .append cell::$R ListView, list: do->
           for {id,name} in cast then do->
-            link: "#!/pages/profiledetails/ProfileDetails?id=#{id}"
+            link: "#!/pages/profiledetails/ProfileDetails?id=#{id}&title=#{name}"
             text: name
 
       @model.trigger 'refreshScroller'

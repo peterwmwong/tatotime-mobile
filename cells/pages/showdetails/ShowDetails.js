@@ -11,13 +11,17 @@ define(['Services', 'cell!shared/ListView'], function(S, ListView) {
       return this.update(this.model.data);
     },
     update: function(_arg) {
-      var id;
-      id = _arg.id;
-      this.model.set('title', void 0);
+      var id, title;
+      id = _arg.id, title = _arg.title;
+      this.model.set({
+        title: title || 'Loading...'
+      });
       return S.show.getDetails(id, __bind(function(_arg2) {
         var cast, description, network, title, year;
         title = _arg2.title, description = _arg2.description, network = _arg2.network, year = _arg2.year, cast = _arg2.cast;
-        this.model.set('title', title);
+        this.model.set({
+          title: title
+        });
         this.$('.title').html(title);
         this.$('.year').html(year);
         this.$('.description').html((function() {
@@ -37,7 +41,7 @@ define(['Services', 'cell!shared/ListView'], function(S, ListView) {
               _ref = cast[_i], id = _ref.id, name = _ref.name;
               _results.push((function() {
                 return {
-                  link: "#!/pages/profiledetails/ProfileDetails?id=" + id,
+                  link: "#!/pages/profiledetails/ProfileDetails?id=" + id + "&title=" + name,
                   text: name
                 };
               })());

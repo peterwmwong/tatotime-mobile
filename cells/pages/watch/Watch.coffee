@@ -5,7 +5,7 @@ define [
 ], (S,DateHelper,ListView)->
 
   init: ->
-    @model.set 'title', DateHelper.getDisplayable new Date()
+    @model.set title: DateHelper.getDisplayable new Date()
     @model.bind 'activate', =>
       @$('.ListView li.active').removeClass('active')
 

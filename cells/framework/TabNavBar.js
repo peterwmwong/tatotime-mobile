@@ -26,7 +26,9 @@ define(function() {
         var target;
         target = _arg.target;
         $('li.active').removeClass('active');
-        return this.model.set('currentTab', $(target).addClass('active').data('tabid'));
+        return this.model.set({
+          currentTab: $(target).addClass('active').data('tabid')
+        });
       }
     }
   };

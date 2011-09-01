@@ -13,7 +13,9 @@ define(['require', './History', 'cell!./Page'], function(require, History, Page)
       pageInClass = this.curPage ? (rev = this.history.wasLastBack && '-reverse' || '', this.curPage.$el.attr('class', 'Page headingOut' + rev), this.curPage.model.trigger('deactivate'), 'Page headingIn' + rev) : 'Page fadeIn';
       (this.curPage = page).$el.attr('class', pageInClass);
       this.curPage.model.trigger('activate', this.history.wasLastBack);
-      return this.model.set('title', this.curPage.model.title);
+      return this.history.current.set({
+        title: this.curPage.model.title
+      });
     },
     /*
       Loads and renders the specified Page Cell if not already loaded.
@@ -24,8 +26,12 @@ define(['require', './History', 'cell!./Page'], function(require, History, Page)
       _ref = this.history.current, fullpath = _ref.fullpath, cellpath = _ref.cellpath, data = _ref.data;
       this.$('#backbutton').css('visibility', (this.history.length() > 1) && 'visible' || 'hidden');
       if ((page = this.pageCache[cellpath]) != null) {
-        page.model.set('data', data);
-        page.model.set('fullpath', fullpath);
+        page.model.set({
+          data: data
+        });
+        page.model.set({
+          fullpath: fullpath
+        });
         this.changePage(page);
       } else {
         require(["cell!" + cellpath], __bind(function(pagecell) {
@@ -38,7 +44,9 @@ define(['require', './History', 'cell!./Page'], function(require, History, Page)
           page.$el.appendTo(this.$el);
           page.model.bind('change:title', __bind(function(title) {
             if (this.curPage.model.fullpath === this.history.current.fullpath) {
-              return this.model.set('title', this.curPage.model.title);
+              return this.history.current.set({
+                title: this.curPage.model.title
+              });
             }
           }, this));
           return this.changePage(page);

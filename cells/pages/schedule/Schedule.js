@@ -2,7 +2,9 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
 define(['Services', 'shared/DateHelper', 'cell!shared/ListView'], function(S, DateHelper, ListView) {
   return {
     init: function() {
-      this.model.set('title', DateHelper.getDisplayable(new Date()));
+      this.model.set({
+        title: DateHelper.getDisplayable(new Date())
+      });
       return this.model.bind('activate', __bind(function() {
         return this.$('.ListView li.active').removeClass('active');
       }, this));
@@ -19,7 +21,7 @@ define(['Services', 'shared/DateHelper', 'cell!shared/ListView'], function(S, Da
                 s = shows[_i];
                 _results.push((function() {
                   return {
-                    link: "#!/pages/showdetails/ShowDetails?id=" + s.id,
+                    link: "#!/pages/showdetails/ShowDetails?id=" + s.id + "&title=" + s.title,
                     text: s.title
                   };
                 })());

@@ -26,11 +26,12 @@ define(['./Model'], function(Model) {
     if (!cellpath) {
       cellpath = defaultCellPath;
     }
-    return {
+    return new Model({
       cellpath: cellpath,
       fullpath: fullpath,
-      data: data
-    };
+      data: data,
+      title: 'Loading...'
+    });
   };
   History = (function() {
     __extends(History, Model);
@@ -67,13 +68,19 @@ define(['./Model'], function(Model) {
         if (((_ref = this._hist[1]) != null ? _ref.fullpath : void 0) === entry.fullpath) {
           this._hist.shift();
           this._hist[0].data = entry.data;
-          this.set('wasLastBack', true);
+          this.set({
+            wasLastBack: true
+          });
         } else {
           this._hist.unshift(entry);
-          this.set('wasLastBack', false);
+          this.set({
+            wasLastBack: false
+          });
         }
         window.location.hash = hash(entry.fullpath);
-        return this.set('current', this._hist[0]);
+        return this.set({
+          current: this._hist[0]
+        });
       }
     };
     return History;

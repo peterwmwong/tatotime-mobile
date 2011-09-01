@@ -1,5 +1,5 @@
 define [
-  'cell!pages/watch/Watch' # Preload front pages
+  'cell!pages/schedule/Schedule' # Preload front pages
 ], ->
   init: ->
     @model.tabs = 

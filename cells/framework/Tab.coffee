@@ -26,8 +26,7 @@ define [
 
     (@curPage = page).$el.attr 'class', pageInClass
     @curPage.model.trigger 'activate', @history.wasLastBack
-    
-    @model.set 'title', @curPage.model.title
+    @history.current.set title: @curPage.model.title
 
   ###
   Loads and renders the specified Page Cell if not already loaded.
@@ -38,8 +37,8 @@ define [
     @$('#backbutton').css 'visibility', (@history.length() > 1) and 'visible' or 'hidden'
 
     if (page = @pageCache[cellpath])?
-      page.model.set 'data', data
-      page.model.set 'fullpath', fullpath
+      page.model.set data: data
+      page.model.set fullpath: fullpath
       @changePage page
 
     # Load new page cell
@@ -54,7 +53,7 @@ define [
         page.$el.appendTo @$el
         page.model.bind 'change:title', (title)=>
           if @curPage.model.fullpath is @history.current.fullpath
-            @model.set 'title', @curPage.model.title
+            @history.current.set title: @curPage.model.title
         @changePage page
 
     return

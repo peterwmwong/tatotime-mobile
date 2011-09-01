@@ -1,34 +1,46 @@
-var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 define({
-  changeTitle: function(title) {
-    var rev, _ref, _ref2;
-    this.$backbutton.css('visibility', (((_ref = this.model.currentHistory) != null ? _ref.length() : void 0) > 1) && 'visible' || 'hidden');
-    rev = ((_ref2 = this.model.currentHistory) != null ? _ref2.wasLastBack : void 0) && '-reverse' || '';
-    if (this.$title.html()) {
-      this.$prevtitle.html(this.$title.html()).attr('class', 'headingOut' + rev);
-    }
-    if (title) {
-      return this.$title.html(title).attr('class', 'headingIn' + rev);
-    } else {
-      return this.$title.html('');
-    }
-  },
   render: function(_, A) {
-    return [_('#backbutton', _('span', 'Back')), _('#title', this.model.currentTitle || ' '), _('#prevtitle', ' '), _('#forwardbutton', _('span', 'Do It'))];
+    return [_('#backbutton', _('span', 'Back')), _('#title'), _('#prevtitle'), _('#forwardbutton', _('span', 'Do It'))];
   },
   afterRender: function() {
-    this.$backbutton = this.$('#backbutton');
-    this.$title = this.$('#title');
-    this.$title.bind('webkitAnimationEnd', __bind(function() {
-      return this.$title.attr('class', '');
-    }, this));
-    this.$prevtitle = this.$('#prevtitle');
-    this.$prevtitle.bind('webkitAnimationEnd', __bind(function() {
-      return this.$prevtitle.attr('class', '');
-    }, this));
-    return this.model.bind('change:currentTitle', __bind(function(title) {
-      return this.changeTitle(title);
-    }, this));
+    var $backbutton, $prevtitle, $title, animating, handleCurrentChange, handleCurrentHistoryChange, handleTitleChange, model;
+    animating = false;
+    model = this.model;
+    $backbutton = this.$('#backbutton');
+    $title = this.$('#title');
+    $prevtitle = this.$('#prevtitle');
+    $title.bind('webkitAnimationEnd', function() {
+      $title.attr('class', '');
+      $prevtitle.attr('class', '');
+      return animating = false;
+    });
+    handleTitleChange = function(title) {
+      return $title.html(title || '');
+    };
+    handleCurrentChange = function(cur) {
+      var curHist, hasHistory, prevTitle, rev;
+      prevTitle = $title.html();
+      cur.bind('change:title', handleTitleChange);
+      handleTitleChange(cur.title);
+      if (!animating) {
+        curHist = model.currentHistory;
+        hasHistory = curHist.length() > 1;
+        $backbutton.css('visibility', hasHistory && 'visible' || 'hidden');
+        rev = curHist.wasLastBack && '-reverse' || '';
+        if (prevTitle) {
+          $prevtitle.html(prevTitle).attr('class', 'headingOut' + rev);
+        }
+        $title.attr('class', 'headingIn' + rev);
+        return animating = true;
+      }
+    };
+    model.bind('change:currentHistory', handleCurrentHistoryChange = function(curHist) {
+      if (curHist) {
+        curHist.bind('change:current', handleCurrentChange);
+        return handleCurrentChange(curHist.current);
+      }
+    });
+    return handleCurrentHistoryChange(model.currentHistory);
   },
   on: {
     'click #backbutton': function() {

@@ -13,7 +13,7 @@ define [
 
     if not cellpath
       cellpath = defaultCellPath
-    {cellpath,fullpath,data}
+    new Model {cellpath,fullpath,data,title:'Loading...'}
 
   class History extends Model
     constructor: ({@defaultCellPath})->
@@ -42,13 +42,13 @@ define [
         if @_hist[1]?.fullpath is entry.fullpath
           @_hist.shift()
           @_hist[0].data = entry.data
-          @set 'wasLastBack', true
+          @set wasLastBack: true
 
         else
           @_hist.unshift entry
-          @set 'wasLastBack', false
+          @set wasLastBack: false
 
         window.location.hash = hash entry.fullpath
-        @set 'current', @_hist[0]
+        @set current: @_hist[0]
 
   History

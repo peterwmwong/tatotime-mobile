@@ -25,7 +25,7 @@ define ->
                 mock(real)
               else
                 mock
-        ), 50
+        ), 500
     else
       ({real},done)->
         jsonp

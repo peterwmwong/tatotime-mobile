@@ -12,7 +12,6 @@ define [
     document.body.addEventListener 'touchmove', (e)-> e.preventDefault()
 
   AppModel = new Model
-    currentTitle: undefined
     currentHistory: undefined
     currentTab: undefined
 
@@ -28,16 +27,11 @@ define [
     if not tab
       tab = tabCache[tabid] = new Tab
         defaultCellPath: AppModel.tabs[tabid].defaultPagePath
-        model: new Model
-          id: tabid
-          title: 'Loading...'
-      tab.model.bind 'change:title', (newTitle)=>
-        AppModel.set 'currentTitle', newTitle
-      AppModel.set 'currentTitle', tab.model.title
+        model: new Model {id: tabid}
       @$content.append tab.$el
 
-    AppModel.set 'currentTab', tabid
-    AppModel.set 'currentHistory', tab.history
+    AppModel.set currentTab: tabid
+    AppModel.set currentHistory: tab.history
     @$('#content > .activeTab').removeClass 'activeTab'
     tab.$el.toggleClass 'activeTab', true
     
@@ -51,7 +45,7 @@ define [
   render: (_,A)-> [
     _ TitleBar, model: AppModel
     _ '#content'
-    _  TabNavBar, model: AppModel
+    _ TabNavBar, model: AppModel
   ]
 
   afterRender: ->
@@ -74,5 +68,4 @@ define [
     @changeTab AppModel.defaultTab
 
     AppModel.bind 'goback', -> tabCache[AppModel.currentTab]?.history.goBack()
-    AppModel.bind 'change:currentTab', (tab)->
-      AppModel.set 'currentHistory', tabCache[tab]?.history
+    AppModel.bind 'change:currentTab', (tab)-> AppModel.set currentHistory: tabCache[tab]?.history

@@ -1,3 +1,2 @@
 .Tab{position:absolute;top:0;right:0;bottom:0;left:0;overflow:hidden;}
-.Tab > .Page{position:absolute;top:0;right:0;bottom:0;left:0;}
-.Tab > .Page.fadeIn{animate:fadeIn 1s}
+.Tab > .Page{position:absolute;top:0;right:0;bottom:0;left:0}

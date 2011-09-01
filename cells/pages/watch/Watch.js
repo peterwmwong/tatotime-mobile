@@ -2,7 +2,9 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
 define(['Services', 'shared/DateHelper', 'cell!shared/ListView'], function(S, DateHelper, ListView) {
   return {
     init: function() {
-      this.model.set('title', DateHelper.getDisplayable(new Date()));
+      this.model.set({
+        title: DateHelper.getDisplayable(new Date())
+      });
       return this.model.bind('activate', __bind(function() {
         return this.$('.ListView li.active').removeClass('active');
       }, this));

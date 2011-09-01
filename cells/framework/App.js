@@ -1,4 +1,3 @@
-var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 define(['AppDelegate', 'Services', './Model', 'cell!./Tab', 'cell!./TabNavBar', 'cell!./TitleBar'], function(AppDelegate, S, Model, Tab, TabNavBar, TitleBar) {
   var AppModel, curTab, tabCache;
   if (S.isIOS) {
@@ -7,7 +6,6 @@ define(['AppDelegate', 'Services', './Model', 'cell!./Tab', 'cell!./TabNavBar', 
     });
   }
   AppModel = new Model({
-    currentTitle: void 0,
     currentHistory: void 0,
     currentTab: void 0
   });
@@ -21,18 +19,17 @@ define(['AppDelegate', 'Services', './Model', 'cell!./Tab', 'cell!./TabNavBar', 
         tab = tabCache[tabid] = new Tab({
           defaultCellPath: AppModel.tabs[tabid].defaultPagePath,
           model: new Model({
-            id: tabid,
-            title: 'Loading...'
+            id: tabid
           })
         });
-        tab.model.bind('change:title', __bind(function(newTitle) {
-          return AppModel.set('currentTitle', newTitle);
-        }, this));
-        AppModel.set('currentTitle', tab.model.title);
         this.$content.append(tab.$el);
       }
-      AppModel.set('currentTab', tabid);
-      AppModel.set('currentHistory', tab.history);
+      AppModel.set({
+        currentTab: tabid
+      });
+      AppModel.set({
+        currentHistory: tab.history
+      });
       this.$('#content > .activeTab').removeClass('activeTab');
       return tab.$el.toggleClass('activeTab', true);
     },
@@ -71,7 +68,9 @@ define(['AppDelegate', 'Services', './Model', 'cell!./Tab', 'cell!./TabNavBar', 
       });
       return AppModel.bind('change:currentTab', function(tab) {
         var _ref;
-        return AppModel.set('currentHistory', (_ref = tabCache[tab]) != null ? _ref.history : void 0);
+        return AppModel.set({
+          currentHistory: (_ref = tabCache[tab]) != null ? _ref.history : void 0
+        });
       });
     }
   };
