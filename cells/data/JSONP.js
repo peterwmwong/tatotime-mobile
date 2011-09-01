@@ -35,7 +35,7 @@ define(function() {
           }
         })());
       });
-    }), 500);
+    }), 0);
   } : function(_arg, done) {
     var real;
     real = _arg.real;
