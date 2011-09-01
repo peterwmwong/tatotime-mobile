@@ -20,7 +20,7 @@ define(['./Model'], function(Model) {
       for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
         kv = _ref2[_i];
         _ref3 = kv.split('='), k = _ref3[0], v = _ref3[1];
-        data[k] = v;
+        data[k] = decodeURIComponent(v);
       }
     }
     if (!cellpath) {

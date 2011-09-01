@@ -9,7 +9,7 @@ define [
     if jsondata
       for kv in jsondata.split '&'
         [k,v] = kv.split '='
-        data[k] = v
+        data[k] = decodeURIComponent v
 
     if not cellpath
       cellpath = defaultCellPath
