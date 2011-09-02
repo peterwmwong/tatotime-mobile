@@ -4,6 +4,8 @@ define [
   'cell!./Page'
 ], (require,History,Page)->
 
+  tag: -> "<div data-tabid='#{@model.id}'>"
+
   init: ->
     # Cache of all previously loaded pages
     @pageCache = {}

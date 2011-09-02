@@ -23,6 +23,7 @@ define [
 
   # Animates and changes currently visible page
   changeTab: (tabid)->
+    debugger
     tab = tabCache[tabid]
     if not tab
       tab = tabCache[tabid] = new Tab
@@ -68,4 +69,4 @@ define [
     @changeTab AppModel.defaultTab
 
     AppModel.bind 'goback', -> tabCache[AppModel.currentTab]?.history.goBack()
-    AppModel.bind 'change:currentTab', (tab)-> AppModel.set currentHistory: tabCache[tab]?.history
+    AppModel.bind 'change:currentTab', (tab)=> @changeTab tab

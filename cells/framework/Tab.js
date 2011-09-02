@@ -1,6 +1,9 @@
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 define(['require', './History', 'cell!./Page'], function(require, History, Page) {
   return {
+    tag: function() {
+      return "<div data-tabid='" + this.model.id + "'>";
+    },
     init: function() {
       this.pageCache = {};
       this.curPage = null;

@@ -1,3 +1,4 @@
+var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 define(['AppDelegate', 'Services', './Model', 'cell!./Tab', 'cell!./TabNavBar', 'cell!./TitleBar'], function(AppDelegate, S, Model, Tab, TabNavBar, TitleBar) {
   var AppModel, curTab, tabCache;
   if (S.isIOS) {
@@ -13,6 +14,7 @@ define(['AppDelegate', 'Services', './Model', 'cell!./Tab', 'cell!./TabNavBar', 
   curTab = null;
   return {
     changeTab: function(tabid) {
+      debugger;
       var tab;
       tab = tabCache[tabid];
       if (!tab) {
@@ -66,12 +68,9 @@ define(['AppDelegate', 'Services', './Model', 'cell!./Tab', 'cell!./TabNavBar', 
         var _ref;
         return (_ref = tabCache[AppModel.currentTab]) != null ? _ref.history.goBack() : void 0;
       });
-      return AppModel.bind('change:currentTab', function(tab) {
-        var _ref;
-        return AppModel.set({
-          currentHistory: (_ref = tabCache[tab]) != null ? _ref.history : void 0
-        });
-      });
+      return AppModel.bind('change:currentTab', __bind(function(tab) {
+        return this.changeTab(tab);
+      }, this));
     }
   };
 });
