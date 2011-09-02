@@ -35,8 +35,7 @@ define
         $backbutton.css 'visibility', hasHistory and 'visible' or 'hidden'
         rev = curHist.wasLastBack and '-reverse' or ''
 
-        if e = curHist._hist[1]?
-          console.log curHist
+        if e = curHist._hist[1]
           $backbuttonText.html e.title
         if prevTitle
           $prevtitle

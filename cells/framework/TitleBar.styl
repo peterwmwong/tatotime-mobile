@@ -9,25 +9,26 @@
   gradient #444 #111
   height 43px
 
-  buttonColor = #111
+  buttonColor = rgba(#FFF,.13)
   buttonRadius = 5px
 
   > #backbutton
   > #gobutton
-    color #CCC
+    color #DDD
     display inline-block
-    font-size 14px
+    font-size 12px
     font-weight bold
     text-align center
     background-color buttonColor
     position relative
-    width 200px
     height 29px
-    margin 7px 0 0 0
+    margin 7px 0 0 0px
+    line-height 30px
 
     > span
-      top 6px
-      bottom 0px
+      min-width 40px
+      max-width 65px
+      display inline-block
       overflow hidden
       white-space nowrap
       text-overflow ellipsis
@@ -36,22 +37,23 @@
     border-radius 0 buttonRadius buttonRadius 0
     left 20px
 
+    > span
+      padding 0 5px 0 2px
+
     &:before
       abspos 0 0 0 -28px
-      triangleShape left 14px buttonColor buttonColor
-
-    > span
-      abspos false 8px false 2px
+      triangleShape left 14px buttonColor #000 2
 
   > #gobutton
     border-radius buttonRadius
     right 7px
 
     > span
-      abspos false 8px false 8px
+      padding 0 5px 0 5px
 
   > #titles
     box-flex 1
+    margin 0 17px 0 30px
     position relative
     z-index 1
 

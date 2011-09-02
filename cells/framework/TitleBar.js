@@ -28,8 +28,7 @@ define({
         hasHistory = curHist.length() > 1;
         $backbutton.css('visibility', hasHistory && 'visible' || 'hidden');
         rev = curHist.wasLastBack && '-reverse' || '';
-        if (e = curHist._hist[1] != null) {
-          console.log(curHist);
+        if (e = curHist._hist[1]) {
           $backbuttonText.html(e.title);
         }
         if (prevTitle) {
