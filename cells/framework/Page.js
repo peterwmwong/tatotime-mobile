@@ -1,31 +1,31 @@
-define(['./Model'], function(Model) {
+var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+define(['require', './Model'], function(require, Model) {
   return {
     tag: function() {
-      return "<div data-cellpath='" + this.options.cellpath + "'>";
+      return "<div data-cellpath='" + this.model.page + "'>";
     },
-    init: function() {
-      return this.model = new Model({
-        fullpath: this.options.fullpath,
-        data: this.options.data
-      });
-    },
-    render: function(_) {
-      return [
-        _(this.options.cell, {
-          model: this.model
-        })
-      ];
+    render: function(_, A) {
+      return require(["cell!" + this.model.page], __bind(function(page) {
+        return A([
+          _(page, {
+            model: this.model
+          })
+        ]);
+      }, this));
     },
     afterRender: function() {
-      var refreshScroller, scroller;
+      var scroller;
       scroller = new iScroll(this.el);
-      this.model.bind('refreshScroller', (refreshScroller = function() {
-        return scroller.refresh();
-      }));
-      refreshScroller();
-      return this.model.bind('activate', function(isBackNav) {
-        if (!isBackNav) {
-          return scroller.scrollTo(0, 0, 0);
+      this.model.bindAndCall({
+        'refreshScroller': function() {
+          return scroller.refresh();
+        }
+      });
+      return this.model.bind({
+        'activate': function(_arg) {
+          var data;
+          data = _arg.data;
+          return !data && scroller.scrollTo(0, 0, 0);
         }
       });
     }

@@ -1,7 +1,7 @@
 define(['cell!pages/schedule/Schedule'], function() {
   return {
     init: function() {
-      this.model.tabs = {
+      this.model.contexts = {
         Schedule: {
           defaultPagePath: 'pages/schedule/Schedule'
         },
@@ -12,7 +12,7 @@ define(['cell!pages/schedule/Schedule'], function() {
           defaultPagePath: 'pages/watch/Watch'
         }
       };
-      return this.model.defaultTab = 'Schedule';
+      return this.model.defaultContext = 'Schedule';
     }
   };
 });

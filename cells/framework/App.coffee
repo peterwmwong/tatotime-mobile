@@ -1,52 +1,33 @@
 define [
-  'AppDelegate'
+  'AppConfig'
   'Services'
+  './HashManager'
   './Model'
-  'cell!./Tab'
-  'cell!./TabNavBar'
+  './ContextModel'
+  'cell!./Context'
+  'cell!./ContextNavBar'
   'cell!./TitleBar'
-], (AppDelegate,S,Model,Tab,TabNavBar,TitleBar)->
+], (AppConfig,S,HashManager,Model,ContextModel,Context,ContextNavBar,TitleBar)->
 
   # Prevent app from being dragged byonds it's limits on iOS
   if S.isIOS
     document.body.addEventListener 'touchmove', (e)-> e.preventDefault()
 
-  AppModel = new Model
-    currentHistory: undefined
-    currentTab: undefined
-
   # Cache of all previously loaded pages
-  tabCache = {}
+  ctxCache = {}
 
-  # Current page
-  curTab = null
-
-  # Animates and changes currently visible page
-  changeTab: (tabid)->
-    debugger
-    tab = tabCache[tabid]
-    if not tab
-      tab = tabCache[tabid] = new Tab
-        defaultCellPath: AppModel.tabs[tabid].defaultPagePath
-        model: new Model {id: tabid}
-      @$content.append tab.$el
-
-    AppModel.set currentTab: tabid
-    AppModel.set currentHistory: tab.history
-    @$('#content > .activeTab').removeClass 'activeTab'
-    tab.$el.toggleClass 'activeTab', true
-    
   init: ->
     if S.isIOSFullScreen
       @options.class = 'IOSFullScreenApp'
-
-    AppDelegate.model = AppModel
-    AppDelegate.init?()
+      
+    window.appmodel = @AppModel = new Model
+      appConfig: AppConfig
+      currentContext: undefined
 
   render: (_,A)-> [
-    _ TitleBar, model: AppModel
+    _ TitleBar, model: @AppModel
     _ '#content'
-    _ TabNavBar, model: AppModel
+    _ ContextNavBar, model: @AppModel
   ]
 
   afterRender: ->
@@ -62,11 +43,43 @@ define [
       ), 100
       $(window).bind 'resize', hideIOSAddressBar
 
-    # Cache content jQuery object, for appending pages to
-    @$content = @$ '#content'
+    # Cache content jQuery object, for appending Contexts to
+    $content = @$ '#content'
 
-    # Load first/default Tab
-    @changeTab AppModel.defaultTab
+    hashmgr = new HashManager
+      appConfig: AppConfig
+      hashDelegate:
+        get: -> window.location.hash
+        onChange: (cb)->
+          $(window).bind 'hashchange', cb
+    
+    hashmgr.bindAndCall 'change:current': ({cur})=>
+      if cur.context isnt @AppModel.currentContext?.id
+        if not (ctxCell = ctxCache[cur.context])
+          ctxCell = ctxCache[cur.context] = new Context
+            model: ctxModel = new ContextModel
+              id: cur.context
+              defaultPagePath: AppConfig.contexts[cur.context].defaultPagePath
+              initialHash: cur
+              hashManager: hashmgr
+          $content.append ctxCell.$el
+        
+        if ctxCell
+          @AppModel.set currentContext: ctxCell.model
+          @$('#content > .activeTab').removeClass 'activeTab'
+          ctxCell.$el.toggleClass 'activeTab', true
+        else
+          console?.log? "Could not switch to context = '#{cur.context}'"
+      return
 
-    AppModel.bind 'goback', -> tabCache[AppModel.currentTab]?.history.goBack()
-    AppModel.bind 'change:currentTab', (tab)=> @changeTab tab
+    @AppModel.bind switchContext: (ctxid)=>
+      window.location.hash =
+        hashmgr.toHash
+          context: ctxid
+          page: (pmodel = ctxCache[cur.context].model.currentPageModel)?.page
+          data: pmodel?.data
+
+    @AppModel.bind goback: =>
+      hash = @AppModel.currentContext?.pageHistory?[1]?.hash
+      if hash?
+        window.location.hash = hash

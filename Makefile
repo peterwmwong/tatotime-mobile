@@ -56,6 +56,12 @@ cells/bootstrap.js: $(uglifyjs) cells/cell.js cells/cell-pluginBuilder.js
 	rm cells/bootstrap-tmp.*
 
 #-------------------------------------------------------------------
+# TEST
+#------------------------------------------------------------------- 
+specs:
+	find cells -name '*Spec.coffee' | xargs coffee -e 'console.log "define([],#{JSON.stringify process.argv[4..].map (e)->/^cells\/(.*?)\.coffee/.exec(e)[1]});"' > spec/allSpecs.js
+
+#-------------------------------------------------------------------
 # DEV 
 #------------------------------------------------------------------- 
 dev-server: $(serve)

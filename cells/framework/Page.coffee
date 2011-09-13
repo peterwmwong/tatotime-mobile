@@ -1,21 +1,16 @@
 define [
+  'require'
   './Model'
-], (Model)->
+], (require, Model)->
 
-  tag: -> "<div data-cellpath='#{@options.cellpath}'>"
+  tag: -> "<div data-cellpath='#{@model.page}'>"
 
-  init: ->
-    @model = new Model
-      fullpath: @options.fullpath
-      data: @options.data
-
-  render: (_)-> [
-    _ @options.cell, model: @model
-  ]
+  render: (_,A)->
+    require ["cell!#{@model.page}"], (page)=> A [
+      _ page, model: @model
+    ]
 
   afterRender: ->
     scroller = new iScroll @el
-    @model.bind 'refreshScroller', (refreshScroller = -> scroller.refresh())
-    refreshScroller()
-    @model.bind 'activate', (isBackNav)->
-      if not isBackNav then scroller.scrollTo 0,0,0
+    @model.bindAndCall 'refreshScroller': -> scroller.refresh()
+    @model.bind 'activate': ({data})-> not data and scroller.scrollTo 0,0,0

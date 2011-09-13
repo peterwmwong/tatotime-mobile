@@ -5,9 +5,11 @@ define(['Services', 'shared/DateHelper', 'cell!shared/ListView'], function(S, Da
       this.model.set({
         title: DateHelper.getDisplayable(new Date())
       });
-      return this.model.bind('activate', __bind(function() {
-        return this.$('.ListView li.active').removeClass('active');
-      }, this));
+      return this.model.bind({
+        'activate': __bind(function() {
+          return this.$('.ListView li.active').removeClass('active');
+        }, this)
+      });
     },
     render: function(_, A) {
       return S.user.getShows(new Date(), __bind(function(shows) {
@@ -21,7 +23,7 @@ define(['Services', 'shared/DateHelper', 'cell!shared/ListView'], function(S, Da
                 s = shows[_i];
                 _results.push((function() {
                   return {
-                    link: "#!/pages/showdetails/ShowDetails?id=" + s.id + "&title=" + s.title,
+                    link: "#Schedule!pages/showdetails/ShowDetails?id=" + s.id + "&title=" + s.title,
                     text: s.title
                   };
                 })());

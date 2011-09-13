@@ -10,32 +10,33 @@ define
   afterRender: ->
     # Cache Title and Previous Title (for title "slide out" animation)
     animating = false
-    model = @model
     $backbutton = @$ '#backbutton'
     $backbuttonText = @$ '#backbutton > span'
     $title = @$ '#title'
     $prevtitle = @$ '#prevtitle'
-    
+    pageHistoryLengthMap = {}
+
     $title.bind 'webkitAnimationEnd', ->
       $title.attr 'class', ''
       $prevtitle.attr 'class', ''
       animating = false
 
-    handleTitleChange = (title)-> $title.html title or ''
-    handleCurrentChange = (cur)->
+    @model.bindAndCall 'change:currentContext.currentPageModel.title': ({cur})=>
       prevTitle = $title.html()
+      $title.html cur or ''
 
-      cur.bind 'change:title', handleTitleChange
-      handleTitleChange cur.title
+      if not animating and (curCtx = @model.currentContext)
+        pageHistory = curCtx.pageHistory
 
-      if not animating
-        curHist = model.currentHistory
-        hasHistory = curHist.length() > 1
+        $backbutton.css 'visibility', (pageHistory.length > 1) and 'visible' or 'hidden'
 
-        $backbutton.css 'visibility', hasHistory and 'visible' or 'hidden'
-        rev = curHist.wasLastBack and '-reverse' or ''
+        prevHistoryLength = (pageHistoryLengthMap[curCtx.id] ?= pageHistory.length)
 
-        if e = curHist._hist[1]
+        # TODO: should lastNavWasBack be in currentContext
+        rev = prevHistoryLength > pageHistory.length and '-reverse' or ''
+        pageHistoryLengthMap[curCtx.id] = pageHistory.length
+
+        if e = pageHistory[1]
           $backbuttonText.html e.title
         if prevTitle
           $prevtitle
@@ -44,13 +45,6 @@ define
 
         $title.attr 'class', 'headingIn'+rev
         animating = true
-
-    model.bind 'change:currentHistory', handleCurrentHistoryChange = (curHist)->
-      if curHist
-        curHist.bind 'change:current', handleCurrentChange
-        handleCurrentChange curHist.current
-    
-    handleCurrentHistoryChange model.currentHistory
 
   on:
     'click #backbutton': -> @model.trigger 'goback'

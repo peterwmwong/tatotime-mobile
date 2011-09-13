@@ -1,50 +1,44 @@
+var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 define({
   render: function(_, A) {
     return [_('#backbutton', _('span', 'Back')), _('#titles', _('#title'), _('#prevtitle')), _('#gobutton', _('span', 'Do It'))];
   },
   afterRender: function() {
-    var $backbutton, $backbuttonText, $prevtitle, $title, animating, handleCurrentChange, handleCurrentHistoryChange, handleTitleChange, model;
+    var $backbutton, $backbuttonText, $prevtitle, $title, animating, pageHistoryLengthMap;
     animating = false;
-    model = this.model;
     $backbutton = this.$('#backbutton');
     $backbuttonText = this.$('#backbutton > span');
     $title = this.$('#title');
     $prevtitle = this.$('#prevtitle');
+    pageHistoryLengthMap = {};
     $title.bind('webkitAnimationEnd', function() {
       $title.attr('class', '');
       $prevtitle.attr('class', '');
       return animating = false;
     });
-    handleTitleChange = function(title) {
-      return $title.html(title || '');
-    };
-    handleCurrentChange = function(cur) {
-      var curHist, e, hasHistory, prevTitle, rev;
-      prevTitle = $title.html();
-      cur.bind('change:title', handleTitleChange);
-      handleTitleChange(cur.title);
-      if (!animating) {
-        curHist = model.currentHistory;
-        hasHistory = curHist.length() > 1;
-        $backbutton.css('visibility', hasHistory && 'visible' || 'hidden');
-        rev = curHist.wasLastBack && '-reverse' || '';
-        if (e = curHist._hist[1]) {
-          $backbuttonText.html(e.title);
+    return this.model.bindAndCall({
+      'change:currentContext.currentPageModel.title': __bind(function(_arg) {
+        var cur, curCtx, e, pageHistory, prevHistoryLength, prevTitle, rev, _name, _ref;
+        cur = _arg.cur;
+        prevTitle = $title.html();
+        $title.html(cur || '');
+        if (!animating && (curCtx = this.model.currentContext)) {
+          pageHistory = curCtx.pageHistory;
+          $backbutton.css('visibility', (pageHistory.length > 1) && 'visible' || 'hidden');
+          prevHistoryLength = ((_ref = pageHistoryLengthMap[_name = curCtx.id]) != null ? _ref : pageHistoryLengthMap[_name] = pageHistory.length);
+          rev = prevHistoryLength > pageHistory.length && '-reverse' || '';
+          pageHistoryLengthMap[curCtx.id] = pageHistory.length;
+          if (e = pageHistory[1]) {
+            $backbuttonText.html(e.title);
+          }
+          if (prevTitle) {
+            $prevtitle.html(prevTitle).attr('class', 'headingOut' + rev);
+          }
+          $title.attr('class', 'headingIn' + rev);
+          return animating = true;
         }
-        if (prevTitle) {
-          $prevtitle.html(prevTitle).attr('class', 'headingOut' + rev);
-        }
-        $title.attr('class', 'headingIn' + rev);
-        return animating = true;
-      }
-    };
-    model.bind('change:currentHistory', handleCurrentHistoryChange = function(curHist) {
-      if (curHist) {
-        curHist.bind('change:current', handleCurrentChange);
-        return handleCurrentChange(curHist.current);
-      }
+      }, this)
     });
-    return handleCurrentHistoryChange(model.currentHistory);
   },
   on: {
     'click #backbutton': function() {

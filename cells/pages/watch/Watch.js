@@ -5,9 +5,11 @@ define(['Services', 'shared/DateHelper', 'cell!shared/ListView'], function(S, Da
       this.model.set({
         title: DateHelper.getDisplayable(new Date())
       });
-      return this.model.bind('activate', __bind(function() {
-        return this.$('.ListView li.active').removeClass('active');
-      }, this));
+      return this.model.bind({
+        'activate': __bind(function() {
+          return this.$('.ListView li.active').removeClass('active');
+        }, this)
+      });
     },
     render: function(_, A) {
       return S.user.getWatchShows(__bind(function(shows) {

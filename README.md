@@ -16,7 +16,6 @@ Credit
 * [CoffeeScript](http://jashkenas.github.com/coffee-script/) - Better than JavaScript
 * [Stylus](http://learnboost.github.com/stylus/) - Better than CSS
 * [jQuery](http://jquery.com/) - Better than DOM
-* [jQuery Mobile](http://jquerymobile.com/) - Better than nothing
 * [live.js](http://livejs.com) - Better than Alt-Tab, F5
 * [RequireJS](https://github.com/jrburke/requirejs) - Modular JavaScript
 * [cell](https://github.com/peterwmwong/cell) - Modular HTML/CSS/JavaScript

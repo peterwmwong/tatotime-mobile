@@ -1,58 +1,33 @@
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-define(['AppDelegate', 'Services', './Model', 'cell!./Tab', 'cell!./TabNavBar', 'cell!./TitleBar'], function(AppDelegate, S, Model, Tab, TabNavBar, TitleBar) {
-  var AppModel, curTab, tabCache;
+define(['AppConfig', 'Services', './HashManager', './Model', './ContextModel', 'cell!./Context', 'cell!./ContextNavBar', 'cell!./TitleBar'], function(AppConfig, S, HashManager, Model, ContextModel, Context, ContextNavBar, TitleBar) {
+  var ctxCache;
   if (S.isIOS) {
     document.body.addEventListener('touchmove', function(e) {
       return e.preventDefault();
     });
   }
-  AppModel = new Model({
-    currentHistory: void 0,
-    currentTab: void 0
-  });
-  tabCache = {};
-  curTab = null;
+  ctxCache = {};
   return {
-    changeTab: function(tabid) {
-      debugger;
-      var tab;
-      tab = tabCache[tabid];
-      if (!tab) {
-        tab = tabCache[tabid] = new Tab({
-          defaultCellPath: AppModel.tabs[tabid].defaultPagePath,
-          model: new Model({
-            id: tabid
-          })
-        });
-        this.$content.append(tab.$el);
-      }
-      AppModel.set({
-        currentTab: tabid
-      });
-      AppModel.set({
-        currentHistory: tab.history
-      });
-      this.$('#content > .activeTab').removeClass('activeTab');
-      return tab.$el.toggleClass('activeTab', true);
-    },
     init: function() {
       if (S.isIOSFullScreen) {
         this.options["class"] = 'IOSFullScreenApp';
       }
-      AppDelegate.model = AppModel;
-      return typeof AppDelegate.init === "function" ? AppDelegate.init() : void 0;
+      return window.appmodel = this.AppModel = new Model({
+        appConfig: AppConfig,
+        currentContext: void 0
+      });
     },
     render: function(_, A) {
       return [
         _(TitleBar, {
-          model: AppModel
-        }), _('#content'), _(TabNavBar, {
-          model: AppModel
+          model: this.AppModel
+        }), _('#content'), _(ContextNavBar, {
+          model: this.AppModel
         })
       ];
     },
     afterRender: function() {
-      var hideIOSAddressBar;
+      var $content, hashmgr, hideIOSAddressBar;
       if (S.isIOS && !S.isIOSFullScreen) {
         setTimeout((hideIOSAddressBar = function() {
           window.scrollTo(0, 1);
@@ -62,15 +37,69 @@ define(['AppDelegate', 'Services', './Model', 'cell!./Tab', 'cell!./TabNavBar', 
         }), 100);
         $(window).bind('resize', hideIOSAddressBar);
       }
-      this.$content = this.$('#content');
-      this.changeTab(AppModel.defaultTab);
-      AppModel.bind('goback', function() {
-        var _ref;
-        return (_ref = tabCache[AppModel.currentTab]) != null ? _ref.history.goBack() : void 0;
+      $content = this.$('#content');
+      hashmgr = new HashManager({
+        appConfig: AppConfig,
+        hashDelegate: {
+          get: function() {
+            return window.location.hash;
+          },
+          onChange: function(cb) {
+            return $(window).bind('hashchange', cb);
+          }
+        }
       });
-      return AppModel.bind('change:currentTab', __bind(function(tab) {
-        return this.changeTab(tab);
-      }, this));
+      hashmgr.bindAndCall({
+        'change:current': __bind(function(_arg) {
+          var ctxCell, ctxModel, cur, _ref;
+          cur = _arg.cur;
+          if (cur.context !== ((_ref = this.AppModel.currentContext) != null ? _ref.id : void 0)) {
+            if (!(ctxCell = ctxCache[cur.context])) {
+              ctxCell = ctxCache[cur.context] = new Context({
+                model: ctxModel = new ContextModel({
+                  id: cur.context,
+                  defaultPagePath: AppConfig.contexts[cur.context].defaultPagePath,
+                  initialHash: cur,
+                  hashManager: hashmgr
+                })
+              });
+              $content.append(ctxCell.$el);
+            }
+            if (ctxCell) {
+              this.AppModel.set({
+                currentContext: ctxCell.model
+              });
+              this.$('#content > .activeTab').removeClass('activeTab');
+              ctxCell.$el.toggleClass('activeTab', true);
+            } else {
+              if (typeof console !== "undefined" && console !== null) {
+                if (typeof console.log === "function") {
+                  console.log("Could not switch to context = '" + cur.context + "'");
+                }
+              }
+            }
+          }
+        }, this)
+      });
+      this.AppModel.bind({
+        switchContext: __bind(function(ctxid) {
+          var pmodel, _ref;
+          return window.location.hash = hashmgr.toHash({
+            context: ctxid,
+            page: (_ref = (pmodel = ctxCache[cur.context].model.currentPageModel)) != null ? _ref.page : void 0,
+            data: pmodel != null ? pmodel.data : void 0
+          });
+        }, this)
+      });
+      return this.AppModel.bind({
+        goback: __bind(function() {
+          var hash, _ref, _ref2, _ref3;
+          hash = (_ref = this.AppModel.currentContext) != null ? (_ref2 = _ref.pageHistory) != null ? (_ref3 = _ref2[1]) != null ? _ref3.hash : void 0 : void 0 : void 0;
+          if (hash != null) {
+            return window.location.hash = hash;
+          }
+        }, this)
+      });
     }
   };
 });

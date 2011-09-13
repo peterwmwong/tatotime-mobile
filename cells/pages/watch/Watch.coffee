@@ -6,8 +6,7 @@ define [
 
   init: ->
     @model.set title: DateHelper.getDisplayable new Date()
-    @model.bind 'activate', =>
-      @$('.ListView li.active').removeClass('active')
+    @model.bind 'activate': => @$('.ListView li.active').removeClass('active')
 
   render: (_, A)-> S.user.getWatchShows (shows)=>
     A [
