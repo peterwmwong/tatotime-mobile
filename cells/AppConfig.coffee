@@ -1,4 +1,4 @@
-define
+define ['cell!pages/schedule/Schedule'], -> # Preload default context / default page
   contexts:
     Schedule:
       defaultPagePath: 'pages/schedule/Schedule'

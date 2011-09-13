@@ -24,6 +24,9 @@ h1,h2,h3,h4,h5{margin:0;padding:0}
 .App > .TitleBar{position:absolute;top:0;right:0;left:0;z-index:3}
 .App > #content{margin-top:43px;box-flex:1;-webkit-box-flex:1;-moz-box-flex:1;position:relative;z-index:1}
 .App > .TabNavBar{z-index:2}
+.ListView{padding:0;margin:0;list-style:none;}
+.ListView > li{box-sizing:border-box;-webkit-box-sizing:border-box;border-top:1px solid #dedede;color:#2f3e46;font-weight:bold;background:#f4f4f4;background:-moz-linear-gradient(top,#fafafa 0%,#eee 100%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#fafafa),color-stop(100%,#eee));filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#fafafa', endColorstr='#eee',GradientType=0 );padding:12px 10px 10px 10px;text-decoration:none;width:100%;vertical-align:middle;}
+.ListView > li.active{color:#fff;cursor:pointer;background:#6da7d5;background:-moz-linear-gradient(top,#85bae4 0%,#5393c5 100%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#85bae4),color-stop(100%,#5393c5));filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#85bae4', endColorstr='#5393c5',GradientType=0 );border-top:1px solid #155678;border-bottom:1px solid #155678;outline:none}
 .Context{position:absolute;top:0;right:0;bottom:0;left:0;overflow:hidden;}
 .Context > .Page{position:absolute;top:0;right:0;bottom:0;left:0}
 .ContextNavBar{margin:0;padding:0;list-style-type:none;display:box;display:-webkit-box;display:-moz-box;-webkit-box-orient:horizontal;-moz-box-orient:horizontal;}
