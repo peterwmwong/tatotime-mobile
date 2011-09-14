@@ -16,16 +16,9 @@ define(['require', './Model'], function(require, Model) {
     afterRender: function() {
       var scroller;
       scroller = new iScroll(this.el);
-      this.model.bindAndCall({
+      return this.model.bindAndCall({
         'refreshScroller': function() {
           return scroller.refresh();
-        }
-      });
-      return this.model.bind({
-        'activate': function(_arg) {
-          var data;
-          data = _arg.data;
-          return !data && scroller.scrollTo(0, 0, 0);
         }
       });
     }

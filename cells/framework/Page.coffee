@@ -13,4 +13,3 @@ define [
   afterRender: ->
     scroller = new iScroll @el
     @model.bindAndCall 'refreshScroller': -> scroller.refresh()
-    @model.bind 'activate': ({data})-> not data and scroller.scrollTo 0,0,0

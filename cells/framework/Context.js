@@ -11,23 +11,26 @@ define(['require', './Model', 'cell!./Page'], function(require, Model, Page) {
       pageHistoryLength = this.model.pageHistory.length;
       return this.model.bindAndCall({
         'change:currentPageModel': __bind(function(_arg) {
-          var cachedPage, cur, pageInClass, pagePath, prev, rev;
+          var cur, isback, pageCell, pageInClass, prev, prevPageCell, rev;
           cur = _arg.cur, prev = _arg.prev;
-          pagePath = cur.page;
-          if (cachedPage = pageCache[pagePath]) {
-            cachedPage.model.set({
-              data: cur.data
-            });
+          isback = this.model.pageHistory.length < pageHistoryLength;
+          pageHistoryLength = this.model.pageHistory.length;
+          if (isback && (pageCell = pageCache[cur.hash])) {
+            prevPageCell = pageCache[prev.hash];
+            prevPageCell.$el.remove();
+            delete pageCache[prev.hash];
           } else {
-            cachedPage = pageCache[pagePath] = new Page({
+            pageCell = pageCache[cur.hash] = new Page({
               model: cur
             });
-            cachedPage.$el.appendTo(this.$el);
           }
-          pageInClass = prev ? (rev = this.model.pageHistory.length < pageHistoryLength && '-reverse' || '', curPage.$el.attr('class', 'Page headingOut' + rev), curPage.model.trigger('deactivate'), 'Page headingIn' + rev) : 'Page fadeIn';
-          pageHistoryLength = this.model.pageHistory.length;
-          (curPage = cachedPage).$el.attr('class', pageInClass);
-          return curPage.model.trigger('activate', this.model.pageHistory.wasLastBack);
+          pageCell.$el.appendTo(this.$el);
+          pageInClass = prev ? (rev = isback && '-reverse' || '', curPage.$el.attr('class', 'Page headingOut' + rev), curPage.model.trigger('deactivate'), 'Page headingIn' + rev) : 'Page fadeIn';
+          (curPage = pageCell).$el.attr('class', pageInClass);
+          return curPage.model.trigger({
+            type: 'activate',
+            isback: isback
+          });
         }, this)
       });
     }
