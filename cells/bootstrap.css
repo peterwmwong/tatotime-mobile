@@ -1,11 +1,4 @@
-body{font-family:Helvetica,Arial,sans-serif}
-h1,h2,h3,h4,h5{margin:0;padding:0}
-@media screen and (max-width: 320px){.App{position:relative;height:418px;}
-.App.IOSFullScreenApp{height:460px}
-}@media screen and (min-width: 321px) and (max-width: 480px){.App{position:relative;height:269px;}
-.App.IOSFullScreenApp{height:300px}
-}@media screen and (min-width: 481px){.App{position:absolute;top:0;right:0;bottom:0;left:0}
-}@-webkit-keyframes slideOutLeft{0%{-webkit-transform:translateX(0)}
+@-webkit-keyframes slideOutLeft{0%{-webkit-transform:translateX(0)}
 100%{-webkit-transform:translateX(-100%)}
 }@-webkit-keyframes slideInLeft{0%{-webkit-transform:translateX(100%)}
 100%{-webkit-transform:translateX(0)}
@@ -17,18 +10,20 @@ h1,h2,h3,h4,h5{margin:0;padding:0}
 100%{opacity:1}
 }@-webkit-keyframes fadeOut{0%{opacity:1}
 100%{opacity:0}
-}.App{display:box;display:-webkit-box;display:-moz-box;-webkit-box-orient:vertical;-moz-box-orient:vertical;-webkit-tap-highlight-color:rgba(0,0,0,0.00);z-index:1;}
-.App .animate{-webkit-animation-duration:500ms;-moz-animation-duration:500ms;-webkit-animation-fill-mode:forwards;-moz-animation-fill-mode:forwards;}
-.App .animate.headingOut{-webkit-animation-name:slideOutLeft;-moz-animation-name:slideOutLeft}
-.App .animate.headingIn{-webkit-animation-name:slideInLeft;-moz-animation-name:slideInLeft}
-.App .animate.headingOut-reverse{-webkit-animation-name:slideOutRight;-moz-animation-name:slideOutRight}
-.App .animate.headingIn-reverse{-webkit-animation-name:slideInRight;-moz-animation-name:slideInRight}
-.App .animate.headingOutFade{-webkit-animation-name:slideOutLeft,fadeOut;-moz-animation-name:slideOutLeft,fadeOut}
-.App .animate.headingInFade{-webkit-animation-name:slideInLeft,fadeIn;-moz-animation-name:slideInLeft,fadeIn}
-.App .animate.headingOutFade-reverse{-webkit-animation-name:slideOutRight,fadeOut;-moz-animation-name:slideOutRight,fadeOut}
-.App .animate.headingInFade-reverse{-webkit-animation-name:slideInRight,fadeIn;-moz-animation-name:slideInRight,fadeIn}
-.App .animate.fadeIn{-webkit-animation-name:fadeIn;-moz-animation-name:fadeIn}
-.App .animate.fadeOut{-webkit-animation-name:fadeOut;-moz-animation-name:fadeOut}
+}body{font-family:Helvetica,Arial,sans-serif;position:absolute;top:0;right:0;bottom:0;left:0}
+h1,h2,h3,h4,h5{margin:0;padding:0}
+.animate{-webkit-animation-duration:500ms;-moz-animation-duration:500ms;-webkit-animation-fill-mode:forwards;-moz-animation-fill-mode:forwards;}
+.animate.headingOut{-webkit-animation-name:slideOutLeft;-moz-animation-name:slideOutLeft}
+.animate.headingIn{-webkit-animation-name:slideInLeft;-moz-animation-name:slideInLeft}
+.animate.headingOut-reverse{-webkit-animation-name:slideOutRight;-moz-animation-name:slideOutRight}
+.animate.headingIn-reverse{-webkit-animation-name:slideInRight;-moz-animation-name:slideInRight}
+.animate.headingOutFade{-webkit-animation-name:slideOutLeft,fadeOut;-moz-animation-name:slideOutLeft,fadeOut}
+.animate.headingInFade{-webkit-animation-name:slideInLeft,fadeIn;-moz-animation-name:slideInLeft,fadeIn}
+.animate.headingOutFade-reverse{-webkit-animation-name:slideOutRight,fadeOut;-moz-animation-name:slideOutRight,fadeOut}
+.animate.headingInFade-reverse{-webkit-animation-name:slideInRight,fadeIn;-moz-animation-name:slideInRight,fadeIn}
+.animate.fadeIn{-webkit-animation-name:fadeIn;-moz-animation-name:fadeIn}
+.animate.fadeOut{-webkit-animation-name:fadeOut;-moz-animation-name:fadeOut}
+.App{position:absolute;top:0;right:0;bottom:0;left:0;display:box;display:-webkit-box;display:-moz-box;-webkit-box-orient:vertical;-moz-box-orient:vertical;-webkit-tap-highlight-color:rgba(0,0,0,0.00);z-index:1;}
 .App > .TitleBar{position:absolute;top:0;right:0;left:0;z-index:3}
 .App > #content{margin-top:43px;box-flex:1;-webkit-box-flex:1;-moz-box-flex:1;position:relative;z-index:1}
 .ListView{padding:0;margin:0;list-style:none;}
