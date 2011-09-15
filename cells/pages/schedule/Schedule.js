@@ -7,7 +7,7 @@ define(['Services', 'shared/DateHelper', 'cell!shared/ListView'], function(S, Da
       });
       return this.model.bind({
         'activate': __bind(function() {
-          return this.$('.ListView li.active').removeClass('active');
+          return this.$('#ShowList').trigger('resetActive');
         }, this)
       });
     },
@@ -16,6 +16,7 @@ define(['Services', 'shared/DateHelper', 'cell!shared/ListView'], function(S, Da
         var s;
         A([
           _(ListView, {
+            id: 'ShowList',
             list: (function() {
               var _i, _len, _results;
               _results = [];

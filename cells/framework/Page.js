@@ -14,7 +14,24 @@ define(['require', './Model'], function(require, Model) {
       }, this));
     },
     afterRender: function() {
-      var scroller;
+      var active, scroller;
+      active = true;
+      this.model.bind({
+        'deactivate': function() {
+          return active = false;
+        }
+      });
+      this.model.bind({
+        'activate': __bind(function() {
+          active = true;
+          return this.$el.css('visibility', 'visible');
+        }, this)
+      });
+      this.$el.bind('webkitAnimationEnd', __bind(function() {
+        if (!active) {
+          return this.$el.css('visibility', 'hidden');
+        }
+      }, this));
       scroller = new iScroll(this.el);
       return this.model.bindAndCall({
         'refreshScroller': function() {

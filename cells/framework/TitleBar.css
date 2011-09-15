@@ -9,4 +9,4 @@
 .TitleBar > #titles{box-flex:1;-webkit-box-flex:1;-moz-box-flex:1;margin:0 17px 0 30px;position:relative;z-index:1;}
 .TitleBar > #titles > #title,.TitleBar > #titles > #prevtitle{position:absolute;top:0;right:0;left:0;color:#fff;font-size:22px;font-weight:bold;padding:9px 0 0 0;text-align:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;height:35px;z-index:2}
 .TitleBar > #titles > #prevtitle{visibility:hidden;z-index:1;}
-.TitleBar > #titles > #prevtitle.headingOut,.TitleBar > #titles > #prevtitle.headingOut-reverse{visibility:visible}
+.TitleBar > #titles > #prevtitle.animate.headingOutFade,.TitleBar > #titles > #prevtitle.animate.headingOutFade-reverse{visibility:visible}

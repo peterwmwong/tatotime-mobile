@@ -1,10 +1,15 @@
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 define(['Services', 'cell!shared/ListView'], function(S, ListView) {
   return {
-    render: function(_, A) {
-      return [_('img'), _('.nameGroup', _('h2.name'), _('h4.bornInfo')), _('.knownForGroup', _('h4.knownForHeader', 'Known For'), _('.knownForList', ''))];
+    render: function(_) {
+      return [_('img'), _('.nameGroup', _('h2.name'), _('h4.bornInfo')), _('.knownForGroup', _('h4.knownForHeader', 'Known For'), _('#knownForList', ''))];
     },
     afterRender: function() {
+      this.model.bind({
+        'activate': __bind(function() {
+          return this.$('#knownForList > .ListView').trigger('resetActive');
+        }, this)
+      });
       return this.model.bindAndCall({
         'change:data': __bind(function(_arg) {
           var id, title, _ref;
@@ -20,8 +25,8 @@ define(['Services', 'cell!shared/ListView'], function(S, ListView) {
             });
             this.$('.name').html(name);
             this.$('.bornInfo').html(born.year);
-            this.$('.knownForList > .ListView').remove();
-            this.$('.knownForGroup > .knownForList').append(cell.prototype.$R(ListView, {
+            this.$('#knownForList > .ListView').remove();
+            this.$('#knownForList').append(cell.prototype.$R(ListView, {
               list: (function() {
                 var role, _i, _len, _ref2, _results;
                 _results = [];

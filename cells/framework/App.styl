@@ -6,6 +6,7 @@
 
 @media screen and (max-width: 320px)
   .App
+    position relative
     height 418px
 
     &.IOSFullScreenApp
@@ -13,6 +14,7 @@
 
 @media screen and (min-width: 321px) and (max-width: 480px)
   .App
+    position relative
     height 269px
 
     &.IOSFullScreenApp
@@ -20,39 +22,31 @@
 
 @media screen and (min-width: 481px)
   .App
-    height 418px
+    abspos 0px 0px 0px 0px
 
 @-webkit-keyframes slideOutLeft
   from
     -webkit-transform translateX(0)
-    opacity 1.0
   to
     -webkit-transform translateX(-100%)
-    opacity 0.0
 
 @-webkit-keyframes slideInLeft
   from
     -webkit-transform translateX(100%)
-    opacity 0.0
   to
     -webkit-transform translateX(0)
-    opacity 1.0
 
 @-webkit-keyframes slideOutRight
   from
     -webkit-transform translateX(0)
-    opacity 1.0
   to
     -webkit-transform translateX(100%)
-    opacity 0.0
 
 @-webkit-keyframes slideInRight
   from
     -webkit-transform translateX(-100%)
-    opacity 0.0
   to
     -webkit-transform translateX(0)
-    opacity 1.0
 
 @-webkit-keyframes fadeIn
   from
@@ -60,26 +54,50 @@
   to
     opacity 1.0
 
+@-webkit-keyframes fadeOut
+  from
+    opacity 1.0
+  to
+    opacity 0
+
 .App
-  position relative
   box vertical
   -webkit-tap-highlight-color rgba(0,0,0,0)
   z-index 1
 
-  .headingOut
-    animate slideOutLeft
+  .animate
+    animation-duration 500ms
+    animation-fill-mode forwards
 
-  .headingIn
-    animate slideInLeft
+    &.headingOut
+      animation-name slideOutLeft
 
-  .headingOut-reverse
-    animate slideOutRight
+    &.headingIn
+      animation-name slideInLeft
 
-  .headingIn-reverse
-    animate slideInRight
+    &.headingOut-reverse
+      animation-name slideOutRight
 
-  .fadeIn
-    animate fadeIn
+    &.headingIn-reverse
+      animation-name slideInRight
+
+    &.headingOutFade
+      animation-name @css{slideOutLeft,fadeOut}
+
+    &.headingInFade
+      animation-name @css{slideInLeft,fadeIn}
+
+    &.headingOutFade-reverse
+      animation-name @css{slideOutRight,fadeOut}
+
+    &.headingInFade-reverse
+      animation-name @css{slideInRight,fadeIn}
+
+    &.fadeIn
+      animation-name fadeIn
+
+    &.fadeOut
+      animation-name fadeOut
 
   > .TitleBar
     abspos 0px 0px false 0px
@@ -90,6 +108,3 @@
     box-flex 1
     position relative
     z-index 1
-
-  > .TabNavBar
-    z-index 2

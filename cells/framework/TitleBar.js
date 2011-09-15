@@ -32,9 +32,9 @@ define({
             $backbuttonText.html(e.title);
           }
           if (prevTitle) {
-            $prevtitle.html(prevTitle).attr('class', 'headingOut' + rev);
+            $prevtitle.html(prevTitle).attr('class', 'animate headingOutFade' + rev);
           }
-          $title.attr('class', 'headingIn' + rev);
+          $title.attr('class', 'animate headingInFade' + rev);
           return animating = true;
         }
       }, this)

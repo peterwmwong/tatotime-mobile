@@ -1,32 +1,42 @@
 body{font-family:Helvetica,Arial,sans-serif}
 h1,h2,h3,h4,h5{margin:0;padding:0}
-@media screen and (max-width: 320px){.App{height:418px;}
+@media screen and (max-width: 320px){.App{position:relative;height:418px;}
 .App.IOSFullScreenApp{height:460px}
-}@media screen and (min-width: 321px) and (max-width: 480px){.App{height:269px;}
+}@media screen and (min-width: 321px) and (max-width: 480px){.App{position:relative;height:269px;}
 .App.IOSFullScreenApp{height:300px}
-}@media screen and (min-width: 481px){.App{height:418px}
-}@-webkit-keyframes slideOutLeft{0%{-webkit-transform:translateX(0);opacity:1}
-100%{-webkit-transform:translateX(-100%);opacity:0}
-}@-webkit-keyframes slideInLeft{0%{-webkit-transform:translateX(100%);opacity:0}
-100%{-webkit-transform:translateX(0);opacity:1}
-}@-webkit-keyframes slideOutRight{0%{-webkit-transform:translateX(0);opacity:1}
-100%{-webkit-transform:translateX(100%);opacity:0}
-}@-webkit-keyframes slideInRight{0%{-webkit-transform:translateX(-100%);opacity:0}
-100%{-webkit-transform:translateX(0);opacity:1}
+}@media screen and (min-width: 481px){.App{position:absolute;top:0;right:0;bottom:0;left:0}
+}@-webkit-keyframes slideOutLeft{0%{-webkit-transform:translateX(0)}
+100%{-webkit-transform:translateX(-100%)}
+}@-webkit-keyframes slideInLeft{0%{-webkit-transform:translateX(100%)}
+100%{-webkit-transform:translateX(0)}
+}@-webkit-keyframes slideOutRight{0%{-webkit-transform:translateX(0)}
+100%{-webkit-transform:translateX(100%)}
+}@-webkit-keyframes slideInRight{0%{-webkit-transform:translateX(-100%)}
+100%{-webkit-transform:translateX(0)}
 }@-webkit-keyframes fadeIn{0%{opacity:0}
 100%{opacity:1}
-}.App{position:relative;display:box;display:-webkit-box;display:-moz-box;-webkit-box-orient:vertical;-moz-box-orient:vertical;-webkit-tap-highlight-color:rgba(0,0,0,0.00);z-index:1;}
-.App .headingOut{-webkit-animation-name:slideOutLeft;-webkit-animation-duration:500ms;-webkit-animation-fill-mode:forwards}
-.App .headingIn{-webkit-animation-name:slideInLeft;-webkit-animation-duration:500ms;-webkit-animation-fill-mode:forwards}
-.App .headingOut-reverse{-webkit-animation-name:slideOutRight;-webkit-animation-duration:500ms;-webkit-animation-fill-mode:forwards}
-.App .headingIn-reverse{-webkit-animation-name:slideInRight;-webkit-animation-duration:500ms;-webkit-animation-fill-mode:forwards}
-.App .fadeIn{-webkit-animation-name:fadeIn;-webkit-animation-duration:500ms;-webkit-animation-fill-mode:forwards}
+}@-webkit-keyframes fadeOut{0%{opacity:1}
+100%{opacity:0}
+}.App{display:box;display:-webkit-box;display:-moz-box;-webkit-box-orient:vertical;-moz-box-orient:vertical;-webkit-tap-highlight-color:rgba(0,0,0,0.00);z-index:1;}
+.App .animate{-webkit-animation-duration:500ms;-moz-animation-duration:500ms;-webkit-animation-fill-mode:forwards;-moz-animation-fill-mode:forwards;}
+.App .animate.headingOut{-webkit-animation-name:slideOutLeft;-moz-animation-name:slideOutLeft}
+.App .animate.headingIn{-webkit-animation-name:slideInLeft;-moz-animation-name:slideInLeft}
+.App .animate.headingOut-reverse{-webkit-animation-name:slideOutRight;-moz-animation-name:slideOutRight}
+.App .animate.headingIn-reverse{-webkit-animation-name:slideInRight;-moz-animation-name:slideInRight}
+.App .animate.headingOutFade{-webkit-animation-name:slideOutLeft,fadeOut;-moz-animation-name:slideOutLeft,fadeOut}
+.App .animate.headingInFade{-webkit-animation-name:slideInLeft,fadeIn;-moz-animation-name:slideInLeft,fadeIn}
+.App .animate.headingOutFade-reverse{-webkit-animation-name:slideOutRight,fadeOut;-moz-animation-name:slideOutRight,fadeOut}
+.App .animate.headingInFade-reverse{-webkit-animation-name:slideInRight,fadeIn;-moz-animation-name:slideInRight,fadeIn}
+.App .animate.fadeIn{-webkit-animation-name:fadeIn;-moz-animation-name:fadeIn}
+.App .animate.fadeOut{-webkit-animation-name:fadeOut;-moz-animation-name:fadeOut}
 .App > .TitleBar{position:absolute;top:0;right:0;left:0;z-index:3}
 .App > #content{margin-top:43px;box-flex:1;-webkit-box-flex:1;-moz-box-flex:1;position:relative;z-index:1}
-.App > .TabNavBar{z-index:2}
 .ListView{padding:0;margin:0;list-style:none;}
-.ListView > li{box-sizing:border-box;-webkit-box-sizing:border-box;border-top:1px solid #dedede;color:#2f3e46;font-weight:bold;background:#f4f4f4;background:-moz-linear-gradient(top,#fafafa 0%,#eee 100%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#fafafa),color-stop(100%,#eee));filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#fafafa', endColorstr='#eee',GradientType=0 );padding:12px 10px 10px 10px;text-decoration:none;width:100%;vertical-align:middle;}
-.ListView > li.active{color:#fff;cursor:pointer;background:#6da7d5;background:-moz-linear-gradient(top,#85bae4 0%,#5393c5 100%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#85bae4),color-stop(100%,#5393c5));filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#85bae4', endColorstr='#5393c5',GradientType=0 );border-top:1px solid #155678;border-bottom:1px solid #155678;outline:none}
+.ListView > li{box-sizing:border-box;border-top:1px solid #dedede;-webkit-box-sizing:border-box;color:#2f3e46;font-weight:bold;background:#f4f4f4;background:-moz-linear-gradient(top,#fafafa 0%,#eee 100%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#fafafa),color-stop(100%,#eee));filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#fafafa', endColorstr='#eee',GradientType=0 );padding:12px 10px 10px 10px;position:relative;text-decoration:none;width:100%;vertical-align:middle;z-index:1;}
+.ListView > li > div{position:absolute;top:0;right:0;bottom:0;left:0;border-top:1px solid #155678;border-bottom:1px solid #155678;background:#6da7d5;background:-moz-linear-gradient(top,#85bae4 0%,#5393c5 100%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#85bae4),color-stop(100%,#5393c5));filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#85bae4', endColorstr='#5393c5',GradientType=0 );opacity:0;z-index:-1}
+.ListView > li.active{color:#fff;cursor:pointer;outline:none;}
+.ListView > li.active > div{-webkit-animation-name:fadeIn;-webkit-animation-duration:10ms;-webkit-animation-fill-mode:forwards}
+.ListView > li.deactive > div{-webkit-animation-name:fadeOut;-webkit-animation-duration:1s;-webkit-animation-fill-mode:forwards;-webkit-animation-timing-function:ease-in;-moz-animation-timing-function:ease-in}
 .Context{position:absolute;top:0;right:0;bottom:0;left:0;overflow:hidden;}
 .Context > .Page{position:absolute;top:0;right:0;bottom:0;left:0}
 .ContextNavBar{margin:0;padding:0;list-style-type:none;display:box;display:-webkit-box;display:-moz-box;-webkit-box-orient:horizontal;-moz-box-orient:horizontal;}
@@ -43,4 +53,4 @@ h1,h2,h3,h4,h5{margin:0;padding:0}
 .TitleBar > #titles{box-flex:1;-webkit-box-flex:1;-moz-box-flex:1;margin:0 17px 0 30px;position:relative;z-index:1;}
 .TitleBar > #titles > #title,.TitleBar > #titles > #prevtitle{position:absolute;top:0;right:0;left:0;color:#fff;font-size:22px;font-weight:bold;padding:9px 0 0 0;text-align:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;height:35px;z-index:2}
 .TitleBar > #titles > #prevtitle{visibility:hidden;z-index:1;}
-.TitleBar > #titles > #prevtitle.headingOut,.TitleBar > #titles > #prevtitle.headingOut-reverse{visibility:visible}
+.TitleBar > #titles > #prevtitle.animate.headingOutFade,.TitleBar > #titles > #prevtitle.animate.headingOutFade-reverse{visibility:visible}

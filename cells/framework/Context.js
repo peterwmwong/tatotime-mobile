@@ -17,15 +17,17 @@ define(['require', './Model', 'cell!./Page'], function(require, Model, Page) {
           pageHistoryLength = this.model.pageHistory.length;
           if (isback && (pageCell = pageCache[cur.hash])) {
             prevPageCell = pageCache[prev.hash];
-            prevPageCell.$el.remove();
             delete pageCache[prev.hash];
+            prevPageCell.$el.bind('webkitAnimationEnd', function() {
+              return prevPageCell.$el.remove();
+            });
           } else {
             pageCell = pageCache[cur.hash] = new Page({
               model: cur
             });
           }
-          pageCell.$el.appendTo(this.$el);
-          pageInClass = prev ? (rev = isback && '-reverse' || '', curPage.$el.attr('class', 'Page headingOut' + rev), curPage.model.trigger('deactivate'), 'Page headingIn' + rev) : 'Page fadeIn';
+          pageCell.$el.prependTo(this.$el);
+          pageInClass = 'Page animate ' + (prev ? (rev = isback && '-reverse' || '', curPage.$el.attr('class', 'Page animate headingOut' + rev), curPage.model.trigger('deactivate'), 'headingIn' + rev) : 'fadeIn');
           (curPage = pageCell).$el.attr('class', pageInClass);
           return curPage.model.trigger({
             type: 'activate',

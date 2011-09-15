@@ -12,23 +12,26 @@ define [
     _ 'p.description'
     _ '.castGroup',
       _ 'h4.castHeader', 'Cast'
-      _ '.castList', ''
+      _ '#castListContainer', ''
   ]
 
   afterRender: ->
+    @model.bind 'activate': => @$('#castListView').trigger 'resetActive'
     @model.bindAndCall 'change:data': ({cur:data})=>
       @model.set title: 'Loading...'
-      S.show.getDetails data.id, ({title,description,network,year,cast})=>
-        @model.set title: title
-        @$('.title').html title
-        @$('.year').html year
-        @$('.description').html (description.length <= 125) and description or "#{description.slice 0,125}..."
-        @$('.network').html network
-        @$('.castGroup > .castList > .ListView').remove()
-        @$('.castGroup > .castList')
-          .append cell::$R ListView, list: do->
-            for {id,name} in cast then do->
-              link: "#Schedule!pages/profiledetails/ProfileDetails?id=#{id}&title=#{name}"
-              text: name
+      S.show.getDetails data.id, (d)=>
+        @model.set title: d.title
+        @$('.title').html d.title
+        @$('.year').html d.year
+        @$('.description').html (d.description.length <= 125) and d.description or "#{d.description.slice 0,125}..."
+        @$('.network').html d.network
+        @$('#ListView').remove()
+        @$('#castListContainer')
+          .append cell::$R ListView,
+            id: 'castListView'
+            list: do->
+              for {id,name} in d.cast then do->
+                link: "#Schedule!pages/profiledetails/ProfileDetails?id=#{id}&title=#{name}"
+                text: name
 
         @model.trigger 'refreshScroller'

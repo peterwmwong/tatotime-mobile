@@ -7,18 +7,24 @@ define({
       for (_i = 0, _len = list.length; _i < _len; _i++) {
         _ref = list[_i], text = _ref.text, link = _ref.link, dividerText = _ref.dividerText;
         if (text || dividerText) {
-          _results.push(text ? _("<li data-dest='" + link + "'>", text) : _("li.divider", divderText));
+          _results.push(text ? _("<li data-dest='" + link + "'>", _('div'), text) : _("li.divider", dividerText));
         }
       }
       return _results;
     }
   },
   on: {
+    'resetActive': function() {
+      return this.$('li.active').removeClass('active').addClass('deactive');
+    },
+    'webkitAnimationEnd li > div': function() {
+      return this.$('li.deactive').removeClass('deactive');
+    },
     'click li': function(_arg) {
       var target;
       target = _arg.target;
-      $('li.active').removeClass('active');
-      return window.location.hash = $(target).addClass('active').data('dest');
+      this.$('li.active').removeClass('active');
+      return window.location.hash = $(target).closest('li').addClass('active').data('dest');
     }
   }
 });

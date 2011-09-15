@@ -17,21 +17,21 @@ define [
 
       if isback and pageCell = pageCache[cur.hash]
         prevPageCell = pageCache[prev.hash]
-        prevPageCell.$el.remove()
         delete pageCache[prev.hash]
+        prevPageCell.$el.bind 'webkitAnimationEnd', -> prevPageCell.$el.remove()
       else
         pageCell = pageCache[cur.hash] = new Page model: cur
-      pageCell.$el.appendTo @$el
+      pageCell.$el.prependTo @$el
 
-      pageInClass =
+      pageInClass = 'Page animate ' +
         if prev
           rev = isback and '-reverse' or ''
-          curPage.$el.attr 'class', 'Page headingOut' + rev
+          curPage.$el.attr 'class', 'Page animate headingOut' + rev
           curPage.model.trigger 'deactivate'
-          'Page headingIn' + rev
+          'headingIn' + rev
         else
-          'Page fadeIn'
-
+          'fadeIn'
+      
       (curPage = pageCell).$el.attr 'class', pageInClass
       curPage.model.trigger
         type: 'activate'

@@ -2,9 +2,14 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
 define(['Services', 'cell!shared/ListView'], function(S, ListView) {
   return {
     render: function(_, A) {
-      return [_('img'), _('.titleGroup', _('h2.title'), _('h4.year'), _('h4.network')), _('p.description'), _('.castGroup', _('h4.castHeader', 'Cast'), _('.castList', ''))];
+      return [_('img'), _('.titleGroup', _('h2.title'), _('h4.year'), _('h4.network')), _('p.description'), _('.castGroup', _('h4.castHeader', 'Cast'), _('#castListContainer', ''))];
     },
     afterRender: function() {
+      this.model.bind({
+        'activate': __bind(function() {
+          return this.$('#castListView').trigger('resetActive');
+        }, this)
+      });
       return this.model.bindAndCall({
         'change:data': __bind(function(_arg) {
           var data;
@@ -12,23 +17,23 @@ define(['Services', 'cell!shared/ListView'], function(S, ListView) {
           this.model.set({
             title: 'Loading...'
           });
-          return S.show.getDetails(data.id, __bind(function(_arg2) {
-            var cast, description, network, title, year;
-            title = _arg2.title, description = _arg2.description, network = _arg2.network, year = _arg2.year, cast = _arg2.cast;
+          return S.show.getDetails(data.id, __bind(function(d) {
             this.model.set({
-              title: title
+              title: d.title
             });
-            this.$('.title').html(title);
-            this.$('.year').html(year);
-            this.$('.description').html((description.length <= 125) && description || ("" + (description.slice(0, 125)) + "..."));
-            this.$('.network').html(network);
-            this.$('.castGroup > .castList > .ListView').remove();
-            this.$('.castGroup > .castList').append(cell.prototype.$R(ListView, {
+            this.$('.title').html(d.title);
+            this.$('.year').html(d.year);
+            this.$('.description').html((d.description.length <= 125) && d.description || ("" + (d.description.slice(0, 125)) + "..."));
+            this.$('.network').html(d.network);
+            this.$('#ListView').remove();
+            this.$('#castListContainer').append(cell.prototype.$R(ListView, {
+              id: 'castListView',
               list: (function() {
-                var id, name, _i, _len, _ref, _results;
+                var id, name, _i, _len, _ref, _ref2, _results;
+                _ref = d.cast;
                 _results = [];
-                for (_i = 0, _len = cast.length; _i < _len; _i++) {
-                  _ref = cast[_i], id = _ref.id, name = _ref.name;
+                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                  _ref2 = _ref[_i], id = _ref2.id, name = _ref2.name;
                   _results.push((function() {
                     return {
                       link: "#Schedule!pages/profiledetails/ProfileDetails?id=" + id + "&title=" + name,

@@ -41,9 +41,9 @@ define
         if prevTitle
           $prevtitle
             .html(prevTitle)
-            .attr('class', 'headingOut'+rev)
+            .attr('class', 'animate headingOutFade'+rev)
 
-        $title.attr 'class', 'headingIn'+rev
+        $title.attr 'class', 'animate headingInFade'+rev
         animating = true
 
   on:
