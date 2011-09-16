@@ -1,25 +1,42 @@
+# Prevent app from being dragged beyond bounds
+document.body.addEventListener 'touchmove', (e)-> e.preventDefault()
+# Hide that pesky address bar on start and whenever the orientation changes
+hideAddressBar = ->
+  doScroll = 0
+  setTimeout (hideIOSAddressBar = =>
+    if ++doScroll is 1
+      window.scrollTo 0,1
+  ), 500
+  $(window).bind 'resize', ->
+    doScroll = 0
+    hideIOSAddressBar()
+
+$('body').attr 'class',
+  if (ua = navigator.userAgent).match(/iPhone/i) or ua.match(/iPod/i) or ua.match(/iPad/i)
+    if window.navigator.standalone
+      'IOSFullScreen'
+    else
+      hideAddressBar()
+      'IOS'
+  else
+    hideAddressBar()
+    'ANDROID'
+
+
 define [
   'AppConfig'
-  'Services'
   './HashManager'
   './Model'
   './ContextModel'
   'cell!./Context'
   'cell!./ContextNavBar'
   'cell!./TitleBar'
-], (AppConfig,S,HashManager,Model,ContextModel,Context,ContextNavBar,TitleBar)->
-
-  # Prevent app from being dragged byonds it's limits on iOS
-  if S.isIOS
-    document.body.addEventListener 'touchmove', (e)-> e.preventDefault()
+], (AppConfig,HashManager,Model,ContextModel,Context,ContextNavBar,TitleBar)->
 
   # Cache of all previously loaded pages
   ctxCache = {}
 
   init: ->
-    if S.isIOSFullScreen
-      @options.class = 'IOSFullScreenApp'
-      
     window.appmodel = @AppModel = new Model
       appConfig: AppConfig
       currentContext: undefined
@@ -31,17 +48,6 @@ define [
   ]
 
   afterRender: ->
-    # Hide that pesky iOS address bar on start and whenever
-    # the orientation changes
-    if S.isIOS and not S.isIOSFullScreen
-
-      # Hides iOS mobile safari address bar (scroll hack)
-      setTimeout (hideIOSAddressBar = ->
-        window.scrollTo 0,1
-        if window.pageYOffset <= 0
-          setTimeout hideIOSAddressBar, 50
-      ), 100
-      $(window).bind 'resize', hideIOSAddressBar
 
     # Cache content jQuery object, for appending Contexts to
     $content = @$ '#content'

@@ -1,17 +1,27 @@
+var hideAddressBar, ua;
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-define(['AppConfig', 'Services', './HashManager', './Model', './ContextModel', 'cell!./Context', 'cell!./ContextNavBar', 'cell!./TitleBar'], function(AppConfig, S, HashManager, Model, ContextModel, Context, ContextNavBar, TitleBar) {
+document.body.addEventListener('touchmove', function(e) {
+  return e.preventDefault();
+});
+hideAddressBar = function() {
+  var doScroll, hideIOSAddressBar;
+  doScroll = 0;
+  setTimeout((hideIOSAddressBar = __bind(function() {
+    if (++doScroll === 1) {
+      return window.scrollTo(0, 1);
+    }
+  }, this)), 500);
+  return $(window).bind('resize', function() {
+    doScroll = 0;
+    return hideIOSAddressBar();
+  });
+};
+$('body').attr('class', (ua = navigator.userAgent).match(/iPhone/i) || ua.match(/iPod/i) || ua.match(/iPad/i) ? window.navigator.standalone ? 'IOSFullScreen' : (hideAddressBar(), 'IOS') : (hideAddressBar(), 'ANDROID'));
+define(['AppConfig', './HashManager', './Model', './ContextModel', 'cell!./Context', 'cell!./ContextNavBar', 'cell!./TitleBar'], function(AppConfig, HashManager, Model, ContextModel, Context, ContextNavBar, TitleBar) {
   var ctxCache;
-  if (S.isIOS) {
-    document.body.addEventListener('touchmove', function(e) {
-      return e.preventDefault();
-    });
-  }
   ctxCache = {};
   return {
     init: function() {
-      if (S.isIOSFullScreen) {
-        this.options["class"] = 'IOSFullScreenApp';
-      }
       return window.appmodel = this.AppModel = new Model({
         appConfig: AppConfig,
         currentContext: void 0
@@ -27,16 +37,7 @@ define(['AppConfig', 'Services', './HashManager', './Model', './ContextModel', '
       ];
     },
     afterRender: function() {
-      var $content, hashmgr, hideIOSAddressBar;
-      if (S.isIOS && !S.isIOSFullScreen) {
-        setTimeout((hideIOSAddressBar = function() {
-          window.scrollTo(0, 1);
-          if (window.pageYOffset <= 0) {
-            return setTimeout(hideIOSAddressBar, 50);
-          }
-        }), 100);
-        $(window).bind('resize', hideIOSAddressBar);
-      }
+      var $content, hashmgr;
       $content = this.$('#content');
       hashmgr = new HashManager({
         appConfig: AppConfig,

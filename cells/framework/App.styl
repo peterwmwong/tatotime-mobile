@@ -4,6 +4,15 @@
 @import 'mixins/pos';
 @import 'mixins/triangle';
 
+.ANDROID
+  .App
+    abspos 0px 0px -70px 0px
+    padding-bottom 69px
+
+.IOS
+  .App
+    abspos 0px 0px -60px 0px
+
 .App
   abspos 0px 0px 0px 0px
   box vertical
@@ -16,6 +25,6 @@
     
   > #content
     margin-top 43px
-    box-flex 1
     position relative
+    box-flex 1
     z-index 1
