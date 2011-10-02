@@ -2,10 +2,9 @@
 #--------------------------- Variables -----------------------------
 #===================================================================
 coffee = node_modules/.bin/coffee
-serve= node_modules/.bin/serve
 stylus = node_modules/.bin/stylus
 uglifyjs = node_modules/.bin/uglifyjs
-express = node_modules/express/package.json
+connect = node_modules/connect/package.json
 
 #-------------------------------------------------------------------
 # BUILD
@@ -41,37 +40,37 @@ endif
 #-------------------------------------------------------------------
 # BUILD
 #------------------------------------------------------------------- 
-cells/bootstrap.js: $(uglifyjs) cells/cell.js cells/cell-pluginBuilder.js
+src/bootstrap.js: $(uglifyjs) src/cell.js src/cell-pluginBuilder.js
 	node $(requirejsBuild) \
 		-o \
 		paths.requireLib=../vendor/requirejs/require \
 		include=requireLib \
 		name=cell!framework/App \
-		out=cells/bootstrap-tmp.js \
-		baseUrl=cells includeRequire=true
+		out=src/bootstrap-tmp.js \
+		baseUrl=src includeRequire=true
 	cat vendor/iscroll-lite.js \
-			cells/bootstrap-tmp.js | $(uglifyjs) -nc > cells/bootstrap.js
-	cat cells/global.css \
-			cells/bootstrap-tmp.css > cells/bootstrap.css
-	rm cells/bootstrap-tmp.*
+			src/bootstrap-tmp.js | $(uglifyjs) -nc > src/bootstrap.js
+	cat src/global.css \
+			src/bootstrap-tmp.css > src/bootstrap.css
+	rm src/bootstrap-tmp.*
 
 #-------------------------------------------------------------------
 # TEST
 #------------------------------------------------------------------- 
 specs:
-	find cells -name '*Spec.coffee' | xargs coffee -e 'console.log "define([],#{JSON.stringify process.argv[4..].map (e)->/^cells\/(.*?)\.coffee/.exec(e)[1]});"' > spec/allSpecs.js
+	find src -name '*Spec.coffee' | xargs coffee -e 'console.log """define([],#{JSON.stringify process.argv[4..].map (e)->"spec!"+/^src\/(.*?)Spec\.coffee/.exec(e)[1]});"""' > spec/allSpecs.js
 
 #-------------------------------------------------------------------
 # DEV 
 #------------------------------------------------------------------- 
-dev-server: $(serve)
-	$(serve) -D -L -I `pwd`
+dev-server: $(coffee) $(connect) dev-server.coffee
+	$(coffee) ./dev-server.coffee `pwd`
 
 dev-stylus: $(stylus)
-	find ./cells ./mixins -name '*.styl' -type f | xargs $(stylus) --watch --compress
+	find ./src -name '*.styl' -type f | xargs $(stylus) --include ./src/shared/styles --watch --compress
 
 dev-coffee: $(coffee)
-	find . -name '*.coffee' -type f | xargs $(coffee) -c -b --watch
+	find ./src ./spec -name '*.coffee' -type f | xargs $(coffee) -c -b --watch
 
 #-------------------------------------------------------------------
 # Dependencies 
@@ -82,19 +81,16 @@ $(stylus):
 $(coffee):
 	npm install coffee-script
 
-$(express):
-	npm install express
+$(connect):
+	npm install connect
 
 $(uglifyjs):
 	npm install uglify-js
-
-$(serve):
-	npm install serve
 
 #-------------------------------------------------------------------
 # TEST
 #------------------------------------------------------------------- 
 
 clean: 
-	@@rm cells/bootstrap.*
+	@@rm src/bootstrap.*
 

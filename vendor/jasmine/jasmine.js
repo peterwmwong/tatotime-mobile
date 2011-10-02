@@ -1165,11 +1165,9 @@ jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
     }
 
     if(!result){
-      console.log(matcherArgs[0]);
-      console.log(this.actual,"\n\n");
-      
-      console.log(JSON.stringify(matcherArgs[0]));
-      console.log(JSON.stringify(this.actual),"\n\n");
+      var _actual = this.actual,
+          _expected = matcherArgs[0];
+      debugger;
     }
     var expectationResult = new jasmine.ExpectationResult({
       matcherName: matcherName,

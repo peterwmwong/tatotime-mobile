@@ -1,4 +1,4 @@
 define
   spyOnAll: (o)->
-    for k of o then spyOn(o, k)
+    for k,v of o then spyOn(o, k).andCallThrough()
     o

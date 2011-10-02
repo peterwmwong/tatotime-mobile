@@ -1,1 +1,1 @@
-define([],["framework/ModelSpec","framework/HashManagerSpec","framework/ContextModelSpec"]);
+define([],["spec!framework/Model","spec!framework/Nav","spec!framework/ContextModel"]);

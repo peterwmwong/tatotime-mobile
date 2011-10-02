@@ -1,8 +1,9 @@
 define({
   spyOnAll: function(o) {
-    var k;
+    var k, v;
     for (k in o) {
-      spyOn(o, k);
+      v = o[k];
+      spyOn(o, k).andCallThrough();
     }
     return o;
   }

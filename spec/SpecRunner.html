@@ -5,20 +5,22 @@
 
   <link rel="shortcut icon" type="image/png" href="/vendor/jasmine/jasmine_favicon.png">
   <link rel="stylesheet" type="text/css" href="/vendor/jasmine/jasmine.css">
-
   <script src="/vendor/jquery.js"></script>
   <script src="/vendor/jasmine/jasmine.js"></script>
   <script src="/vendor/jasmine/jasmine-html.js"></script>
   <script src="/vendor/requirejs/require.js"></script>
   <script src="/vendor/live.js"></script>
   <script>
-    require.config({
-      baseUrl: '/cells/',
-      paths: {
-        'SpecHelpers': '../spec/SpecHelpers'
-      }
-    });
-    require(['../spec/SpecRunner']);
+    (function(){
+      require.config({
+        context: 'specRunner',
+        baseUrl: '/src/',
+        paths: {
+          'SpecHelpers': '../spec/SpecHelpers',
+          'spec': '../spec/spec'
+        }
+      })(['../spec/SpecRunner']);
+    })()
   </script>
 </head>
 <body></body>
