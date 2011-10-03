@@ -1,5 +1,5 @@
 # Prevent app from being dragged beyond bounds
-$(document).bind 'touchmove', (e)-> e.preventDefault()
+document.addEventListener 'touchmove', (e)-> e.preventDefault()
 
 # Hide that pesky address bar on start and whenever the orientation changes
 hideAddressBar = ->
