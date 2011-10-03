@@ -1,5 +1,4 @@
-define ['framework/Nav'], (Nav)->
-
+define
   tag: '<ul>'
   
   render: (_,A)->

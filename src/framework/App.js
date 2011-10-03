@@ -1,6 +1,6 @@
 var hideAddressBar, ua;
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-document.body.addEventListener('touchmove', function(e) {
+$(document).bind('touchmove', function(e) {
   return e.preventDefault();
 });
 hideAddressBar = function() {
