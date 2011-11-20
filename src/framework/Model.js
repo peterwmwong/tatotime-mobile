@@ -1,3 +1,4 @@
+
 define(function() {
   var Model, changeEventRx, unshiftIfNotPresent;
   changeEventRx = /^change:(.*)/;
@@ -5,24 +6,28 @@ define(function() {
     var l, _i, _len;
     for (_i = 0, _len = ls.length; _i < _len; _i++) {
       l = ls[_i];
-      if (l === handler) {
-        return;
-      }
+      if (l === handler) return;
     }
     return ls.unshift(handler);
   };
   return Model = (function() {
     var parsePropChange, pathObj;
+
     Model.pathObj = pathObj = function(o, pathArray) {
+      var i, len;
       if (o) {
-        for(var i=0, len=pathArray.length; i < len && (o = o[pathArray[i]]) != null; i++);
+        len = pathArray.length;
+        i = 0;
+        while (i < len && ((o = o[pathArray[i++]]) != null)) {}
         return o;
       }
     };
+
     Model.parsePropChange = parsePropChange = function(type) {
       var _ref, _ref2;
       return (_ref = changeEventRx.exec(type)) != null ? (_ref2 = _ref[1]) != null ? _ref2.split('.') : void 0 : void 0;
     };
+
     function Model(attrs) {
       var k, v;
       this._ls = {};
@@ -32,24 +37,25 @@ define(function() {
       }
       return;
     }
+
     Model.prototype.set = function(kvMap, eventData) {
       var k, prev, v;
       for (k in kvMap) {
         v = kvMap[k];
-        if (this[k] !== v) {
-          prev = this[k];
-          try {
-            this.trigger({
-              cur: (this[k] = v),
-              prev: prev,
-              property: k,
-              type: "change:" + k,
-              data: eventData
-            });
-          } catch (_e) {}
-        }
+        if (!(this[k] !== v)) continue;
+        prev = this[k];
+        try {
+          this.trigger({
+            cur: (this[k] = v),
+            prev: prev,
+            property: k,
+            type: "change:" + k,
+            data: eventData
+          });
+        } catch (_error) {}
       }
     };
+
     Model.prototype.trigger = function(evOrType, data) {
       var event, l, ls, _i, _len;
       event = typeof evOrType === 'string' ? {
@@ -62,10 +68,11 @@ define(function() {
           l = ls[_i];
           try {
             l(event);
-          } catch (_e) {}
+          } catch (_error) {}
         }
       }
     };
+
     Model.prototype.bindAndCall = function(binds) {
       var handler, self, type, _fn;
       self = this;
@@ -99,9 +106,7 @@ define(function() {
                 model: parentObj,
                 data: pev.data
               };
-              if (i !== lastPropIndex) {
-                ev.parentEvent = pev;
-              }
+              if (i !== lastPropIndex) ev.parentEvent = pev;
               return handler(ev);
             };
             if (obj instanceof Model) {
@@ -130,7 +135,7 @@ define(function() {
               type: type,
               model: self
             });
-          } catch (_e) {}
+          } catch (_error) {}
         }
       };
       for (type in binds) {
@@ -138,6 +143,7 @@ define(function() {
         _fn(handler);
       }
     };
+
     Model.prototype.bind = function(binds) {
       var bind, handler, obj, p, props, type, v, _base, _i, _len, _ref, _ref2;
       for (type in binds) {
@@ -147,36 +153,33 @@ define(function() {
           _ref = props.slice(0, -1);
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             p = _ref[_i];
-            if ((v = obj[p]) instanceof Model) {
-              bind = {};
-              bind["change:" + p] = function(_arg) {
-                var cur, prev;
-                cur = _arg.cur, prev = _arg.prev;
-              };
-              v.bind(bind);
-            }
+            if (!((v = obj[p]) instanceof Model)) continue;
+            bind = {};
+            bind["change:" + p] = function(_arg) {
+              var cur, prev;
+              cur = _arg.cur, prev = _arg.prev;
+            };
+            v.bind(bind);
           }
         }
         unshiftIfNotPresent(((_ref2 = (_base = this._ls)[type]) != null ? _ref2 : _base[type] = []), handler);
       }
     };
+
     Model.prototype.unbind = function(binds) {
-      var handler, i, l, ls, type, _len, _results;
-      _results = [];
+      var handler, i, l, ls, type, _len;
       for (type in binds) {
         handler = binds[type];
         if (ls = this._ls[type]) {
           for (i = 0, _len = ls.length; i < _len; i++) {
             l = ls[i];
-            if (l === handler) {
-              delete ls[i];
-              return;
-            }
+            if (l === handler) delete ls[i];
           }
         }
       }
-      return _results;
     };
+
     return Model;
+
   })();
 });

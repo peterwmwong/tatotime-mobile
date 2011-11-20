@@ -7,7 +7,9 @@ define ->
   class Model
     @pathObj: pathObj = (o,pathArray)->
       if o
-        `for(var i=0, len=pathArray.length; i < len && (o = o[pathArray[i]]) != null; i++)`
+        len = pathArray.length
+        i=0
+        while i<len and (o = o[pathArray[i++]])? then
         o
 
     @parsePropChange: parsePropChange = (type)-> changeEventRx.exec(type)?[1]?.split '.'
@@ -106,7 +108,6 @@ define ->
             bind["change:#{p}"] = ({cur,prev})->
             v.bind bind
         unshiftIfNotPresent (@_ls[type] ?= []), handler
-
       return
 
     unbind: (binds)->
@@ -114,4 +115,4 @@ define ->
         if ls = @_ls[type]
           for l,i in ls when l is handler
             delete ls[i]
-            return
+      return

@@ -3,8 +3,8 @@
 #===================================================================
 coffee = node_modules/.bin/coffee
 stylus = node_modules/.bin/stylus
-uglifyjs = node_modules/.bin/uglifyjs
 connect = node_modules/connect/package.json
+closure = vendor/closure-compiler/compiler.jar
 
 #-------------------------------------------------------------------
 # BUILD
@@ -35,21 +35,23 @@ endif
 #===================================================================
 #­--------------------------- TARGETS ------------------------------
 #===================================================================
-.PHONY : clean
+.PHONY : clean update-closure
 
 #-------------------------------------------------------------------
 # BUILD
 #------------------------------------------------------------------- 
-src/bootstrap.js: $(uglifyjs) src/cell.js src/cell-builder-plugin.js
+src/bootstrap.js: src/cell.js src/cell-builder-plugin.js
 	$(requirejsBuild) \
 		-o \
 		paths.requireLib=../node_modules/requirejs/require \
 		include=requireLib \
 		name=cell!framework/App \
 		out=src/bootstrap-tmp.js \
+		optimize=none \
 		baseUrl=src includeRequire=true
 	cat vendor/iscroll-lite.js \
-			src/bootstrap-tmp.js | $(uglifyjs) -nc > src/bootstrap.js
+			src/bootstrap-tmp.js > src/bootstrap-tmp.unmin.js
+	java -jar $(closure) --compilation_level SIMPLE_OPTIMIZATIONS --js src/bootstrap-tmp.unmin.js --js_output_file src/bootstrap.js
 	cat src/global.css \
 			src/bootstrap-tmp.css > src/bootstrap.css
 	rm src/bootstrap-tmp.*
@@ -75,6 +77,17 @@ dev-coffee: $(coffee)
 #-------------------------------------------------------------------
 # Dependencies 
 #------------------------------------------------------------------- 
+remove-closure:
+	rm -rf vendor/closure-compiler
+
+update-closure: remove-closure $(closure)
+
+$(closure):
+	mkdir -p vendor/closure-compiler
+	wget -O vendor/closure-compiler/closure-compiler.zip http://closure-compiler.googlecode.com/files/compiler-latest.zip
+	unzip -d vendor/closure-compiler vendor/closure-compiler/closure-compiler.zip
+	rm vendor/closure-compiler/closure-compiler.zip
+
 $(stylus):
 	npm install stylus
 
@@ -83,9 +96,6 @@ $(coffee):
 
 $(connect):
 	npm install connect
-
-$(uglifyjs):
-	npm install uglify-js
 
 #-------------------------------------------------------------------
 # TEST

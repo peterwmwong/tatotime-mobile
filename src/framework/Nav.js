@@ -36,7 +36,6 @@ define(['AppConfig', 'HashDelegate', './Model'], function(AppConfig, HashDelegat
               _ref2 = kv.split('='), k = _ref2[0], v = _ref2[1];
               data[k] = decodeURIComponent(v);
             }
-            data;
           }
           return data;
         })()

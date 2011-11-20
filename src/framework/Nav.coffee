@@ -44,7 +44,6 @@ define [
           for kv in jsondata.split '&'
             [k,v] = kv.split '='
             data[k] = decodeURIComponent v
-          data
         data
 
     current: new Model parseHash HashDelegate.get()
