@@ -1,32 +1,33 @@
-var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
 define(['Services', 'cell!shared/ListView'], function(S, ListView) {
   return {
     render: function(_, A) {
       return [_('img'), _('.titleGroup', _('h2.title'), _('h4.year'), _('h4.network')), _('p.description'), _('.castGroup', _('h4.castHeader', 'Cast'), _('#castListContainer', ''))];
     },
     afterRender: function() {
+      var _this = this;
       this.model.bind({
-        'activate': __bind(function() {
-          return this.$('#castListView').trigger('resetActive');
-        }, this)
+        'activate': function() {
+          return _this.$('#castListView').trigger('resetActive');
+        }
       });
       return this.model.bindAndCall({
-        'change:data': __bind(function(_arg) {
+        'change:data': function(_arg) {
           var data;
           data = _arg.cur;
-          this.model.set({
+          _this.model.set({
             title: 'Loading...'
           });
-          return S.show.getDetails(data.id, __bind(function(d) {
-            this.model.set({
+          return S.show.getDetails(data.id, function(d) {
+            _this.model.set({
               title: d.title
             });
-            this.$('.title').html(d.title);
-            this.$('.year').html(d.year);
-            this.$('.description').html((d.description.length <= 125) && d.description || ("" + (d.description.slice(0, 125)) + "..."));
-            this.$('.network').html(d.network);
-            this.$('#ListView').remove();
-            this.$('#castListContainer').append(cell.prototype.$R(ListView, {
+            _this.$('.title').html(d.title);
+            _this.$('.year').html(d.year);
+            _this.$('.description').html((d.description.length <= 125) && d.description || ("" + (d.description.slice(0, 125)) + "..."));
+            _this.$('.network').html(d.network);
+            _this.$('#ListView').remove();
+            _this.$('#castListContainer').append(cell.prototype.$R(ListView, {
               id: 'castListView',
               list: (function() {
                 var id, name, _i, _len, _ref, _ref2, _results;
@@ -44,9 +45,9 @@ define(['Services', 'cell!shared/ListView'], function(S, ListView) {
                 return _results;
               })()
             }));
-            return this.model.trigger('refreshScroller');
-          }, this));
-        }, this)
+            return _this.model.trigger('refreshScroller');
+          });
+        }
       });
     }
   };

@@ -1,3 +1,4 @@
+
 define({
   set: function(hash) {
     return window.location.hash = hash;
@@ -6,6 +7,6 @@ define({
     return window.location.hash;
   },
   onChange: function(cb) {
-    return $(window).bind('hashchange', cb);
+    return $(window).on('hashchange', cb);
   }
 });

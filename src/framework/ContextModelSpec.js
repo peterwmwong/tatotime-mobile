@@ -1,3 +1,4 @@
+
 define(['SpecHelpers', './Model'], function(_arg, Model) {
   var spyOnAll;
   spyOnAll = _arg.spyOnAll;

@@ -1,22 +1,24 @@
 var hideAddressBar, ua;
-var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
 document.addEventListener('touchmove', function(e) {
   return e.preventDefault();
 });
+
 hideAddressBar = function() {
   var doScroll, hideIOSAddressBar;
+  var _this = this;
   doScroll = 0;
-  setTimeout((hideIOSAddressBar = __bind(function() {
-    if (++doScroll === 1) {
-      return window.scrollTo(0, 1);
-    }
-  }, this)), 500);
+  setTimeout((hideIOSAddressBar = function() {
+    if (++doScroll === 1) return window.scrollTo(0, 1);
+  }), 500);
   return $(window).bind('resize', function() {
     doScroll = 0;
     return hideIOSAddressBar();
   });
 };
+
 $('body').attr('class', (ua = navigator.userAgent).match(/iPhone/i) || ua.match(/iPod/i) || ua.match(/iPad/i) ? window.navigator.standalone ? 'IOSFullScreen' : (hideAddressBar(), 'IOS') : (hideAddressBar(), 'ANDROID'));
+
 define(['./Nav', './Model', './ContextModel', 'cell!./Context', 'cell!./ContextNavBar', 'cell!./TitleBar'], function(Nav, Model, ContextModel, Context, ContextNavBar, TitleBar) {
   var ctxCache;
   ctxCache = {};
@@ -26,9 +28,10 @@ define(['./Nav', './Model', './ContextModel', 'cell!./Context', 'cell!./ContextN
     },
     afterRender: function() {
       var $content;
+      var _this = this;
       $content = this.$('#content');
       return Nav.bindAndCall({
-        'change:current': __bind(function(_arg) {
+        'change:current': function(_arg) {
           var ctxCell, cur, data, isContextSwitch, prev, prevCtxId, _ref;
           cur = _arg.cur, prev = _arg.prev, data = _arg.data;
           isContextSwitch = !data ? true : data != null ? data.isContextSwitch : void 0;
@@ -42,12 +45,10 @@ define(['./Nav', './Model', './ContextModel', 'cell!./Context', 'cell!./ContextN
             }
             ctxCell.$el.toggle(true);
             if (prevCtxId = prev != null ? prev.context : void 0) {
-              if ((_ref = ctxCache[prevCtxId]) != null) {
-                _ref.$el.toggle(false);
-              }
+              if ((_ref = ctxCache[prevCtxId]) != null) _ref.$el.toggle(false);
             }
             if (ctxCell) {
-              this.$('#content > .activeTab').removeClass('activeTab');
+              _this.$('#content > .activeTab').removeClass('activeTab');
               ctxCell.$el.toggle(true).toggleClass('activeTab', true);
             } else {
               if (typeof console !== "undefined" && console !== null) {
@@ -57,7 +58,7 @@ define(['./Nav', './Model', './ContextModel', 'cell!./Context', 'cell!./ContextN
               }
             }
           }
-        }, this)
+        }
       });
     }
   };

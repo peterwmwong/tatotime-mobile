@@ -1,18 +1,20 @@
-var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
 define(['Services', 'shared/DateHelper', 'cell!shared/ListView'], function(S, DateHelper, ListView) {
   return {
     init: function() {
+      var _this = this;
       this.model.set({
         title: DateHelper.getDisplayable(new Date())
       });
       return this.model.bind({
-        'activate': __bind(function() {
-          return this.$('#ShowList').trigger('resetActive');
-        }, this)
+        'activate': function() {
+          return _this.$('#ShowList').trigger('resetActive');
+        }
       });
     },
     render: function(_, A) {
-      return S.user.getShows(new Date(), __bind(function(shows) {
+      var _this = this;
+      return S.user.getShows(new Date(), function(shows) {
         var i;
         A([
           _(ListView, {
@@ -32,8 +34,8 @@ define(['Services', 'shared/DateHelper', 'cell!shared/ListView'], function(S, Da
             })()
           })
         ]);
-        return this.model.trigger('refreshScroller');
-      }, this));
+        return _this.model.trigger('refreshScroller');
+      });
     }
   };
 });

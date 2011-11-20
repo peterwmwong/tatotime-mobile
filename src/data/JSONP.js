@@ -1,4 +1,5 @@
-var __slice = Array.prototype.slice, __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+var __slice = Array.prototype.slice;
+
 define(function() {
   var get, idFunc, jsonp, jsonpID;
   idFunc = function(o) {
@@ -13,9 +14,7 @@ define(function() {
       window[jsonpString] = void 0;
       return $('#' + jsonpString).remove();
     };
-    if ((_ref = options.callback) == null) {
-      options.callback = 'callback';
-    }
+    if ((_ref = options.callback) == null) options.callback = 'callback';
     s = document.createElement('script');
     s.id = jsonpString;
     s.setAttribute('type', 'text/javascript');
@@ -47,24 +46,20 @@ define(function() {
   };
   return {
     JSONPService: (function() {
+
       function _Class(serviceName, _arg) {
         var baseURL, methods, name, pathFunc, process, _fn;
+        var _this = this;
         baseURL = _arg.baseURL, process = _arg.process, methods = _arg.methods;
-        if (process == null) {
-          process = idFunc;
-        }
-        _fn = __bind(function(name, pathFunc) {
+        if (process == null) process = idFunc;
+        _fn = function(name, pathFunc) {
           var cacheFunc, methodProcess, t;
           methodProcess = process;
           cacheFunc = idFunc;
           if ((t = typeof pathFunc) === 'object' && t !== 'function') {
-            if (pathFunc.process != null) {
-              methodProcess = pathFunc.process;
-            }
+            if (pathFunc.process != null) methodProcess = pathFunc.process;
             pathFunc = pathFunc.path;
-            if (pathFunc.getCache != null) {
-              cacheFunc = pathFunc.getCache;
-            }
+            if (pathFunc.getCache != null) cacheFunc = pathFunc.getCache;
           }
           if (typeof pathFunc === 'string') {
             (function() {
@@ -75,12 +70,10 @@ define(function() {
               };
             })();
           }
-          return this[name] = __bind(function() {
+          return _this[name] = function() {
             var args, cacheValue, done, _i;
             args = 2 <= arguments.length ? __slice.call(arguments, 0, _i = arguments.length - 1) : (_i = 0, []), done = arguments[_i++];
-            if (done == null) {
-              done = idFunc;
-            }
+            if (done == null) done = idFunc;
             if ((cacheValue = cacheFunc()) !== void 0) {
               done(cacheValue);
             } else {
@@ -92,15 +85,17 @@ define(function() {
                 done(rs);
               });
             }
-          }, this);
-        }, this);
+          };
+        };
         for (name in methods) {
           pathFunc = methods[name];
           _fn(name, pathFunc);
         }
         return;
       }
+
       return _Class;
+
     })()
   };
 });

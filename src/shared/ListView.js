@@ -1,3 +1,4 @@
+
 define({
   tag: '<ul>',
   render: function(_, A) {
@@ -7,7 +8,11 @@ define({
       for (_i = 0, _len = list.length; _i < _len; _i++) {
         _ref = list[_i], text = _ref.text, link = _ref.link, dividerText = _ref.dividerText;
         if (text || dividerText) {
-          _results.push(text ? _("<li data-navto='" + link + "'>", _('div'), text) : _("li.divider", dividerText));
+          if (text) {
+            _results.push(_("<li data-navto='" + link + "'>", _('div'), text));
+          } else {
+            _results.push(_("li.divider", dividerText));
+          }
         }
       }
       return _results;

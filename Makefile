@@ -9,7 +9,7 @@ connect = node_modules/connect/package.json
 #-------------------------------------------------------------------
 # BUILD
 #------------------------------------------------------------------- 
-requirejsBuild = ./vendor/requirejs/r.js
+requirejsBuild = node_modules/.bin/r.js
 
 #-------------------------------------------------------------------
 # TEST
@@ -40,10 +40,10 @@ endif
 #-------------------------------------------------------------------
 # BUILD
 #------------------------------------------------------------------- 
-src/bootstrap.js: $(uglifyjs) src/cell.js src/cell-pluginBuilder.js
-	node $(requirejsBuild) \
+src/bootstrap.js: $(uglifyjs) src/cell.js src/cell-builder-plugin.js
+	$(requirejsBuild) \
 		-o \
-		paths.requireLib=../vendor/requirejs/require \
+		paths.requireLib=../node_modules/requirejs/require \
 		include=requireLib \
 		name=cell!framework/App \
 		out=src/bootstrap-tmp.js \

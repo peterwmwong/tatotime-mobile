@@ -1,3 +1,4 @@
+
 define(['require', './Model', './Nav', 'cell!./Page'], function(require, Model, Nav, Page) {
   return {
     tag: function() {
@@ -10,8 +11,8 @@ define(['require', './Model', './Nav', 'cell!./Page'], function(require, Model, 
       $el = this.$el;
       bind = {};
       f = bind["change:current[context=" + this.options.contextid + "]"] = function(_arg) {
-        var cur, isBack, pageCell, pageInClass, prev, prevPageCell, rev;
-        cur = _arg.cur, prev = _arg.prev, isBack = _arg.data.isBack;
+        var cur, isBack, pageCell, pageInClass, prev, prevPageCell, rev, _ref;
+        cur = _arg.cur, prev = _arg.prev, (_ref = _arg.data, isBack = _ref.isBack);
         pageCell = pageCache[cur.hash];
         prevPageCell = prev && pageCache[prev.hash];
         if (prevPageCell) {

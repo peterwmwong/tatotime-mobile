@@ -1,4 +1,5 @@
 var __slice = Array.prototype.slice;
+
 define(['require', './allSpecs'], function(require, allSpecs) {
   return require(allSpecs, function() {
     var jasmineEnv, spec, specs, trivialReporter, _i, _len;

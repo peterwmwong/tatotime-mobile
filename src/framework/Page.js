@@ -1,37 +1,36 @@
-var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
 define(['require', './Nav'], function(require, Nav) {
   return {
     tag: function() {
       return "<div data-cellpath='" + this.model.page + "'>";
     },
-    render: function(_, A) {
-      return require(["cell!" + this.model.page], __bind(function(page) {
-        return A([
-          _(page, {
-            model: this.model
-          })
-        ]);
-      }, this));
+    render: function(_) {
+      var _this = this;
+      return require(["cell!" + this.model.page], function(page) {
+        _this.$el.append(_(page, {
+          model: _this.model
+        }));
+        return _this.pageRendered();
+      });
     },
-    afterRender: function() {
+    pageRendered: function() {
       var active, scroller;
+      var _this = this;
       active = true;
       this.model.bind({
-        'deactivate': __bind(function() {
+        'deactivate': function() {
           return active = false;
-        }, this)
+        }
       });
       this.model.bind({
-        'activate': __bind(function() {
+        'activate': function() {
           active = true;
-          return this.$el.css('visibility', 'visible');
-        }, this)
-      });
-      this.$el.bind('webkitAnimationEnd', __bind(function() {
-        if (!active) {
-          return this.$el.css('visibility', 'hidden');
+          return _this.$el.css('visibility', 'visible');
         }
-      }, this));
+      });
+      this.$el.bind('webkitAnimationEnd', function() {
+        if (!active) return _this.$el.css('visibility', 'hidden');
+      });
       scroller = new iScroll(this.el);
       return this.model.bindAndCall({
         'refreshScroller': function() {

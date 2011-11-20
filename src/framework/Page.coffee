@@ -5,12 +5,12 @@ define [
 
   tag: -> "<div data-cellpath='#{@model.page}'>"
 
-  render: (_,A)->
-    require ["cell!#{@model.page}"], (page)=> A [
-      _ page, model: @model
-    ]
+  render: (_)->
+    require ["cell!#{@model.page}"], (page)=>
+      @$el.append _ page, model: @model
+      @pageRendered()
 
-  afterRender: ->
+  pageRendered: ->
     # This shit is to compensate for Android not supporting
     # CSS3 animation-fill-mode: forwards
     active = true

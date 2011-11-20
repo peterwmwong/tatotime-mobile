@@ -1,3 +1,4 @@
+
 define(['AppConfig', './Nav'], function(AppConfig, Nav) {
   return {
     tag: '<ul>',

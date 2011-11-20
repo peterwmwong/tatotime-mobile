@@ -1,3 +1,4 @@
+
 define(['AppConfig', 'HashDelegate', './Model'], function(AppConfig, HashDelegate, Model) {
   var Nav, contextHists, ctx, hashRx, parseHash, toHash, _backHash;
   hashRx = /^\#([^!^?]+)(!([^?]+))?(\?(.+))?/;

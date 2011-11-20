@@ -1,17 +1,14 @@
-var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
-  for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
-  function ctor() { this.constructor = child; }
-  ctor.prototype = parent.prototype;
-  child.prototype = new ctor;
-  child.__super__ = parent.prototype;
-  return child;
-}, __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+
 define(['./Model'], function(Model) {
   var ContextModel;
   return ContextModel = (function() {
+
     __extends(ContextModel, Model);
+
     function ContextModel(_arg) {
       var bind, currentPageModel, defaultPagePath, hashManager, id, initialHash, pageHistory;
+      var _this = this;
       id = _arg.id, initialHash = _arg.initialHash, hashManager = _arg.hashManager, defaultPagePath = _arg.defaultPagePath;
       ContextModel.__super__.constructor.call(this, {
         id: id,
@@ -19,7 +16,7 @@ define(['./Model'], function(Model) {
         currentPageModel: currentPageModel = new Model(initialHash),
         pageHistory: pageHistory = [currentPageModel]
       });
-      (bind = {})["change:current[context=" + id + "]"] = __bind(function(_arg2) {
+      (bind = {})["change:current[context=" + id + "]"] = function(_arg2) {
         var cur, isContextSwitch, prev, _ref;
         cur = _arg2.cur, prev = _arg2.prev;
         if (!(isContextSwitch = cur.context !== (prev != null ? prev.context : void 0))) {
@@ -29,14 +26,16 @@ define(['./Model'], function(Model) {
             pageHistory.unshift(new Model(cur));
           }
         }
-        return this.set({
+        return _this.set({
           currentPageModel: pageHistory[0]
         }, {
           isContextSwitch: isContextSwitch
         });
-      }, this);
+      };
       hashManager.bind(bind);
     }
+
     return ContextModel;
+
   })();
 });

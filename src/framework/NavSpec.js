@@ -1,3 +1,4 @@
+
 define(['SpecHelpers', './Model'], function(_arg, Model) {
   var spyOnAll;
   spyOnAll = _arg.spyOnAll;
@@ -117,9 +118,7 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
               v = expected[k];
               e[k] = v;
             }
-            if ((_ref = e.hash) == null) {
-              e.hash = h;
-            }
+            if ((_ref = e.hash) == null) e.hash = h;
             return it("parses '" + h + "' to " + (JSON.stringify(e)), function() {
               return expect(Nav.parseHash(h)).toEqual(e);
             });

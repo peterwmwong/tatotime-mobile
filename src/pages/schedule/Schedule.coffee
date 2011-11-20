@@ -8,16 +8,18 @@ define [
   ShowDetailsPage = 'pages/showdetails/ShowDetails'
 
   init: ->
-    # Pre-emptive/Deferred Loading
-    require [ShowDetailsPage], ->
     @model.set title: DateHelper.getDisplayable new Date()
     @model.bind 'activate': => @$('#ShowList').trigger 'resetActive'
 
-  render: (_, A)->
+  render: (_)->
     S.user.getShows new Date(), (shows)=>
-      A [
-        _ ListView, id: 'ShowList', list: for s in shows then do->
+      @$el.append _ ListView,
+        id: 'ShowList'
+        list: for s in shows then {
           link: "#{ShowDetailsPage}?id=#{s.id}&title=#{s.title}"
           text: s.title
-      ]
+        }
       @model.trigger 'refreshScroller'
+      
+      # Pre-emptive/Deferred Loading
+      require [ShowDetailsPage], ->

@@ -1,3 +1,4 @@
+
 define(['data/mock/users/allUsers', 'data/mock/PathHelper'], function(allUsers, _arg) {
   var getPathComponents;
   getPathComponents = _arg.getPathComponents;

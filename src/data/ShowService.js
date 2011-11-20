@@ -1,3 +1,4 @@
+
 define(['data/JSONP'], function(_arg) {
   var JSONPService;
   JSONPService = _arg.JSONPService;

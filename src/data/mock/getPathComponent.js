@@ -1,3 +1,4 @@
+
 define(function() {
   var getPathComponent;
   return getPathComponent = function(path, i) {

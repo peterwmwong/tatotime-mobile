@@ -22,3 +22,4 @@ define
       $(target)
         .closest('li')
         .addClass('active')
+      

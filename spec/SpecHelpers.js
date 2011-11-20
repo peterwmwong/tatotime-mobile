@@ -1,3 +1,4 @@
+
 define({
   spyOnAll: function(o) {
     var k, v;

@@ -1,3 +1,4 @@
+
 define(['cell!pages/schedule/Schedule'], function() {
   return {
     contexts: {

@@ -1,3 +1,4 @@
+
 define(function() {
   var PathHelper;
   return PathHelper = {
