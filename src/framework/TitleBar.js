@@ -29,9 +29,9 @@ define(['framework/Nav'], function(Nav) {
             $backbutton.css('visibility', Nav.canBack() && 'visible' || 'hidden');
             rev = isBack && '-reverse' || '';
             if (prevTitle) {
-              $prevtitle.html(prevTitle).attr('class', 'animate headingOutFade' + rev);
+              $prevtitle.html(prevTitle).attr('class', 'animate headingOut' + rev);
             }
-            $title.attr('class', 'animate headingInFade' + rev);
+            $title.attr('class', 'animate headingIn' + rev);
             return animating = true;
           }
         }

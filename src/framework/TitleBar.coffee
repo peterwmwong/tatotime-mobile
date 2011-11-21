@@ -37,9 +37,9 @@ define ['framework/Nav'], (Nav)->
         if prevTitle
           $prevtitle
             .html(prevTitle)
-            .attr('class', 'animate headingOutFade'+rev)
+            .attr('class', 'animate headingOut'+rev)
 
-        $title.attr 'class', 'animate headingInFade'+rev
+        $title.attr 'class', 'animate headingIn'+rev
         animating = true
 
   on:

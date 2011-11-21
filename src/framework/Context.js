@@ -15,7 +15,7 @@ define(['require', './Model', './Nav', 'cell!./Page'], function(require, Model, 
         cur = _arg.cur, prev = _arg.prev, (_ref = _arg.data, isBack = _ref.isBack);
         pageCell = pageCache[cur.hash];
         prevPageCell = prev && pageCache[prev.hash];
-        if (prevPageCell) {
+        if (prevPageCell && isBack) {
           delete pageCache[prev.hash];
           prevPageCell.$el.bind('webkitAnimationEnd', function() {
             return prevPageCell.$el.remove();
@@ -23,7 +23,7 @@ define(['require', './Model', './Nav', 'cell!./Page'], function(require, Model, 
         }
         if (!pageCell) {
           pageCell = pageCache[cur.hash] = new Page({
-            model: new Model(cur)
+            model: cur
           });
         }
         pageCell.$el.prependTo($el);

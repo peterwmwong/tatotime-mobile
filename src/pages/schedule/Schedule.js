@@ -5,11 +5,11 @@ define(['require', 'Services', 'shared/DateHelper', 'cell!shared/ListView'], fun
   return {
     init: function() {
       var _this = this;
-      this.model.set({
-        title: DateHelper.getDisplayable(new Date())
-      });
       return this.model.bind({
         'activate': function() {
+          _this.model.set({
+            title: DateHelper.getDisplayable(new Date())
+          });
           return _this.$('#ShowList').trigger('resetActive');
         }
       });

@@ -18,7 +18,7 @@ define [
       prevPageCell = prev and pageCache[prev.hash]
 
       # Hide previous Page
-      if prevPageCell
+      if prevPageCell and isBack
         delete pageCache[prev.hash]
         prevPageCell.$el.bind 'webkitAnimationEnd', ->
 
@@ -28,7 +28,7 @@ define [
       if not pageCell
         pageCell = pageCache[cur.hash] =
           new Page
-            model: new Model cur
+            model: cur
       pageCell.$el.prependTo $el
 
       pageInClass = 'Page'

@@ -8,8 +8,9 @@ define [
   ShowDetailsPage = 'pages/showdetails/ShowDetails'
 
   init: ->
-    @model.set title: DateHelper.getDisplayable new Date()
-    @model.bind 'activate': => @$('#ShowList').trigger 'resetActive'
+    @model.bind 'activate': =>
+      @model.set title: DateHelper.getDisplayable new Date()
+      @$('#ShowList').trigger 'resetActive'
 
   render: (_)->
     S.user.getShows new Date(), (shows)=>

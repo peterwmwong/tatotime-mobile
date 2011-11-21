@@ -1,10 +1,10 @@
 @-webkit-keyframes slideOutLeft{0%{-webkit-transform:translateX(0)}
-100%{-webkit-transform:translateX(-100%)}
-}@-webkit-keyframes slideInLeft{0%{-webkit-transform:translateX(100%)}
+100%{-webkit-transform:translateX(-150%)}
+}@-webkit-keyframes slideInLeft{0%{-webkit-transform:translateX(150%)}
 100%{-webkit-transform:translateX(0)}
 }@-webkit-keyframes slideOutRight{0%{-webkit-transform:translateX(0)}
-100%{-webkit-transform:translateX(100%)}
-}@-webkit-keyframes slideInRight{0%{-webkit-transform:translateX(-100%)}
+100%{-webkit-transform:translateX(150%)}
+}@-webkit-keyframes slideInRight{0%{-webkit-transform:translateX(-150%)}
 100%{-webkit-transform:translateX(0)}
 }@-webkit-keyframes fadeIn{0%{opacity:0}
 100%{opacity:1}
