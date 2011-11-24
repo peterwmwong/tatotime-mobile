@@ -10,7 +10,7 @@ define [
       _ 'h4.bornInfo'
     _ '.knownForGroup',
       _ 'h4.knownForHeader', 'Known For'
-      _ '#knownForList', ''
+      _ '#knownForList'
   ]
 
   afterRender: ->
@@ -25,6 +25,6 @@ define [
         @$('#knownForList')
           .append cell::$R ListView, list: do->
             for {id,role,title} in knownFor then do->
-              link: "pages/showdetails/ShowDetails?id=#{id}&title=#{title}"
+              link: "pages/showdetails/ShowDetails?id=#{id}&title=#{encodeURIComponent title}"
               text: title
         @model.trigger 'refreshScroller'

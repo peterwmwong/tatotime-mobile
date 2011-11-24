@@ -1,8 +1,9 @@
 
 define(['AppConfig', 'HashDelegate', './Model'], function(AppConfig, HashDelegate, Model) {
-  var Nav, contextHists, ctx, hashRx, parseHash, toHash, _backHash;
+  var Nav, contextHists, ctx, hashRx, parseHash, toHash, _backHash, _fixedHash;
   hashRx = /^\#([^!^?]+)(!([^?]+))?(\?(.+))?/;
   _backHash = void 0;
+  _fixedHash = false;
   Nav = new Model({
     toHash: toHash = function(_arg) {
       var context, ctx, data, hash, k, page, prefix, v;
@@ -20,28 +21,33 @@ define(['AppConfig', 'HashDelegate', './Model'], function(AppConfig, HashDelegat
       return hash;
     },
     parseHash: parseHash = function(hash) {
-      var context, ctxid, page, result;
+      var context, ctxid, data, jsondata, k, kv, page, result, v, _i, _len, _ref, _ref2;
       result = hashRx.exec(hash);
+      data = {};
+      if (jsondata = result != null ? result[5] : void 0) {
+        _ref = jsondata.split('&');
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          kv = _ref[_i];
+          _ref2 = kv.split('='), k = _ref2[0], v = _ref2[1];
+          data[k] = decodeURIComponent(v);
+        }
+      }
       return {
+        data: data,
         hash: hash,
-        context: context = (ctxid = result != null ? result[1] : void 0) && AppConfig.contexts[ctxid] ? ctxid : AppConfig.defaultContext,
-        page: (page = result != null ? result[3] : void 0) && (page.substr(-1) !== '/') ? page : AppConfig.contexts[context].defaultPagePath,
-        data: (function() {
-          var data, jsondata, k, kv, v, _i, _len, _ref, _ref2;
-          data = {};
-          if (jsondata = result != null ? result[5] : void 0) {
-            _ref = jsondata.split('&');
-            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-              kv = _ref[_i];
-              _ref2 = kv.split('='), k = _ref2[0], v = _ref2[1];
-              data[k] = decodeURIComponent(v);
-            }
-          }
-          return data;
-        })()
+        context: context = ((ctxid = result != null ? result[1] : void 0) && AppConfig.contexts[ctxid] && ctxid) || AppConfig.defaultContext,
+        page: ((page = result != null ? result[3] : void 0) && (page.substr(-1) !== '/') && page) || AppConfig.contexts[context].defaultPagePath
       };
     },
-    current: new Model(parseHash(HashDelegate.get())),
+    current: (function() {
+      var finalHashString, hash;
+      hash = parseHash(HashDelegate.get());
+      if (hash.hash !== (finalHashString = toHash(hash))) {
+        hash.hash = finalHashString;
+        _fixedHash = true;
+      }
+      return new Model(hash);
+    })(),
     canBack: function() {
       var _ref;
       return ((_ref = contextHists[Nav.current.context]) != null ? _ref.length : void 0) > 1;
@@ -85,50 +91,52 @@ define(['AppConfig', 'HashDelegate', './Model'], function(AppConfig, HashDelegat
     }
   });
   HashDelegate.onChange(function() {
-    var ctxHist, h, i, _ref, _ref2;
-    h = new Model(Nav.parseHash(HashDelegate.get()));
-    ctxHist = contextHists[h.context];
-    if (Nav.current.context !== h.context) {
+    var backHash, ctxHist, h, i, _ref, _ref2;
+    if (_fixedHash) {
+      _fixedHash = false;
+    } else {
+      h = parseHash(HashDelegate.get());
+      ctxHist = contextHists[h.context];
+      backHash = _backHash;
       _backHash = void 0;
-      return Nav.set({
-        current: h
-      }, {
-        isBack: false,
-        isContextSwitch: true
-      });
-    } else if (_backHash) {
-      i = 0;
-      while (ctxHist[i].hash !== _backHash.hash) {
-        ++i;
+      if (Nav.current.context !== h.context) {
+        Nav.set({
+          current: ctxHist.length && ctxHist[0] || new Model(h)
+        }, {
+          isBack: false,
+          isContextSwitch: true
+        });
+      } else if (backHash) {
+        i = 0;
+        while (ctxHist[i++].hash !== backHash.hash) {}
+        h = backHash;
+        ctxHist.splice(0, i - 1);
+        Nav.set({
+          current: h
+        }, {
+          isBack: true,
+          isContextSwitch: false
+        });
+      } else if (h.hash === ((_ref = ctxHist[1]) != null ? _ref.hash : void 0)) {
+        h = ctxHist[1];
+        ctxHist.splice(0, 1);
+        Nav.set({
+          current: h
+        }, {
+          isBack: true,
+          isContextSwitch: false
+        });
+      } else if (ctxHist.length === 0 || ((_ref2 = ctxHist[0]) != null ? _ref2.hash : void 0) !== h.hash) {
+        ctxHist.unshift(h = new Model(h));
+        Nav.set({
+          current: h
+        }, {
+          isBack: false,
+          isContextSwitch: false
+        });
       }
-      h = _backHash;
-      _backHash = void 0;
-      ctxHist.splice(0, i);
-      return Nav.set({
-        current: h
-      }, {
-        isBack: true,
-        isContextSwitch: false
-      });
-    } else if (h.hash === ((_ref = ctxHist[1]) != null ? _ref.hash : void 0)) {
-      _backHash = void 0;
-      ctxHist.splice(0, 1);
-      return Nav.set({
-        current: h
-      }, {
-        isBack: true,
-        isContextSwitch: false
-      });
-    } else if (ctxHist.length < 1 || ((_ref2 = ctxHist[0]) != null ? _ref2.hash : void 0) !== h.hash) {
-      _backHash = void 0;
-      ctxHist.unshift(h);
-      return Nav.set({
-        current: h
-      }, {
-        isBack: false,
-        isContextSwitch: false
-      });
     }
   });
+  if (_fixedHash) HashDelegate.set(Nav.current.hash);
   return Nav;
 });

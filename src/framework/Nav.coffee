@@ -12,6 +12,10 @@ define [
     ///
 
   _backHash = undefined
+  _fixedHash = false
+
+  #TODO: Make data portion of hash JSON, don't try to forge it 
+  #     into location search form (ex. ?k=v&k2=v2)
 
   Nav = new Model
 
@@ -28,28 +32,25 @@ define [
 
     parseHash: parseHash = (hash)->
       result = hashRx.exec hash
+      data = {}
+      if jsondata = result?[5]
+        for kv in jsondata.split '&'
+          [k,v] = kv.split '='
+          data[k] = decodeURIComponent v
+
+      data: data
       hash: hash
-      context: context =
-        if (ctxid = result?[1]) and AppConfig.contexts[ctxid]
-          ctxid
-        else AppConfig.defaultContext
-      page:
-        if (page = result?[3]) and (page.substr(-1) isnt '/')
-          page
-        else
-          AppConfig.contexts[context].defaultPagePath
-      data: do->
-        data = {}
-        if jsondata = result?[5]
-          for kv in jsondata.split '&'
-            [k,v] = kv.split '='
-            data[k] = decodeURIComponent v
-        data
+      context: context = ((ctxid = result?[1]) and AppConfig.contexts[ctxid] and ctxid) or AppConfig.defaultContext
+      page: ((page = result?[3]) and (page.substr(-1) isnt '/') and page) or AppConfig.contexts[context].defaultPagePath
 
-    current: new Model parseHash HashDelegate.get()
+    current: do->
+      hash = parseHash HashDelegate.get()
+      if hash.hash isnt (finalHashString = toHash hash)
+        hash.hash = finalHashString
+        _fixedHash = true
+      new Model hash
 
-    canBack: ->
-      contextHists[Nav.current.context]?.length > 1
+    canBack: -> contextHists[Nav.current.context]?.length > 1
 
     goBack: ->
       # TODO window.location.back()
@@ -58,7 +59,8 @@ define [
         _backHash = hist[1]
         HashDelegate.set _backHash.hash
 
-    goTo: (pageUrl)-> HashDelegate.set "#{Nav.current.context}!#{pageUrl}"
+    goTo: (pageUrl)->
+      HashDelegate.set "#{Nav.current.context}!#{pageUrl}"
 
     switchContext: (ctxid)->
       if typeof ctxid is 'string' and (hist = contextHists[ctxid]) and Nav.current.context isnt ctxid
@@ -78,35 +80,40 @@ define [
       Nav.trigger event
 
   HashDelegate.onChange ->
-    h = new Model Nav.parseHash HashDelegate.get()
-    ctxHist = contextHists[h.context]
+    if _fixedHash then _fixedHash = false
+    else
+      h = parseHash HashDelegate.get()
+      ctxHist = contextHists[h.context]
 
-    # Context Switch
-    if Nav.current.context isnt h.context
+      backHash = _backHash
       _backHash = undefined
-      Nav.set {current:h}, {isBack:false,isContextSwitch:true}
 
-    # Going Back
-    else if _backHash
-      # Rewind Context's History to Back hash
-      # (for people stabbing their back button)
-      i = 0
-      ++i while ctxHist[i].hash isnt _backHash.hash
-      h = _backHash
-      _backHash = undefined
-      ctxHist.splice 0, i
-      Nav.set {current:h}, {isBack:true,isContextSwitch:false}
+      # Context Switch
+      if Nav.current.context isnt h.context
+        Nav.set {current: ctxHist.length and ctxHist[0] or new Model h}, {isBack:false,isContextSwitch:true}
 
-    # Back button (going back, not initiated by us)
-    else if h.hash is ctxHist[1]?.hash
-      _backHash = undefined
-      ctxHist.splice 0, 1
-      Nav.set {current:h}, {isBack:true,isContextSwitch:false}
+      # Going Back
+      else if backHash
+        # Rewind Context's History to Back hash
+        # (for people stabbing their back button)
+        i = 0
+        while ctxHist[i++].hash isnt backHash.hash then
+        h = backHash
+        ctxHist.splice 0, i-1
+        Nav.set {current:h}, {isBack:true,isContextSwitch:false}
 
-    # First time or Going forward
-    else if ctxHist.length < 1 or ctxHist[0]?.hash isnt h.hash
-      _backHash = undefined
-      ctxHist.unshift h
-      Nav.set {current:h}, {isBack:false,isContextSwitch:false}
-          
+      # Back button (going back, not initiated by us)
+      else if h.hash is ctxHist[1]?.hash
+        h = ctxHist[1]
+        ctxHist.splice 0, 1
+        Nav.set {current: h}, {isBack:true,isContextSwitch:false}
+
+      # First time or Going forward
+      else if ctxHist.length is 0 or ctxHist[0]?.hash isnt h.hash
+        ctxHist.unshift h = new Model h
+        Nav.set {current:h}, {isBack:false,isContextSwitch:false}
+    return
+    
+  if _fixedHash
+    HashDelegate.set Nav.current.hash
   Nav

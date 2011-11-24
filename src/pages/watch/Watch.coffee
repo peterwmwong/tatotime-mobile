@@ -5,14 +5,14 @@ define [
 ], (S,DateHelper,ListView)->
 
   init: ->
-    @model.set title: DateHelper.getDisplayable new Date()
+    @model.set title: 'Watch'
     @model.bind 'activate': => @$('#ShowList').trigger 'resetActive'
 
-  render: (_, A)->
+  render: (_)->
     S.user.getShows new Date(), (shows)=>
-      A [
-        _ ListView, id: 'ShowList', list: for i in [0..10] then do->
-          link: "#Watch!go/no/where"
+      @$el.append _ ListView,
+        id: 'ShowList', list: for i in [0..10] then {
+          link: "pages/showdetails/ShowDetails?id=#{i}"
           text: "#{i}"
-      ]
+        }
       @model.trigger 'refreshScroller'

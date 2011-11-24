@@ -2,7 +2,7 @@
 define(['Services', 'cell!shared/ListView'], function(S, ListView) {
   return {
     render: function(_) {
-      return [_('img'), _('.nameGroup', _('h2.name'), _('h4.bornInfo')), _('.knownForGroup', _('h4.knownForHeader', 'Known For'), _('#knownForList', ''))];
+      return [_('img'), _('.nameGroup', _('h2.name'), _('h4.bornInfo')), _('.knownForGroup', _('h4.knownForHeader', 'Known For'), _('#knownForList'))];
     },
     afterRender: function() {
       var _this = this;
@@ -35,7 +35,7 @@ define(['Services', 'cell!shared/ListView'], function(S, ListView) {
                   _ref2 = knownFor[_i], id = _ref2.id, role = _ref2.role, title = _ref2.title;
                   _results.push((function() {
                     return {
-                      link: "pages/showdetails/ShowDetails?id=" + id + "&title=" + title,
+                      link: "pages/showdetails/ShowDetails?id=" + id + "&title=" + (encodeURIComponent(title)),
                       text: title
                     };
                   })());

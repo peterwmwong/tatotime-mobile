@@ -12,28 +12,24 @@ define(['Services', 'shared/DateHelper', 'cell!shared/ListView'], function(S, Da
         }
       });
     },
-    render: function(_, A) {
+    render: function(_) {
       var _this = this;
       return S.user.getShows(new Date(), function(shows) {
         var i;
-        A([
-          _(ListView, {
-            id: 'ShowList',
-            list: (function() {
-              var _results;
-              _results = [];
-              for (i = 0; i <= 10; i++) {
-                _results.push((function() {
-                  return {
-                    link: "#Watch!go/no/where",
-                    text: "" + i
-                  };
-                })());
-              }
-              return _results;
-            })()
-          })
-        ]);
+        _this.$el.append(_(ListView, {
+          id: 'ShowList',
+          list: (function() {
+            var _results;
+            _results = [];
+            for (i = 0; i <= 10; i++) {
+              _results.push({
+                link: "pages/showdetails/ShowDetails?id=" + i,
+                text: "" + i
+              });
+            }
+            return _results;
+          })()
+        }));
         return _this.model.trigger('refreshScroller');
       });
     }
