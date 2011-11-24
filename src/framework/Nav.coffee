@@ -60,13 +60,12 @@ define [
         HashDelegate.set _backHash.hash
 
     goTo: (pageUrl)->
-      HashDelegate.set "#{Nav.current.context}!#{pageUrl}"
+      HashDelegate.set "##{Nav.current.context}!#{pageUrl}"
 
     switchContext: (ctxid)->
       if typeof ctxid is 'string' and (hist = contextHists[ctxid]) and Nav.current.context isnt ctxid
         # Use previous visit or create new
         HashDelegate.set toHash hist[0] or {context: ctxid, page: AppConfig.contexts[ctxid].defaultPage}
-
 
   window.ctxHists = contextHists = {}
   contextHists[ctx] = [] for ctx of AppConfig.contexts
@@ -90,7 +89,13 @@ define [
 
       # Context Switch
       if Nav.current.context isnt h.context
-        Nav.set {current: ctxHist.length and ctxHist[0] or new Model h}, {isBack:false,isContextSwitch:true}
+        Nav.set {
+          current: 
+            if ctxHist.length then ctxHist[0]
+            else
+              ctxHist.unshift h = new Model h
+              h
+        }, {isBack:false,isContextSwitch:true}
 
       # Going Back
       else if backHash
@@ -109,7 +114,7 @@ define [
         Nav.set {current: h}, {isBack:true,isContextSwitch:false}
 
       # First time or Going forward
-      else if ctxHist.length is 0 or ctxHist[0]?.hash isnt h.hash
+      else if ctxHist.length is 0 or ctxHist[0].hash isnt h.hash
         ctxHist.unshift h = new Model h
         Nav.set {current:h}, {isBack:false,isContextSwitch:false}
     return

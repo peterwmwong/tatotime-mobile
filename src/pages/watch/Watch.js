@@ -4,7 +4,7 @@ define(['Services', 'shared/DateHelper', 'cell!shared/ListView'], function(S, Da
     init: function() {
       var _this = this;
       this.model.set({
-        title: DateHelper.getDisplayable(new Date())
+        title: 'Watch'
       });
       return this.model.bind({
         'activate': function() {

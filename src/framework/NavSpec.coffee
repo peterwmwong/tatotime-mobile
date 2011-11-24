@@ -127,13 +127,13 @@ define [
 
         it 'calls HashDelegate.set() with previous hash for context', ->
           Nav.goTo 'test'
-          expect(mHashDelegate.get()).toBe 'ctx1!test'
+          expect(mHashDelegate.get()).toBe '#ctx1!test'
           
           Nav.goTo 'test2'
-          expect(mHashDelegate.get()).toBe 'ctx1!test2'
+          expect(mHashDelegate.get()).toBe '#ctx1!test2'
 
           Nav.goBack()
-          expect(mHashDelegate.get()).toBe 'ctx1!test'
+          expect(mHashDelegate.get()).toBe '#ctx1!test'
 
           Nav.goBack()
           expect(mHashDelegate.get()).toBe mInitialHash
@@ -152,7 +152,7 @@ define [
           Nav.goTo mUrlPath
 
         it 'calls HashDelegate.set("#{current context}!#{urlpath}")', ->
-          expect(mHashDelegate.set).toHaveBeenCalledWith "#{mAppConfig.defaultContext}!#{mUrlPath}"
+          expect(mHashDelegate.set).toHaveBeenCalledWith "##{mAppConfig.defaultContext}!#{mUrlPath}"
 
       #----------------------------------------------------------------------
       describe 'Nav.parseHash(hash:string)', ->
@@ -388,6 +388,7 @@ define [
 
         it 'does nothing when contextId is not valid context (not part of AppConfig.contexts)', ->
           Nav.switchContext 'bogus context'
+          expect(mHashDelegate.set).not.toHaveBeenCalled()
           expect(binds['change:current']).not.toHaveBeenCalled()
           expect(binds['change:current[context=ctx1]']).not.toHaveBeenCalled()
 
@@ -396,6 +397,7 @@ define [
           Nav.switchContext null
           Nav.switchContext 5
           Nav.switchContext {}
+          expect(mHashDelegate.set).not.toHaveBeenCalled()
           expect(binds['change:current']).not.toHaveBeenCalled()
           expect(binds['change:current[context=ctx1]']).not.toHaveBeenCalled()
         
@@ -406,12 +408,18 @@ define [
           beforeEach ->
             Nav.switchContext 'ctx2'
 
-          it 'updates Nav.current', ->
+          it 'updates Nav.current with proper hash to defaultPagePath for context', ->
             expect(Nav.current).toEqual new Model
                 hash: '#ctx2!path2'
                 context: 'ctx2'
                 page: 'path2'
                 data: {}
+
+          it 'adds hash to defaultPagePath for context to context history', ->
+            prevHash = Nav.current
+            Nav.goTo 'somewhereElse'
+            Nav.goBack()
+            expect(Nav.current).toBe prevHash
           
           it 'does NOT trigger "change:current[context=ctx1]" event', ->
             expect(binds['change:current[context=ctx1]']).not.toHaveBeenCalled()

@@ -153,11 +153,11 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
           });
           return it('calls HashDelegate.set() with previous hash for context', function() {
             Nav.goTo('test');
-            expect(mHashDelegate.get()).toBe('ctx1!test');
+            expect(mHashDelegate.get()).toBe('#ctx1!test');
             Nav.goTo('test2');
-            expect(mHashDelegate.get()).toBe('ctx1!test2');
+            expect(mHashDelegate.get()).toBe('#ctx1!test2');
             Nav.goBack();
-            expect(mHashDelegate.get()).toBe('ctx1!test');
+            expect(mHashDelegate.get()).toBe('#ctx1!test');
             Nav.goBack();
             expect(mHashDelegate.get()).toBe(mInitialHash);
             mHashDelegate.set.reset();
@@ -173,7 +173,7 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
             return Nav.goTo(mUrlPath);
           });
           return it('calls HashDelegate.set("#{current context}!#{urlpath}")', function() {
-            return expect(mHashDelegate.set).toHaveBeenCalledWith("" + mAppConfig.defaultContext + "!" + mUrlPath);
+            return expect(mHashDelegate.set).toHaveBeenCalledWith("#" + mAppConfig.defaultContext + "!" + mUrlPath);
           });
         });
         describe('Nav.parseHash(hash:string)', function() {
@@ -423,6 +423,7 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
           });
           it('does nothing when contextId is not valid context (not part of AppConfig.contexts)', function() {
             Nav.switchContext('bogus context');
+            expect(mHashDelegate.set).not.toHaveBeenCalled();
             expect(binds['change:current']).not.toHaveBeenCalled();
             return expect(binds['change:current[context=ctx1]']).not.toHaveBeenCalled();
           });
@@ -431,6 +432,7 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
             Nav.switchContext(null);
             Nav.switchContext(5);
             Nav.switchContext({});
+            expect(mHashDelegate.set).not.toHaveBeenCalled();
             expect(binds['change:current']).not.toHaveBeenCalled();
             return expect(binds['change:current[context=ctx1]']).not.toHaveBeenCalled();
           });
@@ -438,13 +440,20 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
             beforeEach(function() {
               return Nav.switchContext('ctx2');
             });
-            it('updates Nav.current', function() {
+            it('updates Nav.current with proper hash to defaultPagePath for context', function() {
               return expect(Nav.current).toEqual(new Model({
                 hash: '#ctx2!path2',
                 context: 'ctx2',
                 page: 'path2',
                 data: {}
               }));
+            });
+            it('adds hash to defaultPagePath for context to context history', function() {
+              var prevHash;
+              prevHash = Nav.current;
+              Nav.goTo('somewhereElse');
+              Nav.goBack();
+              return expect(Nav.current).toBe(prevHash);
             });
             it('does NOT trigger "change:current[context=ctx1]" event', function() {
               return expect(binds['change:current[context=ctx1]']).not.toHaveBeenCalled();

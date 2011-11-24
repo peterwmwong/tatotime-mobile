@@ -61,7 +61,7 @@ define(['AppConfig', 'HashDelegate', './Model'], function(AppConfig, HashDelegat
       }
     },
     goTo: function(pageUrl) {
-      return HashDelegate.set("" + Nav.current.context + "!" + pageUrl);
+      return HashDelegate.set("#" + Nav.current.context + "!" + pageUrl);
     },
     switchContext: function(ctxid) {
       var hist;
@@ -91,7 +91,7 @@ define(['AppConfig', 'HashDelegate', './Model'], function(AppConfig, HashDelegat
     }
   });
   HashDelegate.onChange(function() {
-    var backHash, ctxHist, h, i, _ref, _ref2;
+    var backHash, ctxHist, h, i, _ref;
     if (_fixedHash) {
       _fixedHash = false;
     } else {
@@ -101,7 +101,7 @@ define(['AppConfig', 'HashDelegate', './Model'], function(AppConfig, HashDelegat
       _backHash = void 0;
       if (Nav.current.context !== h.context) {
         Nav.set({
-          current: ctxHist.length && ctxHist[0] || new Model(h)
+          current: ctxHist.length ? ctxHist[0] : (ctxHist.unshift(h = new Model(h)), h)
         }, {
           isBack: false,
           isContextSwitch: true
@@ -126,7 +126,7 @@ define(['AppConfig', 'HashDelegate', './Model'], function(AppConfig, HashDelegat
           isBack: true,
           isContextSwitch: false
         });
-      } else if (ctxHist.length === 0 || ((_ref2 = ctxHist[0]) != null ? _ref2.hash : void 0) !== h.hash) {
+      } else if (ctxHist.length === 0 || ctxHist[0].hash !== h.hash) {
         ctxHist.unshift(h = new Model(h));
         Nav.set({
           current: h
