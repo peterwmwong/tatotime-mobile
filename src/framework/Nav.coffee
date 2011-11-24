@@ -11,7 +11,6 @@ define [
     (\? (.+)      )? # ?d=a&t=a
     ///
 
-  _backHash = undefined
   _fixedHash = false
 
   #TODO: Make data portion of hash JSON, don't try to forge it 
@@ -51,23 +50,14 @@ define [
       new Model hash
 
     canBack: -> contextHists[Nav.current.context]?.length > 1
-
-    goBack: ->
-      # TODO window.location.back()
-      hist = contextHists[Nav.current.context]
-      if hist.length > 1
-        _backHash = hist[1]
-        HashDelegate.set _backHash.hash
-
-    goTo: (pageUrl)->
-      HashDelegate.set "##{Nav.current.context}!#{pageUrl}"
-
+    goBack: -> HashDelegate.set h if h = contextHists[Nav.current.context][1]?.hash
+    goTo: (pageUrl)-> HashDelegate.set "##{Nav.current.context}!#{pageUrl}"
     switchContext: (ctxid)->
       if typeof ctxid is 'string' and (hist = contextHists[ctxid]) and Nav.current.context isnt ctxid
         # Use previous visit or create new
         HashDelegate.set toHash hist[0] or {context: ctxid, page: AppConfig.contexts[ctxid].defaultPage}
 
-  window.ctxHists = contextHists = {}
+  contextHists = {}
   contextHists[ctx] = [] for ctx of AppConfig.contexts
   contextHists[Nav.current.context].push Nav.current
 
@@ -84,9 +74,6 @@ define [
       h = parseHash HashDelegate.get()
       ctxHist = contextHists[h.context]
 
-      backHash = _backHash
-      _backHash = undefined
-
       # Context Switch
       if Nav.current.context isnt h.context
         Nav.set {
@@ -97,20 +84,10 @@ define [
               h
         }, {isBack:false,isContextSwitch:true}
 
-      # Going Back
-      else if backHash
-        # Rewind Context's History to Back hash
-        # (for people stabbing their back button)
-        i = 0
-        while ctxHist[i++].hash isnt backHash.hash then
-        h = backHash
-        ctxHist.splice 0, i-1
-        Nav.set {current:h}, {isBack:true,isContextSwitch:false}
-
       # Back button (going back, not initiated by us)
       else if h.hash is ctxHist[1]?.hash
         h = ctxHist[1]
-        ctxHist.splice 0, 1
+        ctxHist.shift()
         Nav.set {current: h}, {isBack:true,isContextSwitch:false}
 
       # First time or Going forward
@@ -119,6 +96,5 @@ define [
         Nav.set {current:h}, {isBack:false,isContextSwitch:false}
     return
     
-  if _fixedHash
-    HashDelegate.set Nav.current.hash
+  HashDelegate.set Nav.current.hash if _fixedHash
   Nav

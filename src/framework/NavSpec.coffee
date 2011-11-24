@@ -275,6 +275,9 @@ define [
           it 'updates Nav.current', ->
             expect(Nav.current).toBe prevHash
 
+          it 'removes hash from context history', ->
+            expect(Nav.canBack()).toBe false
+
           it 'triggers "change:current" event, with {data:{isBack:true}}', ->
             expect(binds['change:current']).toHaveBeenCalledWith
               cur: prevHash

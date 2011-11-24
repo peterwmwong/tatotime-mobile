@@ -289,6 +289,9 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
             it('updates Nav.current', function() {
               return expect(Nav.current).toBe(prevHash);
             });
+            it('removes hash from context history', function() {
+              return expect(Nav.canBack()).toBe(false);
+            });
             it('triggers "change:current" event, with {data:{isBack:true}}', function() {
               return expect(binds['change:current']).toHaveBeenCalledWith({
                 cur: prevHash,

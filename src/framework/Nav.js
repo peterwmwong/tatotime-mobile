@@ -1,8 +1,7 @@
 
 define(['AppConfig', 'HashDelegate', './Model'], function(AppConfig, HashDelegate, Model) {
-  var Nav, contextHists, ctx, hashRx, parseHash, toHash, _backHash, _fixedHash;
+  var Nav, contextHists, ctx, hashRx, parseHash, toHash, _fixedHash;
   hashRx = /^\#([^!^?]+)(!([^?]+))?(\?(.+))?/;
-  _backHash = void 0;
   _fixedHash = false;
   Nav = new Model({
     toHash: toHash = function(_arg) {
@@ -53,11 +52,9 @@ define(['AppConfig', 'HashDelegate', './Model'], function(AppConfig, HashDelegat
       return ((_ref = contextHists[Nav.current.context]) != null ? _ref.length : void 0) > 1;
     },
     goBack: function() {
-      var hist;
-      hist = contextHists[Nav.current.context];
-      if (hist.length > 1) {
-        _backHash = hist[1];
-        return HashDelegate.set(_backHash.hash);
+      var h, _ref;
+      if (h = (_ref = contextHists[Nav.current.context][1]) != null ? _ref.hash : void 0) {
+        return HashDelegate.set(h);
       }
     },
     goTo: function(pageUrl) {
@@ -73,7 +70,7 @@ define(['AppConfig', 'HashDelegate', './Model'], function(AppConfig, HashDelegat
       }
     }
   });
-  window.ctxHists = contextHists = {};
+  contextHists = {};
   for (ctx in AppConfig.contexts) {
     contextHists[ctx] = [];
   }
@@ -91,14 +88,12 @@ define(['AppConfig', 'HashDelegate', './Model'], function(AppConfig, HashDelegat
     }
   });
   HashDelegate.onChange(function() {
-    var backHash, ctxHist, h, i, _ref;
+    var ctxHist, h, _ref;
     if (_fixedHash) {
       _fixedHash = false;
     } else {
       h = parseHash(HashDelegate.get());
       ctxHist = contextHists[h.context];
-      backHash = _backHash;
-      _backHash = void 0;
       if (Nav.current.context !== h.context) {
         Nav.set({
           current: ctxHist.length ? ctxHist[0] : (ctxHist.unshift(h = new Model(h)), h)
@@ -106,20 +101,9 @@ define(['AppConfig', 'HashDelegate', './Model'], function(AppConfig, HashDelegat
           isBack: false,
           isContextSwitch: true
         });
-      } else if (backHash) {
-        i = 0;
-        while (ctxHist[i++].hash !== backHash.hash) {}
-        h = backHash;
-        ctxHist.splice(0, i - 1);
-        Nav.set({
-          current: h
-        }, {
-          isBack: true,
-          isContextSwitch: false
-        });
       } else if (h.hash === ((_ref = ctxHist[1]) != null ? _ref.hash : void 0)) {
         h = ctxHist[1];
-        ctxHist.splice(0, 1);
+        ctxHist.shift();
         Nav.set({
           current: h
         }, {
