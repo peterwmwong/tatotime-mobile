@@ -5,31 +5,7 @@ coffee = node_modules/.bin/coffee
 stylus = node_modules/.bin/stylus
 connect = node_modules/connect/package.json
 closure = vendor/closure-compiler/compiler.jar
-
-#-------------------------------------------------------------------
-# BUILD
-#------------------------------------------------------------------- 
 requirejsBuild = node_modules/.bin/r.js
-
-#-------------------------------------------------------------------
-# TEST
-#------------------------------------------------------------------- 
-ifndef TEST_BROWSER
-	TEST_BROWSER := google-chrome
-endif
-
-ifndef TESTS
-	TESTS := "**"
-endif
-
-ifdef TEST_DEBUG
-	TEST_DEBUG_ = -d
-endif
-
-
-#===================================================================
-#----------------------------- MACROS ------------------------------
-#===================================================================
 
 
 #===================================================================
@@ -40,7 +16,8 @@ endif
 #-------------------------------------------------------------------
 # BUILD
 #------------------------------------------------------------------- 
-src/bootstrap.js: src/cell.js src/cell-builder-plugin.js
+src/bootstrap.js: deps $(closure) src/cell.js src/cell-builder-plugin.js
+	$(coffee) -c -b src/
 	$(requirejsBuild) \
 		-o \
 		paths.requireLib=../node_modules/requirejs/require \
@@ -59,19 +36,19 @@ src/bootstrap.js: src/cell.js src/cell-builder-plugin.js
 #-------------------------------------------------------------------
 # TEST
 #------------------------------------------------------------------- 
-specs:
+specs: deps
 	find src -name '*Spec.coffee' | xargs coffee -e 'console.log """define([],#{JSON.stringify process.argv[4..].map (e)->"spec!"+/^src\/(.*?)Spec\.coffee/.exec(e)[1]});"""' > spec/allSpecs.js
 
 #-------------------------------------------------------------------
 # DEV 
 #------------------------------------------------------------------- 
-dev-server: $(coffee) $(connect) dev-server.coffee
+dev-server: deps dev-server.coffee
 	$(coffee) ./dev-server.coffee `pwd`
 
-dev-stylus: $(stylus)
+dev-stylus: deps
 	find ./src -name '*.styl' -type f | xargs $(stylus) --include ./src/shared/styles --watch --compress
 
-dev-coffee: $(coffee)
+dev-coffee: deps
 	find ./src ./spec -name '*.coffee' -type f | xargs $(coffee) -c -b --watch
 
 #-------------------------------------------------------------------
@@ -88,14 +65,8 @@ $(closure):
 	unzip -d vendor/closure-compiler vendor/closure-compiler/closure-compiler.zip
 	rm vendor/closure-compiler/closure-compiler.zip
 
-$(stylus):
-	npm install stylus
-
-$(coffee):
-	npm install coffee-script
-
-$(connect):
-	npm install connect
+deps:
+	npm install
 
 #-------------------------------------------------------------------
 # TEST
