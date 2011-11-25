@@ -5,37 +5,19 @@ define(['AppConfig', 'HashDelegate', './Model'], function(AppConfig, HashDelegat
   _fixedHash = false;
   Nav = new Model({
     toHash: toHash = function(_arg) {
-      var context, ctx, data, hash, k, page, prefix, v;
+      var context, ctx, data, page;
       context = _arg.context, page = _arg.page, data = _arg.data;
       ctx = (AppConfig.contexts[context] && context) || AppConfig.defaultContext;
-      hash = "#" + ctx + "!" + (page || AppConfig.contexts[ctx].defaultPagePath);
-      if (data) {
-        prefix = '?';
-        for (k in data) {
-          v = data[k];
-          hash += "" + prefix + k + "=" + (encodeURIComponent(v));
-          prefix = '&';
-        }
-      }
-      return hash;
+      return "#" + ctx + "!" + (page || AppConfig.contexts[ctx].defaultPagePath) + (data && ("?" + (encodeURIComponent(JSON.stringify(data)))) || '');
     },
     parseHash: parseHash = function(hash) {
-      var context, ctxid, data, jsondata, k, kv, page, result, v, _i, _len, _ref, _ref2;
+      var context, ctxid, jsondata, page, result;
       result = hashRx.exec(hash);
-      data = {};
-      if (jsondata = result != null ? result[5] : void 0) {
-        _ref = jsondata.split('&');
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          kv = _ref[_i];
-          _ref2 = kv.split('='), k = _ref2[0], v = _ref2[1];
-          data[k] = decodeURIComponent(v);
-        }
-      }
       return {
-        data: data,
         hash: hash,
         context: context = ((ctxid = result != null ? result[1] : void 0) && AppConfig.contexts[ctxid] && ctxid) || AppConfig.defaultContext,
-        page: ((page = result != null ? result[3] : void 0) && (page.substr(-1) !== '/') && page) || AppConfig.contexts[context].defaultPagePath
+        page: ((page = result != null ? result[3] : void 0) && (page.substr(-1) !== '/') && page) || AppConfig.contexts[context].defaultPagePath,
+        data: (jsondata = result != null ? result[5] : void 0) && JSON.parse(decodeURIComponent(jsondata))
       };
     },
     current: (function() {

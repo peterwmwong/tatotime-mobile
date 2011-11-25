@@ -2,6 +2,7 @@ define [
   'SpecHelpers'
   './Model'
 ], ({spyOnAll},Model)->
+  encodeJSONForURI = (data)-> encodeURIComponent JSON.stringify data
 
   ({mockModules,loadModule})->
         
@@ -34,12 +35,11 @@ define [
                   NavOnChange currentHash = newHash
         loadModule (module)-> Nav = module
       
-      it 'Nav.current set to defaultContext, defaultPagePath (of defaultContext), and {} for data', ->
+      it 'Nav.current set to defaultContext, defaultPagePath (of defaultContext), and undefined for data', ->
         expect(Nav.current).toEqual new Model
           hash: "##{mAppConfig.defaultContext}!#{mAppConfig.contexts[mAppConfig.defaultContext].defaultPagePath}"
           context: mAppConfig.defaultContext
           page: mAppConfig.contexts[mAppConfig.defaultContext].defaultPagePath
-          data: {}
 
       it 'HashDelegate.set() called with "##{defaultContext}!#{defaultPagePath}"', ->
         expect(mHashDelegate.set).toHaveBeenCalledWith "##{mAppConfig.defaultContext}!#{mAppConfig.contexts[mAppConfig.defaultContext].defaultPagePath}"
@@ -58,7 +58,7 @@ define [
           expect(binds['change:current']).wasNotCalled()
           expect(binds['change:current[context=ctx1]']).wasNotCalled()
     
-    describe "When the hash is initially #{mInitialHash = '#ctx1!a/b-c/d_ef/_gh/-ijk?w=val&x=0&y=Krusty%20the%20Clown&z=Sam%20I%20Am'}", do(mInitialHash)-> ->
+    describe "When the hash is initially #{mInitialHash = '#ctx1!a/b-c/d_ef/_gh/-ijk?'+encodeJSONForURI w:'val',x:0,y:'Krusty the Clown',z:'Sam I Am'}", do(mInitialHash)-> ->
       mHashDelegate = null
       mAppConfig =
         defaultContext: 'ctx1'
@@ -113,7 +113,7 @@ define [
           page: 'a/b-c/d_ef/_gh/-ijk'
           data:
             w: 'val'
-            x: '0'
+            x: 0
             y: 'Krusty the Clown'
             z: 'Sam I Am'
       
@@ -146,7 +146,7 @@ define [
 
       #----------------------------------------------------------------------
       describe 'Nav.goTo(urlPath:string)', ->
-        mUrlPath = "one/two/three?key1=val1&key2=val2"
+        mUrlPath = "one/two/three"
 
         beforeEach ->
           Nav.goTo mUrlPath
@@ -177,7 +177,6 @@ define [
         ],
           context: 'ctx1'
           page: 'path1'
-          data: {}
 
 
         itParses [
@@ -187,7 +186,6 @@ define [
         ], 
           context: 'ctx1'
           page: 'path1'
-          data: {}
 
 
         itParses [
@@ -198,7 +196,6 @@ define [
         ],
           context: 'ctx1'
           page: 'path1'
-          data: {}
 
 
         itParses [
@@ -207,15 +204,14 @@ define [
         ],
           context: 'ctx2'
           page: 'a/b-c/d_ef/_gh/-ijk'
-          data: {}
 
 
-        itParses ['#ctx1!a/b-c/d_ef/_gh/-ijk?w=val&x=0&y=Krusty%20the%20Clown&z=Sam%20I%20Am'],
+        itParses ["#ctx1!a/b-c/d_ef/_gh/-ijk?#{encodeJSONForURI w:'val', x:0, y:'Krusty the Clown', z:'Sam I Am'}"],
           context: 'ctx1'
           page: 'a/b-c/d_ef/_gh/-ijk'
           data:
             w: 'val'
-            x: '0'
+            x: 0
             y: 'Krusty the Clown'
             z: 'Sam I Am'
     
@@ -228,21 +224,21 @@ define [
 
         it 'uses AppConfig.contexts[context].defaultPagePath when given unknown OR no page', ->
           expect(Nav.toHash {context: 'ctx1'}).toBe "#ctx1!#{mAppConfig.contexts.ctx1.defaultPagePath}"
-          expect(Nav.toHash {context: 'ctx1', data: {a:'b'}}).toBe "#ctx1!#{mAppConfig.contexts.ctx1.defaultPagePath}?a=b"
+          expect(Nav.toHash {context: 'ctx1', data: {a:'b'}}).toBe "#ctx1!#{mAppConfig.contexts.ctx1.defaultPagePath}?#{encodeJSONForURI a:'b'}"
 
-        it 'context/page/data', ->
+        it 'context!page?data', ->
           input =
             context: 'ctx2'
             page: 'a/b/c'
-            data:
+            data: data =
               d:'e'
               f:'g'
-          expect(Nav.toHash input).toBe "#ctx2!a/b/c?d=e&f=g"
+          expect(Nav.toHash input).toBe "#ctx2!a/b/c?#{encodeJSONForURI data}"
 
 
       #----------------------------------------------------------------------
       describe 'HashDelegate.onChange handler', ->
-        hash = '#ctx1!testpage?a=b&c=d'
+        hash = '#ctx1!testpage?'+encodeJSONForURI a:'b', c:'d'
         binds = null
 
         beforeEach ->
@@ -267,7 +263,7 @@ define [
 
           beforeEach ->
             prevHash = Nav.current
-            currentHash = '#ctx1!testpage?a=b&c=d'
+            currentHash = hash
             NavOnChange() # Go somewhere
             currentHash = mInitialHash
             NavOnChange() # Go back
@@ -279,15 +275,16 @@ define [
             expect(Nav.canBack()).toBe false
 
           it 'triggers "change:current" event, with {data:{isBack:true}}', ->
-            expect(binds['change:current']).toHaveBeenCalledWith
+            call = binds['change:current']
+            expect(call).toHaveBeenCalledWith
               cur: prevHash
               prev: new Model
                 hash: hash
                 context: 'ctx1'
                 page: 'testpage'
                 data:
-                  a:'b'
-                  c:'d'
+                  a: 'b'
+                  c: 'd'
               model: Nav
               property: 'current'
               type: 'change:current'
@@ -329,7 +326,7 @@ define [
                   c:'d'
           
           it 'triggers "change:current" event', ->
-            expect(binds['change:current']).toHaveBeenCalledWith
+            expect(binds['change:current'].argsForCall[0][0]).toEqual
               cur: new Model
                 hash: hash
                 context: 'ctx1'
@@ -343,7 +340,7 @@ define [
                 page: 'a/b-c/d_ef/_gh/-ijk'
                 data:
                   w: 'val'
-                  x: '0'
+                  x: 0
                   y: 'Krusty the Clown'
                   z: 'Sam I Am'
               model: Nav
@@ -368,7 +365,7 @@ define [
                 page: 'a/b-c/d_ef/_gh/-ijk'
                 data:
                   w: 'val'
-                  x: '0'
+                  x: 0
                   y: 'Krusty the Clown'
                   z: 'Sam I Am'
               model: Nav
@@ -416,7 +413,6 @@ define [
                 hash: '#ctx2!path2'
                 context: 'ctx2'
                 page: 'path2'
-                data: {}
 
           it 'adds hash to defaultPagePath for context to context history', ->
             prevHash = Nav.current
@@ -433,14 +429,13 @@ define [
                 hash: '#ctx2!path2'
                 context: 'ctx2'
                 page: 'path2'
-                data: {}
               prev: new Model
                 hash: mInitialHash
                 context: 'ctx1'
                 page: 'a/b-c/d_ef/_gh/-ijk'
                 data:
                   w: 'val'
-                  x: '0'
+                  x: 0
                   y: 'Krusty the Clown'
                   z: 'Sam I Am'
               model: Nav
@@ -456,14 +451,13 @@ define [
                 hash: '#ctx2!path2'
                 context: 'ctx2'
                 page: 'path2'
-                data: {}
               prev: new Model
                 hash: mInitialHash
                 context: 'ctx1'
                 page: 'a/b-c/d_ef/_gh/-ijk'
                 data:
                   w: 'val'
-                  x: '0'
+                  x: 0
                   y: 'Krusty the Clown'
                   z: 'Sam I Am'
               model: Nav
@@ -481,7 +475,7 @@ define [
           lastCtx2Hash = undefined
 
           beforeEach ->
-            Nav.goTo 'goSomewhere?x=5&y=6&z=7'
+            Nav.goTo 'goSomewhere'
             lastCtx1Hash = Nav.current
             Nav.switchContext 'ctx2'
             lastCtx2Hash = Nav.current

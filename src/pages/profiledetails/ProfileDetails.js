@@ -35,7 +35,10 @@ define(['Services', 'cell!shared/ListView'], function(S, ListView) {
                   _ref2 = knownFor[_i], id = _ref2.id, role = _ref2.role, title = _ref2.title;
                   _results.push((function() {
                     return {
-                      link: "pages/showdetails/ShowDetails?id=" + id + "&title=" + (encodeURIComponent(title)),
+                      link: "pages/showdetails/ShowDetails?" + (encodeURIComponent(JSON.stringify({
+                        id: id,
+                        title: title
+                      }))),
                       text: title
                     };
                   })());

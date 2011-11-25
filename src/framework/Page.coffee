@@ -15,16 +15,14 @@ define [
     # CSS3 animation-fill-mode: forwards
     active = true
 
-    @model.bind 'deactivate': =>
-      active = false
+    @model.bind 'deactivate': => active = false
 
     @model.bind 'activate': =>
       active = true
       @$el.css 'visibility', 'visible'
 
     @$el.bind 'webkitAnimationEnd', =>
-      if not active
-        @$el.css 'visibility', 'hidden'
+      @$el.css 'visibility', 'hidden' if not active
 
     scroller = new iScroll @el
     @model.bindAndCall 'refreshScroller': -> scroller.refresh()

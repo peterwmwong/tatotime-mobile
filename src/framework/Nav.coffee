@@ -20,27 +20,15 @@ define [
 
     toHash: toHash = ({context,page,data})->
       ctx = (AppConfig.contexts[context] and context) or AppConfig.defaultContext
-      hash =
-        "##{ctx}!#{page or AppConfig.contexts[ctx].defaultPagePath}"
-      if data
-        prefix = '?'
-        for k,v of data
-          hash += "#{prefix}#{k}=#{encodeURIComponent v}"
-          prefix = '&'
-      hash
+      "##{ctx}!#{page or AppConfig.contexts[ctx].defaultPagePath}#{data and "?#{encodeURIComponent JSON.stringify data}" or ''}"
 
     parseHash: parseHash = (hash)->
       result = hashRx.exec hash
-      data = {}
-      if jsondata = result?[5]
-        for kv in jsondata.split '&'
-          [k,v] = kv.split '='
-          data[k] = decodeURIComponent v
 
-      data: data
       hash: hash
       context: context = ((ctxid = result?[1]) and AppConfig.contexts[ctxid] and ctxid) or AppConfig.defaultContext
       page: ((page = result?[3]) and (page.substr(-1) isnt '/') and page) or AppConfig.contexts[context].defaultPagePath
+      data: (jsondata = result?[5]) and JSON.parse decodeURIComponent jsondata
 
     current: do->
       hash = parseHash HashDelegate.get()

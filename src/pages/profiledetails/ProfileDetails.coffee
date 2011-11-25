@@ -25,6 +25,6 @@ define [
         @$('#knownForList')
           .append cell::$R ListView, list: do->
             for {id,role,title} in knownFor then do->
-              link: "pages/showdetails/ShowDetails?id=#{id}&title=#{encodeURIComponent title}"
+              link: "pages/showdetails/ShowDetails?#{encodeURIComponent JSON.stringify id:id,title:title}"
               text: title
         @model.trigger 'refreshScroller'

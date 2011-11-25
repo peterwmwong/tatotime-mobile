@@ -23,7 +23,9 @@ define(['Services', 'shared/DateHelper', 'cell!shared/ListView'], function(S, Da
             _results = [];
             for (i = 0; i <= 10; i++) {
               _results.push({
-                link: "pages/showdetails/ShowDetails?id=" + i,
+                link: "pages/showdetails/ShowDetails?" + (encodeURIComponent(JSON.stringify({
+                  id: i
+                }))),
                 text: "" + i
               });
             }

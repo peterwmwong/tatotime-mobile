@@ -12,7 +12,7 @@ define [
     S.user.getShows new Date(), (shows)=>
       @$el.append _ ListView,
         id: 'ShowList', list: for i in [0..10] then {
-          link: "pages/showdetails/ShowDetails?id=#{i}"
+          link: "pages/showdetails/ShowDetails?#{encodeURIComponent JSON.stringify id:i}"
           text: "#{i}"
         }
       @model.trigger 'refreshScroller'

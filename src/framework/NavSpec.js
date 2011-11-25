@@ -1,7 +1,10 @@
 
 define(['SpecHelpers', './Model'], function(_arg, Model) {
-  var spyOnAll;
+  var encodeJSONForURI, spyOnAll;
   spyOnAll = _arg.spyOnAll;
+  encodeJSONForURI = function(data) {
+    return encodeURIComponent(JSON.stringify(data));
+  };
   return function(_arg2) {
     var loadModule, mInitialHash, mockModules;
     mockModules = _arg2.mockModules, loadModule = _arg2.loadModule;
@@ -47,12 +50,11 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
           return Nav = module;
         });
       });
-      it('Nav.current set to defaultContext, defaultPagePath (of defaultContext), and {} for data', function() {
+      it('Nav.current set to defaultContext, defaultPagePath (of defaultContext), and undefined for data', function() {
         return expect(Nav.current).toEqual(new Model({
           hash: "#" + mAppConfig.defaultContext + "!" + mAppConfig.contexts[mAppConfig.defaultContext].defaultPagePath,
           context: mAppConfig.defaultContext,
-          page: mAppConfig.contexts[mAppConfig.defaultContext].defaultPagePath,
-          data: {}
+          page: mAppConfig.contexts[mAppConfig.defaultContext].defaultPagePath
         }));
       });
       it('HashDelegate.set() called with "##{defaultContext}!#{defaultPagePath}"', function() {
@@ -75,7 +77,12 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
         });
       });
     });
-    return describe("When the hash is initially " + (mInitialHash = '#ctx1!a/b-c/d_ef/_gh/-ijk?w=val&x=0&y=Krusty%20the%20Clown&z=Sam%20I%20Am'), (function(mInitialHash) {
+    return describe("When the hash is initially " + (mInitialHash = '#ctx1!a/b-c/d_ef/_gh/-ijk?' + encodeJSONForURI({
+      w: 'val',
+      x: 0,
+      y: 'Krusty the Clown',
+      z: 'Sam I Am'
+    })), (function(mInitialHash) {
       return function() {
         var Nav, NavOnChange, currentHash, mAppConfig, mHashDelegate;
         mHashDelegate = null;
@@ -140,7 +147,7 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
             page: 'a/b-c/d_ef/_gh/-ijk',
             data: {
               w: 'val',
-              x: '0',
+              x: 0,
               y: 'Krusty the Clown',
               z: 'Sam I Am'
             }
@@ -168,7 +175,7 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
         });
         describe('Nav.goTo(urlPath:string)', function() {
           var mUrlPath;
-          mUrlPath = "one/two/three?key1=val1&key2=val2";
+          mUrlPath = "one/two/three";
           beforeEach(function() {
             return Nav.goTo(mUrlPath);
           });
@@ -200,30 +207,33 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
           };
           itParses(['', '#', '#!', '#?', '#!?', '#!/', '#!/?', '#!ignore/me?because=no&context=specified'], {
             context: 'ctx1',
-            page: 'path1',
-            data: {}
+            page: 'path1'
           });
           itParses(['#/', '#/!/', '#/!ignore-me-cause-Im-a-directory/'], {
             context: 'ctx1',
-            page: 'path1',
-            data: {}
+            page: 'path1'
           });
           itParses(["#ctx1", '#ctx1!', '#ctx1!/?', '#badContextThatWillBeDefaulted!/?'], {
             context: 'ctx1',
-            page: 'path1',
-            data: {}
+            page: 'path1'
           });
           itParses(['#ctx2!a/b-c/d_ef/_gh/-ijk', '#ctx2!a/b-c/d_ef/_gh/-ijk?'], {
             context: 'ctx2',
-            page: 'a/b-c/d_ef/_gh/-ijk',
-            data: {}
+            page: 'a/b-c/d_ef/_gh/-ijk'
           });
-          return itParses(['#ctx1!a/b-c/d_ef/_gh/-ijk?w=val&x=0&y=Krusty%20the%20Clown&z=Sam%20I%20Am'], {
+          return itParses([
+            "#ctx1!a/b-c/d_ef/_gh/-ijk?" + (encodeJSONForURI({
+              w: 'val',
+              x: 0,
+              y: 'Krusty the Clown',
+              z: 'Sam I Am'
+            }))
+          ], {
             context: 'ctx1',
             page: 'a/b-c/d_ef/_gh/-ijk',
             data: {
               w: 'val',
-              x: '0',
+              x: 0,
               y: 'Krusty the Clown',
               z: 'Sam I Am'
             }
@@ -243,24 +253,29 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
               data: {
                 a: 'b'
               }
-            })).toBe("#ctx1!" + mAppConfig.contexts.ctx1.defaultPagePath + "?a=b");
+            })).toBe("#ctx1!" + mAppConfig.contexts.ctx1.defaultPagePath + "?" + (encodeJSONForURI({
+              a: 'b'
+            })));
           });
-          return it('context/page/data', function() {
-            var input;
+          return it('context!page?data', function() {
+            var data, input;
             input = {
               context: 'ctx2',
               page: 'a/b/c',
-              data: {
+              data: data = {
                 d: 'e',
                 f: 'g'
               }
             };
-            return expect(Nav.toHash(input)).toBe("#ctx2!a/b/c?d=e&f=g");
+            return expect(Nav.toHash(input)).toBe("#ctx2!a/b/c?" + (encodeJSONForURI(data)));
           });
         });
         describe('HashDelegate.onChange handler', function() {
           var binds, hash;
-          hash = '#ctx1!testpage?a=b&c=d';
+          hash = '#ctx1!testpage?' + encodeJSONForURI({
+            a: 'b',
+            c: 'd'
+          });
           binds = null;
           beforeEach(function() {
             currentHash = hash;
@@ -281,7 +296,7 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
             prevHash = void 0;
             beforeEach(function() {
               prevHash = Nav.current;
-              currentHash = '#ctx1!testpage?a=b&c=d';
+              currentHash = hash;
               NavOnChange();
               currentHash = mInitialHash;
               return NavOnChange();
@@ -293,7 +308,9 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
               return expect(Nav.canBack()).toBe(false);
             });
             it('triggers "change:current" event, with {data:{isBack:true}}', function() {
-              return expect(binds['change:current']).toHaveBeenCalledWith({
+              var call;
+              call = binds['change:current'];
+              return expect(call).toHaveBeenCalledWith({
                 cur: prevHash,
                 prev: new Model({
                   hash: hash,
@@ -351,7 +368,7 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
               }));
             });
             it('triggers "change:current" event', function() {
-              return expect(binds['change:current']).toHaveBeenCalledWith({
+              return expect(binds['change:current'].argsForCall[0][0]).toEqual({
                 cur: new Model({
                   hash: hash,
                   context: 'ctx1',
@@ -367,7 +384,7 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
                   page: 'a/b-c/d_ef/_gh/-ijk',
                   data: {
                     w: 'val',
-                    x: '0',
+                    x: 0,
                     y: 'Krusty the Clown',
                     z: 'Sam I Am'
                   }
@@ -398,7 +415,7 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
                   page: 'a/b-c/d_ef/_gh/-ijk',
                   data: {
                     w: 'val',
-                    x: '0',
+                    x: 0,
                     y: 'Krusty the Clown',
                     z: 'Sam I Am'
                   }
@@ -447,8 +464,7 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
               return expect(Nav.current).toEqual(new Model({
                 hash: '#ctx2!path2',
                 context: 'ctx2',
-                page: 'path2',
-                data: {}
+                page: 'path2'
               }));
             });
             it('adds hash to defaultPagePath for context to context history', function() {
@@ -466,8 +482,7 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
                 cur: new Model({
                   hash: '#ctx2!path2',
                   context: 'ctx2',
-                  page: 'path2',
-                  data: {}
+                  page: 'path2'
                 }),
                 prev: new Model({
                   hash: mInitialHash,
@@ -475,7 +490,7 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
                   page: 'a/b-c/d_ef/_gh/-ijk',
                   data: {
                     w: 'val',
-                    x: '0',
+                    x: 0,
                     y: 'Krusty the Clown',
                     z: 'Sam I Am'
                   }
@@ -494,8 +509,7 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
                 cur: new Model({
                   hash: '#ctx2!path2',
                   context: 'ctx2',
-                  page: 'path2',
-                  data: {}
+                  page: 'path2'
                 }),
                 prev: new Model({
                   hash: mInitialHash,
@@ -503,7 +517,7 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
                   page: 'a/b-c/d_ef/_gh/-ijk',
                   data: {
                     w: 'val',
-                    x: '0',
+                    x: 0,
                     y: 'Krusty the Clown',
                     z: 'Sam I Am'
                   }
@@ -523,7 +537,7 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
             lastCtx1Hash = void 0;
             lastCtx2Hash = void 0;
             beforeEach(function() {
-              Nav.goTo('goSomewhere?x=5&y=6&z=7');
+              Nav.goTo('goSomewhere');
               lastCtx1Hash = Nav.current;
               Nav.switchContext('ctx2');
               lastCtx2Hash = Nav.current;

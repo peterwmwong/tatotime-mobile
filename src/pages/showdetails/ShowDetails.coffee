@@ -31,7 +31,7 @@ define [
             id: 'castListView'
             list: do->
               for {id,name} in d.cast then do->
-                link: "pages/profiledetails/ProfileDetails?id=#{id}&title=#{name}"
+                link: "pages/profiledetails/ProfileDetails?#{encodeURIComponent JSON.stringify id:id, title:name}"
                 text: name
 
         @model.trigger 'refreshScroller'
