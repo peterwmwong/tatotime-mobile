@@ -19,7 +19,7 @@ define(['Services', 'cell!shared/ListView'], function(S, ListView) {
             title: title || 'Loading...'
           });
           return S.actor.getDetails(id, function(_arg2) {
-            var born, knownFor, name;
+            var born, knownFor, name, role;
             name = _arg2.name, born = _arg2.born, knownFor = _arg2.knownFor;
             _this.model.set({
               title: name
@@ -29,22 +29,20 @@ define(['Services', 'cell!shared/ListView'], function(S, ListView) {
             _this.$('#knownForList > .ListView').remove();
             _this.$('#knownForList').append(cell.prototype.$R(ListView, {
               list: (function() {
-                var role, _i, _len, _ref2, _results;
+                var _i, _len, _ref2, _results;
                 _results = [];
                 for (_i = 0, _len = knownFor.length; _i < _len; _i++) {
                   _ref2 = knownFor[_i], id = _ref2.id, role = _ref2.role, title = _ref2.title;
-                  _results.push((function() {
-                    return {
-                      link: "pages/showdetails/ShowDetails?" + (encodeURIComponent(JSON.stringify({
-                        id: id,
-                        title: title
-                      }))),
-                      text: title
-                    };
-                  })());
+                  _results.push({
+                    link: this.pageURI("pages/showdetails/ShowDetails", {
+                      id: id,
+                      title: title
+                    }),
+                    text: title
+                  });
                 }
                 return _results;
-              })()
+              }).call(_this)
             }));
             return _this.model.trigger('refreshScroller');
           });

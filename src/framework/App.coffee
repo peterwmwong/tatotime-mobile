@@ -32,11 +32,11 @@ define [
   'cell!./ContextNavBar'
   'cell!./TitleBar'
 ], (Nav,Model,ContextModel,Context,ContextNavBar,TitleBar)->
-
+  
   # Cache of all previously loaded pages
   ctxCache = {}
 
-  render: (_,A)-> [
+  render: (_)-> [
     _ TitleBar
     _ '#content'
     _ ContextNavBar
@@ -71,3 +71,7 @@ define [
         else
           console?.log? "Could not switch to context = '#{cur.context}'"
       return
+
+  on:
+    "click [data-navto]": ({target})->
+      location.hash = $(target).closest('[data-navto]').data('navto')

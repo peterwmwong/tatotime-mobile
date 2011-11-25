@@ -126,12 +126,12 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
         });
         describe('Nav.canBack()', function() {
           it('returns true when current context history is <= 1', function() {
-            Nav.goTo('test1');
+            mHashDelegate.set(Nav.pageHash('test1'));
             return expect(Nav.canBack()).toBe(true);
           });
           return it('returns true when current context history is > 1', function() {
             expect(Nav.canBack()).toBe(false);
-            Nav.goTo('test1');
+            mHashDelegate.set(Nav.pageHash('test1'));
             expect(Nav.canBack()).toBe(true);
             Nav.goBack();
             return expect(Nav.canBack()).toBe(false);
@@ -159,9 +159,9 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
             return expect(mHashDelegate.set.argsForCall.length).toBe(0);
           });
           return it('calls HashDelegate.set() with previous hash for context', function() {
-            Nav.goTo('test');
+            mHashDelegate.set(Nav.pageHash('test'));
             expect(mHashDelegate.get()).toBe('#ctx1!test');
-            Nav.goTo('test2');
+            mHashDelegate.set(Nav.pageHash('test2'));
             expect(mHashDelegate.get()).toBe('#ctx1!test2');
             Nav.goBack();
             expect(mHashDelegate.get()).toBe('#ctx1!test');
@@ -173,17 +173,22 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
             return expect(mHashDelegate.set).not.toHaveBeenCalled();
           });
         });
-        describe('Nav.goTo(urlPath:string)', function() {
-          var mUrlPath;
-          mUrlPath = "one/two/three";
-          beforeEach(function() {
-            return Nav.goTo(mUrlPath);
+        describe('Nav.pageHash(page:string,data:object)', function() {
+          it('When page not specified, "##{Nav.current.context}!#{defaultPagePath}', function() {
+            var ctx;
+            return expect(Nav.pageHash()).toBe("#" + (ctx = Nav.current.context) + "!" + mAppConfig.contexts[ctx].defaultPagePath);
           });
-          return it('calls HashDelegate.set("#{current context}!#{urlpath}")', function() {
-            return expect(mHashDelegate.set).toHaveBeenCalledWith("#" + mAppConfig.defaultContext + "!" + mUrlPath);
+          return it('"#{Nav.current.context}!#{page}?#{encodeURIComponent JSON.stringify data}"', function() {
+            return expect(Nav.pageHash('a/b/c', {
+              d: 'e',
+              f: 'g'
+            })).toBe("#" + Nav.current.context + "!a/b/c?" + (encodeJSONForURI({
+              d: 'e',
+              f: 'g'
+            })));
           });
         });
-        describe('Nav.parseHash(hash:string)', function() {
+        describe('Nav._parseHash(hash:string)', function() {
           var itParses;
           itParses = function(hashes, expected) {
             var h, _i, _len, _results;
@@ -199,7 +204,7 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
                 }
                 if ((_ref = e.hash) == null) e.hash = h;
                 return it("parses '" + h + "' to " + (JSON.stringify(e)), function() {
-                  return expect(Nav.parseHash(h)).toEqual(e);
+                  return expect(Nav._parseHash(h)).toEqual(e);
                 });
               })(h));
             }
@@ -239,16 +244,16 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
             }
           });
         });
-        describe('Nav.toHash({context,page,data})', function() {
+        describe('Nav._toHash({context,page,data})', function() {
           it('"##{AppConfig.defaultContext}!#{defaultPagePath}, when passed unknown OR no context', function() {
             var ctx;
-            return expect(Nav.toHash({})).toBe("#" + (ctx = mAppConfig.defaultContext) + "!" + mAppConfig.contexts[ctx].defaultPagePath);
+            return expect(Nav._toHash({})).toBe("#" + (ctx = mAppConfig.defaultContext) + "!" + mAppConfig.contexts[ctx].defaultPagePath);
           });
           it('uses AppConfig.contexts[context].defaultPagePath when given unknown OR no page', function() {
-            expect(Nav.toHash({
+            expect(Nav._toHash({
               context: 'ctx1'
             })).toBe("#ctx1!" + mAppConfig.contexts.ctx1.defaultPagePath);
-            return expect(Nav.toHash({
+            return expect(Nav._toHash({
               context: 'ctx1',
               data: {
                 a: 'b'
@@ -267,7 +272,7 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
                 f: 'g'
               }
             };
-            return expect(Nav.toHash(input)).toBe("#ctx2!a/b/c?" + (encodeJSONForURI(data)));
+            return expect(Nav._toHash(input)).toBe("#ctx2!a/b/c?" + (encodeJSONForURI(data)));
           });
         });
         describe('HashDelegate.onChange handler', function() {
@@ -470,7 +475,7 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
             it('adds hash to defaultPagePath for context to context history', function() {
               var prevHash;
               prevHash = Nav.current;
-              Nav.goTo('somewhereElse');
+              mHashDelegate.set(Nav.pageHash('somewhereElse'));
               Nav.goBack();
               return expect(Nav.current).toBe(prevHash);
             });
@@ -537,7 +542,7 @@ define(['SpecHelpers', './Model'], function(_arg, Model) {
             lastCtx1Hash = void 0;
             lastCtx2Hash = void 0;
             beforeEach(function() {
-              Nav.goTo('goSomewhere');
+              mHashDelegate.set(Nav.pageHash('goSomewhere'));
               lastCtx1Hash = Nav.current;
               Nav.switchContext('ctx2');
               lastCtx2Hash = Nav.current;

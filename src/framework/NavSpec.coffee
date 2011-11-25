@@ -92,12 +92,12 @@ define [
       describe 'Nav.canBack()', ->
 
         it 'returns true when current context history is <= 1', ->
-          Nav.goTo 'test1'
+          mHashDelegate.set Nav.pageHash 'test1'
           expect(Nav.canBack()).toBe true
 
         it 'returns true when current context history is > 1', ->
           expect(Nav.canBack()).toBe false
-          Nav.goTo 'test1'
+          mHashDelegate.set Nav.pageHash 'test1'
           expect(Nav.canBack()).toBe true
           Nav.goBack()
           expect(Nav.canBack()).toBe false
@@ -126,10 +126,10 @@ define [
           expect(mHashDelegate.set.argsForCall.length).toBe 0
 
         it 'calls HashDelegate.set() with previous hash for context', ->
-          Nav.goTo 'test'
+          mHashDelegate.set Nav.pageHash 'test'
           expect(mHashDelegate.get()).toBe '#ctx1!test'
           
-          Nav.goTo 'test2'
+          mHashDelegate.set Nav.pageHash 'test2'
           expect(mHashDelegate.get()).toBe '#ctx1!test2'
 
           Nav.goBack()
@@ -145,17 +145,15 @@ define [
 
 
       #----------------------------------------------------------------------
-      describe 'Nav.goTo(urlPath:string)', ->
-        mUrlPath = "one/two/three"
+      describe 'Nav.pageHash(page:string,data:object)', ->
+        it 'When page not specified, "##{Nav.current.context}!#{defaultPagePath}', ->
+          expect(Nav.pageHash()).toBe "##{ctx = Nav.current.context}!#{mAppConfig.contexts[ctx].defaultPagePath}"
 
-        beforeEach ->
-          Nav.goTo mUrlPath
-
-        it 'calls HashDelegate.set("#{current context}!#{urlpath}")', ->
-          expect(mHashDelegate.set).toHaveBeenCalledWith "##{mAppConfig.defaultContext}!#{mUrlPath}"
+        it '"#{Nav.current.context}!#{page}?#{encodeURIComponent JSON.stringify data}"', ->
+          expect(Nav.pageHash 'a/b/c', d:'e', f:'g').toBe "##{Nav.current.context}!a/b/c?#{encodeJSONForURI d:'e', f:'g'}"
 
       #----------------------------------------------------------------------
-      describe 'Nav.parseHash(hash:string)', ->
+      describe 'Nav._parseHash(hash:string)', ->
 
         itParses = (hashes, expected)->
           for h in hashes then do(h)->
@@ -163,7 +161,7 @@ define [
             for k,v of expected
               e[k] = v
             e.hash ?= h
-            it "parses '#{h}' to #{JSON.stringify e}", -> expect(Nav.parseHash h).toEqual e
+            it "parses '#{h}' to #{JSON.stringify e}", -> expect(Nav._parseHash h).toEqual e
 
         itParses [
           ''
@@ -217,14 +215,14 @@ define [
     
       
       #----------------------------------------------------------------------
-      describe 'Nav.toHash({context,page,data})', ->
+      describe 'Nav._toHash({context,page,data})', ->
 
         it '"##{AppConfig.defaultContext}!#{defaultPagePath}, when passed unknown OR no context', ->
-          expect(Nav.toHash {}).toBe "##{ctx = mAppConfig.defaultContext}!#{mAppConfig.contexts[ctx].defaultPagePath}"
+          expect(Nav._toHash {}).toBe "##{ctx = mAppConfig.defaultContext}!#{mAppConfig.contexts[ctx].defaultPagePath}"
 
         it 'uses AppConfig.contexts[context].defaultPagePath when given unknown OR no page', ->
-          expect(Nav.toHash {context: 'ctx1'}).toBe "#ctx1!#{mAppConfig.contexts.ctx1.defaultPagePath}"
-          expect(Nav.toHash {context: 'ctx1', data: {a:'b'}}).toBe "#ctx1!#{mAppConfig.contexts.ctx1.defaultPagePath}?#{encodeJSONForURI a:'b'}"
+          expect(Nav._toHash {context: 'ctx1'}).toBe "#ctx1!#{mAppConfig.contexts.ctx1.defaultPagePath}"
+          expect(Nav._toHash {context: 'ctx1', data: {a:'b'}}).toBe "#ctx1!#{mAppConfig.contexts.ctx1.defaultPagePath}?#{encodeJSONForURI a:'b'}"
 
         it 'context!page?data', ->
           input =
@@ -233,7 +231,7 @@ define [
             data: data =
               d:'e'
               f:'g'
-          expect(Nav.toHash input).toBe "#ctx2!a/b/c?#{encodeJSONForURI data}"
+          expect(Nav._toHash input).toBe "#ctx2!a/b/c?#{encodeJSONForURI data}"
 
 
       #----------------------------------------------------------------------
@@ -416,7 +414,7 @@ define [
 
           it 'adds hash to defaultPagePath for context to context history', ->
             prevHash = Nav.current
-            Nav.goTo 'somewhereElse'
+            mHashDelegate.set Nav.pageHash 'somewhereElse'
             Nav.goBack()
             expect(Nav.current).toBe prevHash
           
@@ -475,7 +473,7 @@ define [
           lastCtx2Hash = undefined
 
           beforeEach ->
-            Nav.goTo 'goSomewhere'
+            mHashDelegate.set Nav.pageHash 'goSomewhere'
             lastCtx1Hash = Nav.current
             Nav.switchContext 'ctx2'
             lastCtx2Hash = Nav.current

@@ -15,11 +15,11 @@ define [
 
   Nav = new Model
 
-    toHash: toHash = ({context,page,data})->
+    _toHash: _toHash = ({context,page,data})->
       ctx = (AppConfig.contexts[context] and context) or AppConfig.defaultContext
       "##{ctx}!#{page or AppConfig.contexts[ctx].defaultPagePath}#{data and "?#{encodeURIComponent JSON.stringify data}" or ''}"
 
-    parseHash: parseHash = (hash)->
+    _parseHash: _parseHash = (hash)->
       result = hashRx.exec hash
 
       hash: hash
@@ -28,19 +28,19 @@ define [
       data: (jsondata = result?[5]) and JSON.parse decodeURIComponent jsondata
 
     current: do->
-      hash = parseHash HashDelegate.get()
-      if hash.hash isnt (finalHashString = toHash hash)
+      hash = _parseHash HashDelegate.get()
+      if hash.hash isnt (finalHashString = _toHash hash)
         hash.hash = finalHashString
         _fixedHash = true
       new Model hash
 
     canBack: -> contextHists[Nav.current.context]?.length > 1
     goBack: -> HashDelegate.set h if h = contextHists[Nav.current.context][1]?.hash
-    goTo: (pageUrl)-> HashDelegate.set "##{Nav.current.context}!#{pageUrl}"
+    pageHash: (page,data)-> _toHash {context:Nav.current.context,page,data}
     switchContext: (ctxid)->
       if typeof ctxid is 'string' and (hist = contextHists[ctxid]) and Nav.current.context isnt ctxid
         # Use previous visit or create new
-        HashDelegate.set toHash hist[0] or {context: ctxid, page: AppConfig.contexts[ctxid].defaultPage}
+        HashDelegate.set _toHash hist[0] or {context: ctxid, page: AppConfig.contexts[ctxid].defaultPage}
 
   contextHists = {}
   contextHists[ctx] = [] for ctx of AppConfig.contexts
@@ -56,7 +56,7 @@ define [
   HashDelegate.onChange ->
     if _fixedHash then _fixedHash = false
     else
-      h = parseHash HashDelegate.get()
+      h = _parseHash HashDelegate.get()
       ctxHist = contextHists[h.context]
 
       # Context Switch
@@ -80,6 +80,6 @@ define [
         ctxHist.unshift h = new Model h
         Nav.set {current:h}, {isBack:false,isContextSwitch:false}
     return
-    
+
   HashDelegate.set Nav.current.hash if _fixedHash
   Nav

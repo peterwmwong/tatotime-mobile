@@ -22,9 +22,9 @@ define [
         @$('.name').html name
         @$('.bornInfo').html born.year
         @$('#knownForList > .ListView').remove()
-        @$('#knownForList')
-          .append cell::$R ListView, list: do->
-            for {id,role,title} in knownFor then do->
-              link: "pages/showdetails/ShowDetails?#{encodeURIComponent JSON.stringify id:id,title:title}"
-              text: title
+        @$('#knownForList').append cell::$R ListView,
+          list: for {id,role,title} in knownFor then {
+            link: (@pageURI "pages/showdetails/ShowDetails", {id,title})
+            text: title
+          }
         @model.trigger 'refreshScroller'

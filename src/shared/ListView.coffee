@@ -1,7 +1,7 @@
 define
   tag: '<ul>'
   
-  render: (_,A)->
+  render: (_)->
     if list = @options.list
       for {text,link,dividerText} in list when text or dividerText
         if text

@@ -7,6 +7,7 @@ define(['require', './Nav'], function(require, Nav) {
     render: function(_) {
       var _this = this;
       return require(["cell!" + this.model.page], function(page) {
+        page.prototype.pageURI = Nav.pageHash;
         _this.$el.append(_(page, {
           model: _this.model
         }));
@@ -37,13 +38,6 @@ define(['require', './Nav'], function(require, Nav) {
           return scroller.refresh();
         }
       });
-    },
-    on: {
-      "click *[data-navto]": function(_arg) {
-        var target;
-        target = _arg.target;
-        return Nav.goTo($(target).closest('[data-navto]').data('navto'));
-      }
     }
   };
 });

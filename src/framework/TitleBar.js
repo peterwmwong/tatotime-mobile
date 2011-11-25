@@ -1,7 +1,7 @@
 
 define(['framework/Nav'], function(Nav) {
   return {
-    render: function(_, A) {
+    render: function(_) {
       return [_('#backbutton', _('span', 'Back')), _('#titles', _('#title'), _('#prevtitle')), _('#gobutton', _('span', 'Do It'))];
     },
     afterRender: function() {

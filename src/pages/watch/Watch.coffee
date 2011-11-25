@@ -2,7 +2,8 @@ define [
   'Services'
   'shared/DateHelper'
   'cell!shared/ListView'
-], (S,DateHelper,ListView)->
+  'framework/Nav'
+], (S,DateHelper,ListView,Nav)->
 
   init: ->
     @model.set title: 'Watch'
@@ -12,7 +13,7 @@ define [
     S.user.getShows new Date(), (shows)=>
       @$el.append _ ListView,
         id: 'ShowList', list: for i in [0..10] then {
-          link: "pages/showdetails/ShowDetails?#{encodeURIComponent JSON.stringify id:i}"
+          link: (@pageURI 'pages/showdetails/ShowDetails', id:i)
           text: "#{i}"
         }
       @model.trigger 'refreshScroller'

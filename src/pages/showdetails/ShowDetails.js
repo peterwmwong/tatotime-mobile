@@ -1,7 +1,7 @@
 
-define(['Services', 'cell!shared/ListView'], function(S, ListView) {
+define(['Services', 'cell!shared/ListView', 'framework/Nav'], function(S, ListView, Nav) {
   return {
-    render: function(_, A) {
+    render: function(_) {
       return [_('img'), _('.titleGroup', _('h2.title'), _('h4.year'), _('h4.network')), _('p.description'), _('.castGroup', _('h4.castHeader', 'Cast'), _('#castListContainer', ''))];
     },
     afterRender: function() {
@@ -19,6 +19,7 @@ define(['Services', 'cell!shared/ListView'], function(S, ListView) {
             title: 'Loading...'
           });
           return S.show.getDetails(data.id, function(d) {
+            var id, name;
             _this.model.set({
               title: d.title
             });
@@ -30,23 +31,21 @@ define(['Services', 'cell!shared/ListView'], function(S, ListView) {
             _this.$('#castListContainer').append(cell.prototype.$R(ListView, {
               id: 'castListView',
               list: (function() {
-                var id, name, _i, _len, _ref, _ref2, _results;
+                var _i, _len, _ref, _ref2, _results;
                 _ref = d.cast;
                 _results = [];
                 for (_i = 0, _len = _ref.length; _i < _len; _i++) {
                   _ref2 = _ref[_i], id = _ref2.id, name = _ref2.name;
-                  _results.push((function() {
-                    return {
-                      link: "pages/profiledetails/ProfileDetails?" + (encodeURIComponent(JSON.stringify({
-                        id: id,
-                        title: name
-                      }))),
-                      text: name
-                    };
-                  })());
+                  _results.push({
+                    link: this.pageURI('pages/profiledetails/ProfileDetails', {
+                      id: id,
+                      title: name
+                    }),
+                    text: name
+                  });
                 }
                 return _results;
-              })()
+              }).call(_this)
             }));
             return _this.model.trigger('refreshScroller');
           });

@@ -17,7 +17,7 @@ define [
       @$el.append _ ListView,
         id: 'ShowList'
         list: for s in shows then {
-          link: "#{ShowDetailsPage}?#{encodeURIComponent JSON.stringify id:s.id,title:s.title}"
+          link: (@pageURI ShowDetailsPage, id:s.id, title:s.title)
           text: s.title
         }
       @model.trigger 'refreshScroller'

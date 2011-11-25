@@ -96,11 +96,12 @@ define ['SpecHelpers'], ({spyOnAll})->
           hChild?.reset()
 
         beforeEach ->
-          model.bindAndCall {'change:root':hRoot,'change:root.parent':hParent,'change:root.parent.child':hChild} =
+          binds = {'change:root':hRoot,'change:root.parent':hParent,'change:root.parent.child':hChild} =
             spyOnAll
               'change:root': ->
               'change:root.parent': ->
               'change:root.parent.child': ->
+          model.bindAndCall binds
 
         it '@bindAndCall calls parent and child handlers', ->
           expect(hRoot.callCount).toBe 1

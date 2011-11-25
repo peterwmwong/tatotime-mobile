@@ -1,7 +1,7 @@
 
 define({
   tag: '<ul>',
-  render: function(_, A) {
+  render: function(_) {
     var dividerText, link, list, text, _i, _len, _ref, _results;
     if (list = this.options.list) {
       _results = [];

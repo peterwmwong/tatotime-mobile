@@ -1,3 +1,4 @@
+
 define(['SpecHelpers'], function(_arg) {
   var spyOnAll;
   spyOnAll = _arg.spyOnAll;
@@ -144,21 +145,18 @@ define(['SpecHelpers'], function(_arg) {
         hParent = void 0;
         hChild = void 0;
         resetSpies = function() {
-          if (hRoot != null) {
-            hRoot.reset();
-          }
-          if (hParent != null) {
-            hParent.reset();
-          }
+          if (hRoot != null) hRoot.reset();
+          if (hParent != null) hParent.reset();
           return hChild != null ? hChild.reset() : void 0;
         };
         beforeEach(function() {
-          var _ref;
-          return model.bindAndCall((_ref = spyOnAll({
+          var binds, _ref;
+          binds = (_ref = spyOnAll({
             'change:root': function() {},
             'change:root.parent': function() {},
             'change:root.parent.child': function() {}
-          }), hRoot = _ref['change:root'], hParent = _ref['change:root.parent'], hChild = _ref['change:root.parent.child'], _ref));
+          }), hRoot = _ref['change:root'], hParent = _ref['change:root.parent'], hChild = _ref['change:root.parent.child'], _ref);
+          return model.bindAndCall(binds);
         });
         it('@bindAndCall calls parent and child handlers', function() {
           expect(hRoot.callCount).toBe(1);

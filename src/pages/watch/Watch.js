@@ -1,5 +1,5 @@
 
-define(['Services', 'shared/DateHelper', 'cell!shared/ListView'], function(S, DateHelper, ListView) {
+define(['Services', 'shared/DateHelper', 'cell!shared/ListView', 'framework/Nav'], function(S, DateHelper, ListView, Nav) {
   return {
     init: function() {
       var _this = this;
@@ -23,14 +23,14 @@ define(['Services', 'shared/DateHelper', 'cell!shared/ListView'], function(S, Da
             _results = [];
             for (i = 0; i <= 10; i++) {
               _results.push({
-                link: "pages/showdetails/ShowDetails?" + (encodeURIComponent(JSON.stringify({
+                link: this.pageURI('pages/showdetails/ShowDetails', {
                   id: i
-                }))),
+                }),
                 text: "" + i
               });
             }
             return _results;
-          })()
+          }).call(_this)
         }));
         return _this.model.trigger('refreshScroller');
       });

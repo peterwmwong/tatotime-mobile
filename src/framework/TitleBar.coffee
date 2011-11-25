@@ -1,6 +1,6 @@
 define ['framework/Nav'], (Nav)->
 
-  render: (_,A)-> [
+  render: (_)-> [
     _ '#backbutton', _ 'span', 'Back'
     _ '#titles',
       _ '#title'

@@ -26,15 +26,15 @@ define(['require', 'Services', 'shared/DateHelper', 'cell!shared/ListView'], fun
             for (_i = 0, _len = shows.length; _i < _len; _i++) {
               s = shows[_i];
               _results.push({
-                link: "" + ShowDetailsPage + "?" + (encodeURIComponent(JSON.stringify({
+                link: this.pageURI(ShowDetailsPage, {
                   id: s.id,
                   title: s.title
-                }))),
+                }),
                 text: s.title
               });
             }
             return _results;
-          })()
+          }).call(_this)
         }));
         _this.model.trigger('refreshScroller');
         return require([ShowDetailsPage], function() {});

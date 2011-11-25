@@ -23,7 +23,7 @@ define(['./Nav', './Model', './ContextModel', 'cell!./Context', 'cell!./ContextN
   var ctxCache;
   ctxCache = {};
   return {
-    render: function(_, A) {
+    render: function(_) {
       return [_(TitleBar), _('#content'), _(ContextNavBar)];
     },
     afterRender: function() {
@@ -60,6 +60,13 @@ define(['./Nav', './Model', './ContextModel', 'cell!./Context', 'cell!./ContextN
           }
         }
       });
+    },
+    on: {
+      "click [data-navto]": function(_arg) {
+        var target;
+        target = _arg.target;
+        return location.hash = $(target).closest('[data-navto]').data('navto');
+      }
     }
   };
 });

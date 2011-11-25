@@ -2,7 +2,7 @@
 define(['AppConfig', './Nav'], function(AppConfig, Nav) {
   return {
     tag: '<ul>',
-    render: function(_, A) {
+    render: function(_) {
       var ctxid, text;
       return [
         (function() {

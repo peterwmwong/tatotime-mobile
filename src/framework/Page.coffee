@@ -1,12 +1,13 @@
 define [
   'require'
   './Nav'
-], (require, Nav)->
+], (require,Nav)->
 
   tag: -> "<div data-cellpath='#{@model.page}'>"
 
   render: (_)->
     require ["cell!#{@model.page}"], (page)=>
+      page::pageURI = Nav.pageHash
       @$el.append _ page, model: @model
       @pageRendered()
 
@@ -26,9 +27,3 @@ define [
 
     scroller = new iScroll @el
     @model.bindAndCall 'refreshScroller': -> scroller.refresh()
-
-  on:
-    "click *[data-navto]": ({target})->
-      Nav.goTo $(target)
-        .closest('[data-navto]')
-        .data('navto')

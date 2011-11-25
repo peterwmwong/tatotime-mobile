@@ -1,9 +1,10 @@
 define [
   'Services'
   'cell!shared/ListView'
-], (S,ListView)->
+  'framework/Nav'
+], (S,ListView,Nav)->
 
-  render: (_,A)-> [
+  render: (_)-> [
     _ 'img'
     _ '.titleGroup',
       _ 'h2.title'
@@ -29,9 +30,9 @@ define [
         @$('#castListContainer')
           .append cell::$R ListView,
             id: 'castListView'
-            list: do->
-              for {id,name} in d.cast then do->
-                link: "pages/profiledetails/ProfileDetails?#{encodeURIComponent JSON.stringify id:id, title:name}"
-                text: name
+            list: for {id,name} in d.cast then {
+              link: (@pageURI 'pages/profiledetails/ProfileDetails', id:id, title:name)
+              text: name
+            }
 
         @model.trigger 'refreshScroller'

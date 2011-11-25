@@ -1,16 +1,16 @@
 
 define(['AppConfig', 'HashDelegate', './Model'], function(AppConfig, HashDelegate, Model) {
-  var Nav, contextHists, ctx, hashRx, parseHash, toHash, _fixedHash;
+  var Nav, contextHists, ctx, hashRx, _fixedHash, _parseHash, _toHash;
   hashRx = /^\#([^!^?]+)(!([^?]+))?(\?(.+))?/;
   _fixedHash = false;
   Nav = new Model({
-    toHash: toHash = function(_arg) {
+    _toHash: _toHash = function(_arg) {
       var context, ctx, data, page;
       context = _arg.context, page = _arg.page, data = _arg.data;
       ctx = (AppConfig.contexts[context] && context) || AppConfig.defaultContext;
       return "#" + ctx + "!" + (page || AppConfig.contexts[ctx].defaultPagePath) + (data && ("?" + (encodeURIComponent(JSON.stringify(data)))) || '');
     },
-    parseHash: parseHash = function(hash) {
+    _parseHash: _parseHash = function(hash) {
       var context, ctxid, jsondata, page, result;
       result = hashRx.exec(hash);
       return {
@@ -22,8 +22,8 @@ define(['AppConfig', 'HashDelegate', './Model'], function(AppConfig, HashDelegat
     },
     current: (function() {
       var finalHashString, hash;
-      hash = parseHash(HashDelegate.get());
-      if (hash.hash !== (finalHashString = toHash(hash))) {
+      hash = _parseHash(HashDelegate.get());
+      if (hash.hash !== (finalHashString = _toHash(hash))) {
         hash.hash = finalHashString;
         _fixedHash = true;
       }
@@ -39,13 +39,17 @@ define(['AppConfig', 'HashDelegate', './Model'], function(AppConfig, HashDelegat
         return HashDelegate.set(h);
       }
     },
-    goTo: function(pageUrl) {
-      return HashDelegate.set("#" + Nav.current.context + "!" + pageUrl);
+    pageHash: function(page, data) {
+      return _toHash({
+        context: Nav.current.context,
+        page: page,
+        data: data
+      });
     },
     switchContext: function(ctxid) {
       var hist;
       if (typeof ctxid === 'string' && (hist = contextHists[ctxid]) && Nav.current.context !== ctxid) {
-        return HashDelegate.set(toHash(hist[0] || {
+        return HashDelegate.set(_toHash(hist[0] || {
           context: ctxid,
           page: AppConfig.contexts[ctxid].defaultPage
         }));
@@ -74,7 +78,7 @@ define(['AppConfig', 'HashDelegate', './Model'], function(AppConfig, HashDelegat
     if (_fixedHash) {
       _fixedHash = false;
     } else {
-      h = parseHash(HashDelegate.get());
+      h = _parseHash(HashDelegate.get());
       ctxHist = contextHists[h.context];
       if (Nav.current.context !== h.context) {
         Nav.set({
