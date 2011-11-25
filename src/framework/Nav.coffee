@@ -13,9 +13,6 @@ define [
 
   _fixedHash = false
 
-  #TODO: Make data portion of hash JSON, don't try to forge it 
-  #     into location search form (ex. ?k=v&k2=v2)
-
   Nav = new Model
 
     toHash: toHash = ({context,page,data})->
